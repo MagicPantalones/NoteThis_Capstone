@@ -73,3 +73,17 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 /app/src/main/java/io/magics/notethis/TempConst.java
+/.idea/sonarlint/issuestore/b/e/bed3bf50a60e0be248b8f5ede4f076993526a5ab
+/.idea/dbnavigator.xml
+/gradle/wrapper/gradle-wrapper.jar
+/gradlew
+/gradlew.bat
+.idea/codeStyles/
+.idea/dbnavigator.xml
+.idea/misc.xml
+.idea/runConfigurations.xml
+.idea/sonarlint/
+app/libs/
+gradle/wrapper/gradle-wrapper.jar
+gradlew
+gradlew.bat
