@@ -87,3 +87,4 @@ app/libs/
 gradle/wrapper/gradle-wrapper.jar
 gradlew
 gradlew.bat
+/.idea/vcs.xml
