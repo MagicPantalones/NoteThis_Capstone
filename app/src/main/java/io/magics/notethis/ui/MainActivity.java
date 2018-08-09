@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.fragments.IntroFragment;
-import io.magics.notethis.utils.TempConst;
+import io.magics.notethis.utils.TempVals;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
 
             if (auth.getCurrentUser() == null) {
-                auth.signInWithEmailAndPassword(TempConst.USER, TempConst.CODE)
+                auth.signInWithEmailAndPassword(TempVals.USER, TempVals.CODE)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
