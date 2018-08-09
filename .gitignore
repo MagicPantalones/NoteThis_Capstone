@@ -72,7 +72,6 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
-/app/src/main/java/io/magics/notethis/TempConst.java
 /.idea/sonarlint/issuestore/b/e/bed3bf50a60e0be248b8f5ede4f076993526a5ab
 /.idea/dbnavigator.xml
 /gradle/wrapper/gradle-wrapper.jar
@@ -88,5 +87,6 @@ gradle/wrapper/gradle-wrapper.jar
 gradlew
 gradlew.bat
 /.idea/vcs.xml
-/app/src/main/java/io/magics/notethis/utils/TempConst.java
+app/src/main/java/io/magics/notethis/utils/TempConst.java
 src/main/java/io/magics/notethis/data/
+/app/src/main/java/io/magics/notethis/utils/TodoList.java
