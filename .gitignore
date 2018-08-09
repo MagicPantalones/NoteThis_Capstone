@@ -61,18 +61,7 @@ captures/
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
-# Freeline
-freeline.py
-freeline/
-freeline_project_description.json
 
-# fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/test_output
-fastlane/readme.md
-/.idea/sonarlint/issuestore/b/e/bed3bf50a60e0be248b8f5ede4f076993526a5ab
 /.idea/dbnavigator.xml
 /gradle/wrapper/gradle-wrapper.jar
 /gradlew
@@ -91,3 +80,4 @@ app/src/main/java/io/magics/notethis/utils/TempConst.java
 src/main/java/io/magics/notethis/data/
 /app/src/main/java/io/magics/notethis/utils/TodoList.java
 /app/src/main/java/io/magics/notethis/utils/TempVals.java
+/.idea/sonarlint-state.xml
