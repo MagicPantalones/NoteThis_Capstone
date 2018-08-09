@@ -88,3 +88,5 @@ gradle/wrapper/gradle-wrapper.jar
 gradlew
 gradlew.bat
 /.idea/vcs.xml
+/app/src/main/java/io/magics/notethis/utils/TempConst.java
+src/main/java/io/magics/notethis/data/

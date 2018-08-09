@@ -65,3 +65,4 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 /src/main/java/io/magics/notethis/TempConst.java
+/src/main/java/io/magics/notethis/utils/TempConst.java

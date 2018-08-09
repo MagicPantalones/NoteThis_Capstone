@@ -1,11 +1,58 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/secondaryDarkColor</item>
+
+    </style>
+
+    <style name="FragmentDarkBackground">
+        <item name="android:background">@color/primaryColor</item>
+    </style>
+
+    <style name="FragmentMainBackground">
+        <item name="android:background">@color/backgroundColorMain</item>
+    </style>
+    
+    <style name="logoText">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:text">@string/app_name</item>
+        <item name="android:textColor">@color/secondaryColor</item>
+        <item name="android:textSize">@dimen/text_size_logo</item>
+    </style>
+
+    <style name="toolbarText" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:text">@string/app_name</item>
+        <item name="android:textColor">@color/secondaryColor</item>
+        <item name="android:textSize">@dimen/text_size_logo_toolbar</item>
+    </style>
+
+    <style name="text">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="text.lightTextNormal">
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:textSize">@dimen/text_size_body</item>
+    </style>
+
+    <style name="text.darkTextNormal">
+        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="android:textSize">@dimen/text_size_body</item>
+    </style>
+    
+    <style name="text.lightTextHeader">
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:textSize">@dimen/text_size_header</item>
+    </style>
+    
+    <style name="text.darkTextHeader">
+        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="android:textSize">@dimen/text_size_header</item>
     </style>
 
 </resources>
