@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/note_title"
+        style="@style/text.darkTextNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:lines="1"
+        app:layout_constraintBottom_toTopOf="@+id/note_subtitle"
+        app:layout_constraintEnd_toStartOf="@+id/view_note_icon"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@tools:sample/lorem/random" />
+
+    <TextView
+        android:id="@+id/note_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="@dimen/margin_4dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/view_note_icon"
+        app:layout_constraintStart_toStartOf="@id/note_title"
+        app:layout_constraintTop_toBottomOf="@id/note_title"
+        tools:text="@tools:sample/lorem/random" />
+
+    <View
+        android:id="@+id/note_title_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/secondaryColor"
+        android:layout_marginTop="@dimen/margin_8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/note_subtitle"/>
+
+    <ImageView
+        android:id="@+id/view_note_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
+        android:padding="8dp"
+        android:alpha="0.54"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/outline_pageview_24"
+        android:contentDescription="@string/view_note_a11y" />
+</android.support.constraint.ConstraintLayout>

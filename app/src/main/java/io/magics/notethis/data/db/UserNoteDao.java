@@ -9,12 +9,13 @@ import java.util.List;
 
 import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.utils.models.NoteTitle;
+import io.reactivex.Flowable;
 
 @Dao
 public interface UserNoteDao {
 
     @Query("SELECT id, title FROM Note")
-    List<NoteTitle> getNoteTitles();
+    Flowable<NoteTitle> getNoteTitles();
 
     @Query("SELECT * FROM Note WHERE id = :id")
     Note getNote(int id);

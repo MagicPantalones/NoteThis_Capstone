@@ -3,4 +3,8 @@
 
     <string name="logo_a11y">Logo for NoteThis</string>
     <string name="nav_drawer_a11y">Navigation Drawer</string>
+    <string name="view_note_a11y">View Note</string>
+
+    <string name="new_note_btn">New Note!</string>
+
 </resources>

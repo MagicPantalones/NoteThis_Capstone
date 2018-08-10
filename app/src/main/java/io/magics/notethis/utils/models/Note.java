@@ -18,13 +18,16 @@ public class Note {
     private String title;
     @ColumnInfo(name = "body")
     private String body;
+    @ColumnInfo(name = "preview")
+    private String preview;
 
     public Note() {}
 
-    public Note(String id, String title, String body) {
+    public Note(String id, String title, String body, String preview) {
         this.id = id;
         this.title = title;
         this.body = body;
+        this.preview = preview;
     }
 
     public String getId() { return id; }
@@ -36,12 +39,16 @@ public class Note {
     public String getBody() { return body; }
     public void setBody(String body) { this.body = body; }
 
+    public String getPreview() { return preview; }
+    public void setPreview(String preview) { this.preview = preview; }
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("id", id);
         result.put("title", title);
         result.put("body", body);
+        result.put("preview", preview);
 
         return result;
     }
