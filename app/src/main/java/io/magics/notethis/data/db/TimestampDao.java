@@ -14,7 +14,7 @@ public interface TimestampDao {
     Timestamp getTimestamp();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertTimestamp();
+    void insertTimestamp(Timestamp timestamp);
 
     
 }

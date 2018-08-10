@@ -12,18 +12,18 @@ import io.magics.notethis.utils.models.NoteTitle;
 import io.reactivex.Flowable;
 
 @Dao
-public interface UserNoteDao {
+public interface NoteDao {
 
-    @Query("SELECT id, title FROM Note")
-    Flowable<NoteTitle> getNoteTitles();
+    @Query("SELECT Note.id, Note.title, Note.preview FROM Note")
+    Flowable<List<NoteTitle>> getNoteTitles();
 
-    @Query("SELECT * FROM Note WHERE id = :id")
+    @Query("SELECT * FROM Note WHERE Note.id = :id")
     Note getNote(int id);
 
     @Insert
     void insertAll(Note... notes);
 
-    @Query("DELETE FROM Note")
+    @Query("DELETE FROM note")
     void deleteAll();
 
     @Delete

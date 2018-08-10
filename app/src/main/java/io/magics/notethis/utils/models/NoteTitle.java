@@ -1,11 +1,12 @@
 package io.magics.notethis.utils.models;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 public class NoteTitle {
 
-    @PrimaryKey
+    @ColumnInfo(name = "id")
     private int id;
 
     @ColumnInfo(name = "title")
@@ -16,9 +17,18 @@ public class NoteTitle {
 
     public NoteTitle() {}
 
-    public NoteTitle(int id, String title, String preview) {
-        this.id = id;
+    @Ignore
+    public NoteTitle(String title, String preview) {
         this.title = title;
         this.preview = preview;
     }
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getPreview() { return preview; }
+    public void setPreview(String preview) { this.preview = preview; }
 }

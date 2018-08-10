@@ -2,11 +2,13 @@ package io.magics.notethis.utils.models;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
-@Entity
+@Entity(tableName = "timestamp")
 public class Timestamp {
 
     @PrimaryKey
-    public String timeStamp;
+    @NonNull
+    public String timeStamp = "init";
 
 }

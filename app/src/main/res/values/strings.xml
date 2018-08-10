@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">NoteThis</string>
 
     <string name="logo_a11y">Logo for NoteThis</string>
@@ -6,5 +7,23 @@
     <string name="view_note_a11y">View Note</string>
 
     <string name="new_note_btn">New Note!</string>
+
+    <string name="edit_menu_save">Save</string>
+    <string name="edit_menu_save_a11y">Save note</string>
+    <string name="edit_menu_preview">Preview</string>
+    <string name="edit_menu_help">Help</string>
+
+    <string name="imgur_menu_copy">Copy link</string>
+    
+    <string name="menu_delete">Delete</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_search_a11y">Search for text in note</string>
+    <string name="menu_close">Close</string>
+
+    <string name="unsaved_close_text">Exit without saving note?</string>
+
+    <string name="save">Save</string>
+    <string name="exit">Exit</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

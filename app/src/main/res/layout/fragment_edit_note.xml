@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.fragments.EditNoteFragment">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/backgroundColorMain">
+
+        <EditText
+            android:id="@+id/edit_note_view"
+            android:hint="@string/new_note_btn"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:inputType="textMultiLine|textAutoComplete|textAutoCorrect"
+            android:typeface="sans"
+            android:gravity="start"
+            style="@style/text.darkTextNormal"
+            />
+
+        <!-- TODO Implement Markdown template toolbar -->
+
+    </LinearLayout>
+
+
+
+</android.support.design.widget.CoordinatorLayout>

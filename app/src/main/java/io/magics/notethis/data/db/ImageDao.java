@@ -6,14 +6,16 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 
+import java.util.List;
+
 import io.magics.notethis.utils.models.Image;
 import io.reactivex.Flowable;
 
 @Dao
-public interface UserImageDao {
+public interface ImageDao {
 
     @Query("SELECT * FROM Image")
-    Flowable<Image> getImages();
+    Flowable<List<Image>> getImages();
 
     @Insert
     void insertImages(Image... images);

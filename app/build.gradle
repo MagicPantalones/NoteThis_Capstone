@@ -43,6 +43,8 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:${archVer}"
     implementation "android.arch.lifecycle:extensions:${archVer}"
     implementation "android.arch.persistence.room:rxjava2:${archVer}"
+    annotationProcessor "android.arch.lifecycle:compiler:${archVer}"
+    annotationProcessor "android.arch.persistence.room:compiler:${archVer}"
 
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
@@ -77,6 +79,7 @@ dependencies {
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${leakVer}"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${leakVer}"
     debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:${leakVer}"
+    implementation 'com.facebook.stetho:stetho:1.5.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

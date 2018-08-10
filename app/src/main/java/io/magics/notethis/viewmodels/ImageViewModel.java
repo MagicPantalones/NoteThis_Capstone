@@ -1,4 +1,4 @@
-package io.magics.notethis.data;
+package io.magics.notethis.viewmodels;
 
 import android.arch.lifecycle.ViewModel;
 

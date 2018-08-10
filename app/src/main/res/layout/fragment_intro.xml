@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/FragmentDarkBackground"
+    android:fitsSystemWindows="true"
     tools:context=".ui.fragments.IntroFragment">
 
     <ImageView

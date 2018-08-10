@@ -6,10 +6,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".ui.MainActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
@@ -20,6 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="@string/app_name"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:titleTextAppearance="@style/toolbarText"/>
 
     </android.support.design.widget.AppBarLayout>
@@ -27,5 +31,18 @@
     <FrameLayout
         android:id="@+id/container_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/main_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:src="@drawable/outline_add_24px"
+        android:layout_gravity="bottom|end"
+        android:visibility="gone"
+        app:fabSize="normal"/>
+
 </android.support.design.widget.CoordinatorLayout>
