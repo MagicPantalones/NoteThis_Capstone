@@ -26,6 +26,7 @@ import io.magics.notethis.utils.Utils;
 import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.utils.models.NoteTitle;
 import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -52,6 +53,7 @@ public class DataProvider {
 
     public interface DataProviderHandler {
         void onNoteTitlesFetched(List<NoteTitle> noteTitles);
+        void onNoteInserted(int id);
         void onError(DataError dataError);
     }
 
@@ -101,11 +103,16 @@ public class DataProvider {
     }
 
     private Disposable insertNotesToRoom(Note... notes) {
-        return Completable.fromAction(() -> appDatabase.userNoteModel().insertAll(notes))
+        return Observable.fromCallable(() -> appDatabase.userNoteModel().insertAll(notes))
                 .subscribeOn(Schedulers.io())
-                .onErrorResumeNext(e -> Completable.error(new RoomInsertException()))
+                .onErrorResumeNext(Observable.error(new RoomInsertException()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> insertNotesToFireBase(notes), this::handleRxErrors);
+                .subscribe(longList -> {
+                    insertNotesToFireBase(notes);
+                    if (longList != null && longList.size() == 1){
+                        providerHandler.onNoteInserted(longList.get(0).intValue());
+                    }
+                }, this::handleRxErrors);
     }
 
     private void insertNotesToFireBase(Note... notes) {

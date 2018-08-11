@@ -10,10 +10,12 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.magics.notethis.R;
+import io.magics.notethis.utils.Utils;
 
 public class SaveDialog extends DialogFragment{
 
@@ -46,7 +48,9 @@ public class SaveDialog extends DialogFragment{
         View view = View.inflate(getContext(), R.layout.dialog_save, null);
         ButterKnife.bind(this, view);
 
-        alertBuilder.setTitle(getString(R.string.dialog_save_note_title));
+        String oldTitle = Utils.getToolbarTitle(getContext());
+
+        alertBuilder.setTitle(getString(R.string.dialog_note_title_heading));
         alertBuilder.setView(view);
         alertBuilder.setPositiveButton(R.string.save, (dialog, which) -> {
             if (dialog != null) {
@@ -57,6 +61,9 @@ public class SaveDialog extends DialogFragment{
         alertBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> {
             if (dialog != null) dialog.dismiss();
         });
+
+        titleText.setText(oldTitle, TextView.BufferType.EDITABLE);
+        titleText.selectAll();
 
         return alertBuilder.create();
     }

@@ -10,7 +10,7 @@ public class EditNoteViewModel extends ViewModel {
     private String tempText;
     private Note note;
 
-    public Note getNote(boolean saveChanges, String newTitle) {
+    public Note getNoteForSave(boolean saveChanges, String newTitle) {
         if (saveChanges) {
             note.setBody(tempText);
             note.setBodyPreview();
@@ -25,6 +25,10 @@ public class EditNoteViewModel extends ViewModel {
         }
 
         return note;
+    }
+
+    public void setNoteId(int id) {
+        if (note != null) note.setId(id);
     }
 
     public void newNote() {

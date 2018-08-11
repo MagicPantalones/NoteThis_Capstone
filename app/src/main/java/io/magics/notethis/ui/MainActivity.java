@@ -20,6 +20,7 @@ import io.magics.notethis.data.DataProvider;
 import io.magics.notethis.ui.dialogs.SaveDialog;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.utils.Utils;
+import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.viewmodels.EditNoteViewModel;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.data.db.AppDatabase;
@@ -121,6 +122,11 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
         noteViewModel.setNoteTitles(noteTitles);
     }
 
+    @Override
+    public void onNoteInserted(int id) {
+        editNoteViewModel.setNoteId(id);
+    }
+
 
     private void showNotesList() {
         if (!showIntro) {
@@ -177,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
         */
         if (hasChanges) {
             String title = Utils.getToolbarTitle(this);
-            dataProvider.insertNotes(editNoteViewModel.getNote(true, title));
+            dataProvider.insertNotes(editNoteViewModel.getNoteForSave(true, title));
         }
     }
 
@@ -185,9 +191,10 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
     public void onSave(String title) {
         String oldTitle = Utils.getToolbarTitle(this);
         if (oldTitle.equals(getString(R.string.new_note_title))) {
-            dataProvider.insertNotes(editNoteViewModel.getNote(true, title));
+            dataProvider.insertNotes(editNoteViewModel.getNoteForSave(true, title));
         } else {
-            dataProvider.updateNote(editNoteViewModel.getNote(true, title));
+            Note note = editNoteViewModel.getNoteForSave(true, title);
+            dataProvider.updateNote(note);
         }
         Utils.setToolbarTitle(this, toolbar, title, R.color.primaryTextColor);
     }

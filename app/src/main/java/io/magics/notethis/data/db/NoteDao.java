@@ -23,10 +23,10 @@ public interface NoteDao {
     Note getNote(int id);
 
     @Insert
-    void insertAll(Note... notes);
+    List<Long> insertAll(Note... notes);
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateNote(Note note);
+    @Update
+    void updateNote(Note... notes);
 
     @Query("DELETE FROM note")
     void deleteAll();
