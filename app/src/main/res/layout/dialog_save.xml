@@ -1,0 +1,20 @@
+<!-- fragment_edit_name.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/edit_name"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center" android:orientation="vertical"  >
+
+    <!-- Alert dialog title is the title for ExitText -->
+    <EditText
+        android:id="@+id/d_save_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_marginStart="@dimen/margin_24dp"
+        android:layout_marginEnd="@dimen/margin_24dp"
+        android:imeOptions="actionDone"
+        tools:ignore="LabelFor" />
+
+</LinearLayout>

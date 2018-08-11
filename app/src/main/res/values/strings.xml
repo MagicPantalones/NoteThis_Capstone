@@ -7,6 +7,7 @@
     <string name="view_note_a11y">View Note</string>
 
     <string name="new_note_btn">New Note!</string>
+    <string name="new_note_title">New Note</string>
 
     <string name="edit_menu_save">Save</string>
     <string name="edit_menu_save_a11y">Save note</string>
@@ -21,6 +22,8 @@
     <string name="menu_close">Close</string>
 
     <string name="unsaved_close_text">Exit without saving note?</string>
+    <string name="dialog_save_note_title">Save note?</string>
+    <string name="dialog_note_title_heading">Note title</string>
 
     <string name="save">Save</string>
     <string name="exit">Exit</string>

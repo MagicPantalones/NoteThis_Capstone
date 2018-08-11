@@ -1,15 +1,14 @@
 package io.magics.notethis.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 
 import java.util.List;
 
@@ -18,7 +17,9 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.data.DataProvider;
+import io.magics.notethis.ui.dialogs.SaveDialog;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
+import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.EditNoteViewModel;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.data.db.AppDatabase;
@@ -27,7 +28,8 @@ import io.magics.notethis.ui.fragments.NoteListFragment;
 import io.magics.notethis.utils.models.NoteTitle;
 
 public class MainActivity extends AppCompatActivity implements DataProvider.DataProviderHandler,
-        NoteListFragment.NoteListFragListener, EditNoteFragment.EditNoteFragListener {
+        NoteListFragment.NoteListFragListener, EditNoteFragment.EditNoteFragListener,
+        SaveDialog.SaveDialogListener {
 
     private static final String TAG = "MainActivity";
 
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
     private boolean userSignedIn = false;
 
     @BindView(R.id.main_toolbar)
-    Toolbar mainToolbar;
+    Toolbar toolbar;
     @BindView(R.id.main_root)
     View mainRoot;
     @BindView(R.id.main_fab)
@@ -60,26 +62,45 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
         editNoteViewModel = ViewModelProviders.of(this).get(EditNoteViewModel.class);
 
-        setSupportActionBar(mainToolbar);
+        setSupportActionBar(toolbar);
         AppDatabase db = AppDatabase.getInMemoryDatabase(getApplication());
         dataProvider = new DataProvider(db, this);
 
-        String path = db.getOpenHelper().getReadableDatabase().getPath();
-        Log.w(TAG, "DB PATH: " + path);
+        mainFab.setOnClickListener(v -> onNewNotePress());
 
-        //TODO Set a timer on show intro screen.
+        List<Fragment> frags = fragManager.getFragments();
+        if (frags != null) {
+            for (Fragment frag : frags) {
+                if (frag != null) {
+                    fragManager.beginTransaction().remove(frag).commit();
+                }
+            }
+        }
+
         if (showIntro) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-
+            Utils.hideToolbar(this);
             fragManager.beginTransaction()
                     .replace(R.id.container_main, IntroFragment.newInstance(), FRAG_INTRO)
                     .commit();
 
+            new CountDownTimer(5000, 1000) {
+
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    //Required override
+                }
+
+                @Override
+                public void onFinish() {
+                    exitIntro();
+                }
+
+            }.start();
         }
 
         dataProvider.init();
     }
-
 
     @Override
     protected void onDestroy() {
@@ -89,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
 
     private void exitIntro() {
         showIntro = false;
-        getSupportActionBar().show();
+        Utils.showToolbar(this);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         showNotesList();
     }
@@ -98,18 +119,13 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
     @Override
     public void onNoteTitlesFetched(List<NoteTitle> noteTitles) {
         noteViewModel.setNoteTitles(noteTitles);
-        if (showIntro) {
-            exitIntro();
-        }
     }
 
+
     private void showNotesList() {
-        /*
-        TODO Do a test with empty DB to see if the empty list layout shows up since bug where it
-        stuck is fixed.
-        */
         if (!showIntro) {
             fragManager.beginTransaction()
+                    .setReorderingAllowed(true)
                     .replace(R.id.main_root, NoteListFragment.newInstance(), FRAG_NOTE_LIST)
                     .commit();
         }
@@ -117,7 +133,11 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
 
     @Override
     public void onNewNotePress() {
+        mainFab.hide();
         editNoteViewModel.newNote();
+
+        Utils.setToolbarTitle(this, toolbar, R.string.new_note_title, R.color.primaryTextColor);
+
         fragManager.beginTransaction()
                 .replace(R.id.main_root, EditNoteFragment.newInstance(), FRAG_EDIT_NOTE)
                 .addToBackStack(null)
@@ -135,12 +155,16 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
     }
 
     @Override
-    public void onNoteListChange(int visibility) {
-        if (visibility == View.INVISIBLE) {
+    public void onNoteListChange(boolean showFab) {
+        if (!showFab) {
             mainFab.hide();
+            Utils.setToolbarTitle(this, toolbar, R.string.app_name, R.color.secondaryColor);
         } else {
-            mainFab.setVisibility(View.VISIBLE);
-            mainFab.show();
+            Fragment frag = fragManager.findFragmentById(R.id.container_main);
+            if (frag instanceof NoteListFragment && frag.isVisible()) {
+                mainFab.show();
+                Utils.setToolbarTitle(this, toolbar, R.string.app_name, R.color.secondaryColor);
+            }
         }
     }
 
@@ -152,20 +176,23 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
         not have one already.
         */
         if (hasChanges) {
-            String title = getSupportActionBar().getTitle().toString();
+            String title = Utils.getToolbarTitle(this);
             dataProvider.insertNotes(editNoteViewModel.getNote(true, title));
         }
     }
 
     @Override
-    public void saveNote(boolean hasChanged) {
-        //TODO Implement dialog fragment on save. Where user can set new or change the title
-        if (hasChanged) {
-            String title = getSupportActionBar().getTitle().toString();
+    public void onSave(String title) {
+        String oldTitle = Utils.getToolbarTitle(this);
+        if (oldTitle.equals(getString(R.string.new_note_title))) {
             dataProvider.insertNotes(editNoteViewModel.getNote(true, title));
+        } else {
+            dataProvider.updateNote(editNoteViewModel.getNote(true, title));
         }
+        Utils.setToolbarTitle(this, toolbar, title, R.color.primaryTextColor);
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void onError(DataProvider.DataError dataError) {
         switch (dataError) {
@@ -216,4 +243,5 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
 
         }
     }
+
 }

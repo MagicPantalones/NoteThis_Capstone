@@ -10,6 +10,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
+import io.magics.notethis.ui.SharedListeners;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.utils.models.NoteTitle;
 
@@ -44,6 +47,7 @@ public class NoteListFragment extends Fragment {
     Unbinder unbinder;
 
     private NoteListFragListener fragListener;
+
     private Observer<List<NoteTitle>> titleObserver;
     private NoteViewModel noteViewModel;
 
@@ -56,6 +60,12 @@ public class NoteListFragment extends Fragment {
 
     public static NoteListFragment newInstance() {
         return new NoteListFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setEnterTransition(new Slide(Gravity.START));
     }
 
     @Override
@@ -110,7 +120,7 @@ public class NoteListFragment extends Fragment {
     void switchLayouts(List<NoteTitle> noteTitles) {
         noteListRecycler.setVisibility(noteTitles.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         noNotesLayout.setVisibility(noteTitles.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-        fragListener.onNoteListChange(noteTitles.isEmpty() ? View.INVISIBLE : View.VISIBLE);
+        fragListener.onNoteListChange(noteListRecycler.getVisibility() == View.VISIBLE);
     }
 
     private void onClick(View v) {
@@ -121,7 +131,7 @@ public class NoteListFragment extends Fragment {
     public interface NoteListFragListener {
         void onNewNotePress();
         void onNoteListScroll(int state);
-        void onNoteListChange(int visibility);
+        void onNoteListChange(boolean showFab);
     }
 
     private class NoteTitleAdapter extends RecyclerView.Adapter<NoteTitleViewHolder> {

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +20,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
+import io.magics.notethis.ui.SharedListeners;
+import io.magics.notethis.ui.dialogs.SaveDialog;
+import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.EditNoteViewModel;
 
 /**
@@ -52,6 +56,7 @@ public class EditNoteFragment extends Fragment {
         unbinder = ButterKnife.bind(this, root);
         setHasOptionsMenu(true);
         viewModel = ViewModelProviders.of(getActivity()).get(EditNoteViewModel.class);
+
         return root;
     }
 
@@ -76,10 +81,12 @@ public class EditNoteFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        String text = editNoteView.getText().toString();
         switch (item.getItemId()) {
             case R.id.edit_menu_save:
-                saveText();
+                if (viewModel.hasUnsavedChanges(text)){
+                    SaveDialog.newInstance().show(getFragmentManager(), Utils.DIALOG_SAVE);
+                }
                 break;
             case R.id.edit_menu_close:
                 prepareExit();
@@ -96,13 +103,7 @@ public class EditNoteFragment extends Fragment {
         fragListener.onClose(viewModel.hasUnsavedChanges(text));
     }
 
-    public void saveText() {
-        String text = editNoteView.getText().toString();
-        fragListener.saveNote(viewModel.hasUnsavedChanges(text));
-    }
-
     public interface EditNoteFragListener {
         void onClose(boolean hasChanges);
-        void saveNote(boolean hasChanged);
     }
 }

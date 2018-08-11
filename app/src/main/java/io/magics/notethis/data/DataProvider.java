@@ -43,6 +43,8 @@ public class DataProvider {
 
     private Disposable roomTitleDisposable;
     private Disposable roomInsertNoteDisposable;
+    private Disposable roomUpdateDisposable;
+    private Disposable delNotesTableDisposable;
 
     private DataProviderHandler providerHandler;
 
@@ -66,7 +68,11 @@ public class DataProvider {
     }
 
     public void dispose(){
-        Utils.dispose(roomTitleDisposable, roomInsertNoteDisposable);
+        Utils.dispose(
+                roomTitleDisposable,
+                roomInsertNoteDisposable,
+                roomUpdateDisposable
+        );
     }
 
     private void startUpQuery(){
@@ -104,6 +110,29 @@ public class DataProvider {
 
     private void insertNotesToFireBase(Note... notes) {
         Log.w(TAG, "insertNotesToFireBase: Not implemented yet");
+    }
+
+    public void updateNote(Note note) {
+        roomUpdateDisposable = updateNoteRoom(note);
+    }
+
+    private Disposable dropNoteTable() {
+        return Completable.fromAction(() -> appDatabase.userNoteModel().deleteAll())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+    }
+
+    private Disposable updateNoteRoom(Note note) {
+        return Completable.fromAction(() -> appDatabase.userNoteModel().updateNote(note))
+                .subscribeOn(Schedulers.io())
+                .onErrorResumeNext(e -> Completable.error(new RoomInsertException("Update failed")))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> updateNoteFirebase(note), this::handleRxErrors);
+    }
+
+    private void updateNoteFirebase(Note note) {
+        Log.w(TAG, "updateNoteFirebase: Not implemented yet");
     }
 
     private Retrofit getRetrofitClient() {
@@ -165,9 +194,10 @@ public class DataProvider {
                                 Log.w(TAG, "onComplete: ", task.getException());
                             }
                         });
+            } else {
+                Log.w(TAG, "User already signed in.");
             }
         }
-
 
         private void checkUserExist() {
             String uid = auth.getUid();
