@@ -32,13 +32,6 @@ public class SaveDialog extends DialogFragment{
     public static SaveDialog newInstance() {
         return new SaveDialog();
     }
-//
-//    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        titleText.requestFocus();
-//        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-//    }
 
     @NonNull
     @Override

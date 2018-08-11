@@ -67,6 +67,12 @@ public class EditNoteFragment extends Fragment {
         if (viewModel.getNote() != null) {
             editNoteView.setText(viewModel.getNote().getBody());
         }
+        fragListener.hideFab();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -93,6 +99,8 @@ public class EditNoteFragment extends Fragment {
         String text = editNoteView.getText().toString();
         switch (item.getItemId()) {
             case R.id.edit_menu_save:
+                //TODO add change title option to menu. If user press save without title being
+                //New Note. Just save.
                 if (viewModel.hasUnsavedChanges(text)){
                     SaveDialog.newInstance().show(getFragmentManager(), Utils.DIALOG_SAVE);
                 }
@@ -114,5 +122,6 @@ public class EditNoteFragment extends Fragment {
 
     public interface EditNoteFragListener {
         void onClose(boolean hasChanges);
+        void hideFab();
     }
 }

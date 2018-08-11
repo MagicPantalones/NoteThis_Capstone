@@ -118,9 +118,8 @@ public class NoteListFragment extends Fragment {
     void switchLayouts(List<NoteTitle> noteTitles) {
         noteListRecycler.setVisibility(noteTitles.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         noNotesLayout.setVisibility(noteTitles.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-        listener.onNoteListChange(noteListRecycler.getVisibility() == View.VISIBLE);
+        listener.onNoteListChange(noteListRecycler.getVisibility() == View.INVISIBLE);
     }
-
 
     public interface NoteListFragListener {
         void onNewNotePress();

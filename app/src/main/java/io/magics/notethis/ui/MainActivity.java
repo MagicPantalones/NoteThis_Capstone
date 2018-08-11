@@ -109,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
 
     @Override
     public void onBackPressed() {
+        //TODO If there are unsaved changes, promt user with dialog asking if they want to save.
+        //If they press save and title is "New Note" show save Note Dialog. Else save & exit.
         appBarLayout.setExpanded(true, true);
         if (Utils.getToolbarTitle(this).equals(getString(R.string.new_note_title))) {
             Utils.setToolbarTitle(this, toolbar, R.string.app_name, R.color.secondaryColor);
@@ -166,7 +168,6 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
 
     @Override
     public void onNewNotePress() {
-        mainFab.hide();
 
         editNoteViewModel.newNote();
 
@@ -218,6 +219,11 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
             String title = Utils.getToolbarTitle(this);
             dataProvider.insertNotes(editNoteViewModel.getNoteForSave(true, title));
         }
+    }
+
+    @Override
+    public void hideFab() {
+        mainFab.hide();
     }
 
     @Override
