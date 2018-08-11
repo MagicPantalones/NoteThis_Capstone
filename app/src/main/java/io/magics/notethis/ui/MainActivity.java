@@ -2,6 +2,7 @@ package io.magics.notethis.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.CountDownTimer;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
     View mainRoot;
     @BindView(R.id.main_fab)
     FloatingActionButton mainFab;
+    @BindView(R.id.appbar_layout)
+    AppBarLayout appBarLayout;
 
     Unbinder unbinder;
 
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
                     .replace(R.id.container_main, IntroFragment.newInstance(), FRAG_INTRO)
                     .commit();
 
-            new CountDownTimer(5000, 1000) {
+            new CountDownTimer(3000, 1000) {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
@@ -104,7 +107,17 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
     }
 
     @Override
+    public void onBackPressed() {
+        appBarLayout.setExpanded(true, true);
+        if (Utils.getToolbarTitle(this).equals(getString(R.string.new_note_title))) {
+            Utils.setToolbarTitle(this, toolbar, R.string.app_name, R.color.secondaryColor);
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onDestroy() {
+        Utils.dispose(unbinder);
         dataProvider.dispose();
         super.onDestroy();
     }

@@ -32,14 +32,13 @@ public class SaveDialog extends DialogFragment{
     public static SaveDialog newInstance() {
         return new SaveDialog();
     }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        titleText.requestFocus();
-        getDialog().getWindow()
-                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-    }
+//
+//    @Override
+//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//        titleText.requestFocus();
+//        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+//    }
 
     @NonNull
     @Override
@@ -62,10 +61,15 @@ public class SaveDialog extends DialogFragment{
             if (dialog != null) dialog.dismiss();
         });
 
-        titleText.setText(oldTitle, TextView.BufferType.EDITABLE);
-        titleText.selectAll();
+        Dialog dialog = alertBuilder.create();
 
-        return alertBuilder.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
+        titleText.setText(oldTitle);
+        titleText.selectAll();
+        titleText.requestFocus();
+
+        return dialog;
     }
 
     @Override

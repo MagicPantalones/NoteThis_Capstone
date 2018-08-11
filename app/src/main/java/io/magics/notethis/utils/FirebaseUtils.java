@@ -15,15 +15,5 @@ public class FirebaseUtils {
     private FirebaseUtils() {}
 
 
-    public static void writeNewUser(DatabaseReference rootRef, FirebaseUser user) {
-        final String uid = user.getUid();
-        rootRef.child("users").child(uid).setValue(new User(user.getEmail()));
-    }
-
-    public static void writeNewNote(DatabaseReference userRef, Note note) {
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/notes/" + note.getId(), note.toMap());
-        userRef.updateChildren(childUpdates);
-    }
-
+    
 }
