@@ -31,6 +31,10 @@ public class EditNoteViewModel extends ViewModel {
         if (note != null) note.setId(id);
     }
 
+    public Note getNote() {
+        return note;
+    }
+
     public void newNote() {
         tempText = "";
         note = new Note("", "", "");

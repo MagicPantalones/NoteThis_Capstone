@@ -62,6 +62,14 @@ public class EditNoteFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (viewModel.getNote() != null) {
+            editNoteView.setText(viewModel.getNote().getBody());
+        }
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof EditNoteFragListener) {

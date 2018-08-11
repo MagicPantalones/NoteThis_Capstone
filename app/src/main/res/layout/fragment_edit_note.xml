@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
-    android:paddingTop="?attr/actionBarSize"
     tools:context=".ui.fragments.EditNoteFragment"
     android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:background="@color/backgroundColorMain">
 
         <EditText
@@ -19,9 +19,10 @@
             android:inputType="textMultiLine|textAutoComplete|textAutoCorrect"
             android:typeface="sans"
             android:gravity="start"
-            android:layout_marginTop="@dimen/margin_16dp"
-            android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginEnd="@dimen/margin_16dp"
+            android:paddingTop="@dimen/margin_16dp"
+            android:paddingStart="@dimen/margin_16dp"
+            android:paddingEnd="@dimen/margin_16dp"
+            android:paddingBottom="@dimen/margin_16dp"
             android:layout_marginBottom="@dimen/margin_16dp"
             android:background="@android:color/transparent"
             style="@style/text.darkTextNormal"
@@ -30,4 +31,4 @@
         <!-- TODO Implement Markdown template toolbar -->
 
 
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>

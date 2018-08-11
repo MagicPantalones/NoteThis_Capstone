@@ -2,6 +2,7 @@ package io.magics.notethis.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -140,25 +141,39 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
         editNoteViewModel.setNoteId(id);
     }
 
+    @Override
+    public void onNoteFetched(Note note) {
+        editNoteViewModel.setNote(note);
+        Utils.setToolbarTitle(this, toolbar, note.getTitle(), R.color.primaryTextColor);
+        fragManager.beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.container_main, EditNoteFragment.newInstance(), FRAG_EDIT_NOTE)
+                .addToBackStack(FRAG_EDIT_NOTE)
+                .commit();
+    }
+
 
     private void showNotesList() {
         if (!showIntro) {
             fragManager.beginTransaction()
                     .setReorderingAllowed(true)
-                    .replace(R.id.main_root, NoteListFragment.newInstance(), FRAG_NOTE_LIST)
+                    .replace(R.id.container_main, NoteListFragment.newInstance(), FRAG_NOTE_LIST)
+                    .addToBackStack(FRAG_NOTE_LIST)
                     .commit();
+            mainFab.show();
         }
     }
 
     @Override
     public void onNewNotePress() {
         mainFab.hide();
+
         editNoteViewModel.newNote();
 
         Utils.setToolbarTitle(this, toolbar, R.string.new_note_title, R.color.primaryTextColor);
 
         fragManager.beginTransaction()
-                .replace(R.id.main_root, EditNoteFragment.newInstance(), FRAG_EDIT_NOTE)
+                .replace(R.id.container_main, EditNoteFragment.newInstance())
                 .addToBackStack(null)
                 .commit();
     }
@@ -180,11 +195,16 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
             Utils.setToolbarTitle(this, toolbar, R.string.app_name, R.color.secondaryColor);
         } else {
             Fragment frag = fragManager.findFragmentById(R.id.container_main);
-            if (frag instanceof NoteListFragment && frag.isVisible()) {
+            if (!(frag instanceof EditNoteFragment) && frag.isVisible()) {
                 mainFab.show();
                 Utils.setToolbarTitle(this, toolbar, R.string.app_name, R.color.secondaryColor);
             }
         }
+    }
+
+    @Override
+    public void onNoteItemClicked(int id) {
+        dataProvider.getNoteById(id);
     }
 
     @Override

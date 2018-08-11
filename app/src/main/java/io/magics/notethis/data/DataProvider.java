@@ -45,6 +45,7 @@ public class DataProvider {
     private Disposable roomTitleDisposable;
     private Disposable roomInsertNoteDisposable;
     private Disposable roomUpdateDisposable;
+    private Disposable roomNoteDisposable;
     private Disposable delNotesTableDisposable;
 
     private DataProviderHandler providerHandler;
@@ -54,6 +55,7 @@ public class DataProvider {
     public interface DataProviderHandler {
         void onNoteTitlesFetched(List<NoteTitle> noteTitles);
         void onNoteInserted(int id);
+        void onNoteFetched(Note note);
         void onError(DataError dataError);
     }
 
@@ -73,7 +75,8 @@ public class DataProvider {
         Utils.dispose(
                 roomTitleDisposable,
                 roomInsertNoteDisposable,
-                roomUpdateDisposable
+                roomUpdateDisposable,
+                roomNoteDisposable
         );
     }
 
@@ -144,7 +147,18 @@ public class DataProvider {
     }
 
     private void updateNoteFirebase(Note note) {
-        Log.w(TAG, "updateNoteFirebase: Not implemented yet");
+        fireBaseInstance.writeNewNote(note);
+    }
+
+    public void getNoteById(int id){
+        roomNoteDisposable = getOneNote(id);
+    }
+
+    private Disposable getOneNote(int id) {
+        return Observable.fromCallable(() -> appDatabase.userNoteModel().getNote(id))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(note -> providerHandler.onNoteFetched(note));
     }
 
     private Retrofit getRetrofitClient() {

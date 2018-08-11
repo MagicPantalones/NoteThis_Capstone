@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Slide;
@@ -25,7 +24,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
-import io.magics.notethis.ui.SharedListeners;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.utils.models.NoteTitle;
 
@@ -46,7 +44,7 @@ public class NoteListFragment extends Fragment {
 
     Unbinder unbinder;
 
-    private NoteListFragListener fragListener;
+    private NoteListFragListener listener;
 
     private Observer<List<NoteTitle>> titleObserver;
     private NoteViewModel noteViewModel;
@@ -89,12 +87,12 @@ public class NoteListFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) fragListener.onNoteListScroll(SCROLL_DOWN);
-                if (dy <= 0) fragListener.onNoteListScroll(SCROLL_UP);
+                if (dy > 0) listener.onNoteListScroll(SCROLL_DOWN);
+                if (dy <= 0) listener.onNoteListScroll(SCROLL_UP);
             }
         });
 
-        newNoteButton.setOnClickListener(this::onClick);
+        newNoteButton.setOnClickListener(v -> listener.onNewNotePress());
 
         titleObserver = noteTitles -> adapter.insertAllNoteTitles(noteTitles);
 
@@ -106,25 +104,21 @@ public class NoteListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof NoteListFragListener) {
-            fragListener = (NoteListFragListener) context;
+            listener = (NoteListFragListener) context;
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        fragListener = null;
+        listener = null;
         noteViewModel.unObserveNoteTitle(titleObserver);
     }
 
     void switchLayouts(List<NoteTitle> noteTitles) {
         noteListRecycler.setVisibility(noteTitles.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         noNotesLayout.setVisibility(noteTitles.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-        fragListener.onNoteListChange(noteListRecycler.getVisibility() == View.VISIBLE);
-    }
-
-    private void onClick(View v) {
-        fragListener.onNewNotePress();
+        listener.onNoteListChange(noteListRecycler.getVisibility() == View.VISIBLE);
     }
 
 
@@ -132,6 +126,7 @@ public class NoteListFragment extends Fragment {
         void onNewNotePress();
         void onNoteListScroll(int state);
         void onNoteListChange(boolean showFab);
+        void onNoteItemClicked(int id);
     }
 
     private class NoteTitleAdapter extends RecyclerView.Adapter<NoteTitleViewHolder> {
@@ -156,6 +151,7 @@ public class NoteListFragment extends Fragment {
             NoteTitle noteTitle = noteTitles.get(position);
             holder.noteTitle.setText(noteTitle.getTitle());
             holder.noteSubtitle.setText(noteTitle.getPreview());
+            holder.itemView.setOnClickListener(v -> listener.onNoteItemClicked(noteTitle.getId()));
         }
 
         @Override
