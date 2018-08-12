@@ -50,49 +50,50 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="invisible">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/note_title"
-            style="@style/text.darkTextNormal"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/title_wrapper"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:ellipsize="end"
-            android:lines="1"
-            app:layout_constraintBottom_toTopOf="@+id/note_subtitle"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/view_note_icon"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@tools:sample/lorem/random" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/note_subtitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="8dp"
-            android:ellipsize="end"
-            android:lines="1"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/view_note_icon"
-            app:layout_constraintStart_toStartOf="@id/note_title"
-            app:layout_constraintTop_toBottomOf="@id/note_title"
-            tools:text="@tools:sample/lorem/random" />
+            <TextView
+                android:id="@+id/note_title"
+                style="@style/text.darkTextNormal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:ellipsize="end"
+                android:lines="1"
+                app:layout_constraintBottom_toTopOf="@+id/note_subtitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@tools:sample/lorem/random" />
 
-        <View
-            android:id="@+id/note_title_separator"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/secondaryColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            <TextView
+                android:id="@+id/note_subtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/note_title"
+                app:layout_constraintTop_toBottomOf="@id/note_title"
+                tools:text="@tools:sample/lorem/random" />
+
+        </android.support.constraint.ConstraintLayout>
 
         <ImageView
             android:id="@+id/view_note_icon"
@@ -102,10 +103,19 @@
             android:alpha="0.54"
             android:contentDescription="@string/view_note_a11y"
             android:padding="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/note_title"
+            app:layout_constraintBottom_toTopOf="@+id/title_wrapper"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/note_subtitle"
+            app:layout_constraintTop_toBottomOf="@+id/title_wrapper"
             app:srcCompat="@drawable/outline_pageview_24" />
+
+        <View
+            android:id="@+id/note_title_separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/secondaryColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
 

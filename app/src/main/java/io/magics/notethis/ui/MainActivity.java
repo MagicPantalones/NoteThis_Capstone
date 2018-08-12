@@ -1,5 +1,6 @@
 package io.magics.notethis.ui;
 
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -7,10 +8,14 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+
+import com.bumptech.glide.util.Util;
 
 import java.util.List;
 
@@ -21,6 +26,7 @@ import io.magics.notethis.R;
 import io.magics.notethis.data.DataProvider;
 import io.magics.notethis.ui.dialogs.SaveDialog;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
+import io.magics.notethis.ui.fragments.PreviewFragment;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.viewmodels.EditNoteViewModel;
@@ -31,8 +37,7 @@ import io.magics.notethis.ui.fragments.NoteListFragment;
 import io.magics.notethis.utils.models.NoteTitle;
 
 public class MainActivity extends AppCompatActivity implements DataProvider.DataProviderHandler,
-        NoteListFragment.NoteListFragListener, EditNoteFragment.EditNoteFragListener,
-        SaveDialog.SaveDialogListener {
+        NoteListFragment.NoteListFragListener, EditNoteFragment.EditNoteFragListener {
 
     private static final String TAG = "MainActivity";
 
@@ -103,24 +108,44 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
             }.start();
         }
 
+        editNoteViewModel.observeOnSave(this, note -> {
+            if (note != null) {
+                String oldTitle = Utils.getToolbarTitle(this);
+                if (oldTitle.equals(EditNoteViewModel.NEW_NOTE_TITLE)) {
+                    dataProvider.insertNotes(note);
+                } else {
+                    dataProvider.updateNote(note);
+                }
+                Utils.setToolbarTitle(toolbar, note.getTitle(), R.color.primaryTextColor);
+            } else {
+                Log.w(TAG, "saveNote returned null");
+            }
+        });
+
         dataProvider.init();
     }
 
     @Override
     public void onBackPressed() {
-        //TODO If there are unsaved changes, promt user with dialog asking if they want to save.
-        //If they press save and title is "New Note" show save Note Dialog. Else save & exit.
-        appBarLayout.setExpanded(true, true);
-        if (Utils.getToolbarTitle(this).equals(getString(R.string.new_note_title))) {
-            Utils.setToolbarTitle(this, toolbar, R.string.app_name, R.color.secondaryColor);
+        //TODO When note has title "New note" list bugs, Find out why.
+        Fragment frag = fragManager.findFragmentById(R.id.container_main);
+
+        if (frag instanceof EditNoteFragment && ((EditNoteFragment) frag).hasUnsavedChanges()) {
+            ((EditNoteFragment) frag).prepareSave(EditNoteFragment.ACTION_CLOSE);
+        } else {
+            appBarLayout.setExpanded(true, true);
+            if (Utils.getToolbarTitle(this).equals(getString(R.string.new_note_title))) {
+                Utils.setToolbarTitle(toolbar, R.string.app_name, R.color.secondaryColor);
+            }
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 
     @Override
     protected void onDestroy() {
         Utils.dispose(unbinder);
         dataProvider.dispose(noteViewModel.getRecentlyDeletedTitles());
+        editNoteViewModel.removeObserver(this);
         super.onDestroy();
     }
 
@@ -145,18 +170,13 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
     @Override
     public void onNoteFetched(Note note) {
         editNoteViewModel.setNote(note);
-        Utils.setToolbarTitle(this, toolbar, note.getTitle(), R.color.primaryTextColor);
-        fragManager.beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(R.id.container_main, EditNoteFragment.newInstance(), FRAG_EDIT_NOTE)
-                .addToBackStack(FRAG_EDIT_NOTE)
-                .commit();
+        Utils.setToolbarTitle(toolbar, note.getTitle(), R.color.primaryTextColor);
     }
 
     @Override
     public void onFirebaseTitlesFetched(List<Note> notes) {
         if (!notes.isEmpty() && noteViewModel.getDbNoteCount() < notes.size()) {
-            for (Note note : notes){
+            for (Note note : notes) {
                 dataProvider.insertNotes(note);
             }
         }
@@ -182,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
 
         editNoteViewModel.newNote();
 
-        Utils.setToolbarTitle(this, toolbar, R.string.new_note_title, R.color.primaryTextColor);
+        Utils.setToolbarTitle(toolbar, R.string.new_note_title, R.color.primaryTextColor);
 
         fragManager.beginTransaction()
                 .replace(R.id.container_main, EditNoteFragment.newInstance())
@@ -204,49 +224,37 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
     public void onNoteListChange(boolean showFab) {
         if (!showFab) {
             mainFab.hide();
-            Utils.setToolbarTitle(this, toolbar, R.string.app_name, R.color.secondaryColor);
+            Utils.setToolbarTitle(toolbar, R.string.app_name, R.color.secondaryColor);
         } else {
             Fragment frag = fragManager.findFragmentById(R.id.container_main);
             if (!(frag instanceof EditNoteFragment) && frag.isVisible()) {
                 mainFab.show();
-                Utils.setToolbarTitle(this, toolbar, R.string.app_name, R.color.secondaryColor);
+                Utils.setToolbarTitle(toolbar, R.string.app_name, R.color.secondaryColor);
             }
         }
     }
 
     @Override
-    public void onNoteItemClicked(int id) {
+    public void onNoteItemClicked(int id, int action) {
         dataProvider.getNoteById(id);
-    }
-
-    @Override
-    public void onClose(boolean hasChanges) {
-        /*
-        TODO implement Dialog warning if user wants to save note.
-        One dialog with yes or no and one dialog where user can write a title if the note does
-        not have one already.
-        */
-        if (hasChanges) {
-            String title = Utils.getToolbarTitle(this);
-            dataProvider.insertNotes(editNoteViewModel.getNoteForSave(true, title));
+        if (action == NoteListFragment.ACTION_EDIT) {
+            fragManager.beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.container_main, EditNoteFragment.newInstance(), FRAG_EDIT_NOTE)
+                    .addToBackStack(FRAG_EDIT_NOTE)
+                    .commit();
+        } else {
+            fragManager.beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.container_main, PreviewFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
     @Override
     public void hideFab() {
         mainFab.hide();
-    }
-
-    @Override
-    public void onSave(String title) {
-        String oldTitle = Utils.getToolbarTitle(this);
-        if (oldTitle.equals(getString(R.string.new_note_title))) {
-            dataProvider.insertNotes(editNoteViewModel.getNoteForSave(true, title));
-        } else {
-            Note note = editNoteViewModel.getNoteForSave(true, title);
-            dataProvider.updateNote(note);
-        }
-        Utils.setToolbarTitle(this, toolbar, title, R.color.primaryTextColor);
     }
 
     @SuppressWarnings("unused")

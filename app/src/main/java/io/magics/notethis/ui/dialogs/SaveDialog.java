@@ -1,6 +1,7 @@
 package io.magics.notethis.ui.dialogs;
 
 import android.app.Dialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,30 +16,43 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.magics.notethis.R;
+import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.utils.Utils;
+import io.magics.notethis.viewmodels.EditNoteViewModel;
 
 public class SaveDialog extends DialogFragment{
 
+    private static final String ARG_ACTION = "ACTION";
+    
     @BindView(R.id.d_save_edit_text)
     EditText titleText;
 
-    SaveDialogListener listener;
+    private int action;
 
     public SaveDialog() {
         // Empty constructor required for DialogFragment
     }
 
-
-    public static SaveDialog newInstance() {
-        return new SaveDialog();
+    public static SaveDialog newInstance(int action) {
+        SaveDialog dialog = new SaveDialog();
+        Bundle args = new Bundle();
+        args.putInt(ARG_ACTION, action);
+        dialog.setArguments(args);
+        return dialog;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        if (getArguments() != null) {
+            action = getArguments().getInt(ARG_ACTION, -1);
+        }
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
         View view = View.inflate(getContext(), R.layout.dialog_save, null);
         ButterKnife.bind(this, view);
+        EditNoteViewModel viewModel =
+                ViewModelProviders.of(getActivity()).get(EditNoteViewModel.class);
 
         String oldTitle = Utils.getToolbarTitle(getContext());
 
@@ -46,12 +60,17 @@ public class SaveDialog extends DialogFragment{
         alertBuilder.setView(view);
         alertBuilder.setPositiveButton(R.string.save, (dialog, which) -> {
             if (dialog != null) {
-                listener.onSave(titleText.getText().toString());
+                viewModel.saveChanges(titleText.getText().toString());
                 dialog.dismiss();
+                if (action == EditNoteFragment.ACTION_CLOSE) {
+                    Utils.backPressed(getContext());
+                }
             }
         });
         alertBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> {
-            if (dialog != null) dialog.dismiss();
+            if (dialog != null) {
+                dialog.dismiss();
+            }
         });
 
         Dialog dialog = alertBuilder.create();
@@ -65,19 +84,4 @@ public class SaveDialog extends DialogFragment{
         return dialog;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof SaveDialogListener) listener = (SaveDialogListener) context;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
-    }
-
-    public interface SaveDialogListener {
-        void onSave(String title);
-    }
 }

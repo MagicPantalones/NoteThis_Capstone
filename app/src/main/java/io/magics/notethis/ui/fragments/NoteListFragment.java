@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -38,6 +39,9 @@ public class NoteListFragment extends Fragment {
 
     public static final int SCROLL_UP = 145;
     public static final int SCROLL_DOWN = 261;
+
+    public static final int ACTION_EDIT = 657;
+    public static final int ACTION_VIEW = 794;
 
     @BindView(R.id.no_notes_layout)
     ConstraintLayout noNotesLayout;
@@ -149,7 +153,7 @@ public class NoteListFragment extends Fragment {
 
         void onNoteListChange(boolean showFab);
 
-        void onNoteItemClicked(int id);
+        void onNoteItemClicked(int id, int type);
     }
 
     public interface NoteItemTouchListener {
@@ -178,7 +182,10 @@ public class NoteListFragment extends Fragment {
             NoteTitle noteTitle = noteTitles.get(position);
             holder.noteTitle.setText(noteTitle.getTitle());
             holder.noteSubtitle.setText(noteTitle.getPreview());
-            holder.itemView.setOnClickListener(v -> listener.onNoteItemClicked(noteTitle.getId()));
+            holder.titleWrapper.setOnClickListener(v ->
+                    listener.onNoteItemClicked(noteTitle.getId(), ACTION_EDIT));
+            holder.viewNoteIcon.setOnClickListener(v ->
+                    listener.onNoteItemClicked(noteTitle.getId(), ACTION_VIEW));
         }
 
         @Override
@@ -215,6 +222,10 @@ public class NoteListFragment extends Fragment {
         TextView noteTitle;
         @BindView(R.id.note_subtitle)
         TextView noteSubtitle;
+        @BindView(R.id.view_note_icon)
+        ImageView viewNoteIcon;
+        @BindView(R.id.title_wrapper)
+        ConstraintLayout titleWrapper;
         @BindView(R.id.note_vh_foreground)
         ConstraintLayout foreground;
         @BindView(R.id.note_vh_background)

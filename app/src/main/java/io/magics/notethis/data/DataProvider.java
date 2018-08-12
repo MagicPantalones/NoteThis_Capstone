@@ -57,7 +57,6 @@ public class DataProvider {
     private FirebaseInstance fireBaseInstance;
 
 
-
     public DataProvider(Activity activity, DataProviderHandler providerHandler) {
         this.activity = activity;
         this.providerHandler = providerHandler;
@@ -135,7 +134,8 @@ public class DataProvider {
         return Completable.fromAction(() -> {
             for (NoteTitle title : noteTitles) {
                 appDatabase.userNoteModel().deleteNotes(title.getId());
-            } })
+            }
+        })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> fireBaseInstance.deleteNote(noteTitles), this::handleRxErrors);
@@ -187,10 +187,15 @@ public class DataProvider {
 
     public interface DataProviderHandler {
         void onNoteTitlesFetched(List<NoteTitle> noteTitles);
+
         void onNoteInserted(int id);
+
         void onNoteFetched(Note note);
+
         void onFirebaseTitlesFetched(List<Note> notes);
+
         void onConnectionChange(Boolean connected);
+
         void onError(DataError dataError);
     }
 
@@ -208,24 +213,23 @@ public class DataProvider {
 
         private static final String PATH_USER = "users";
         private static final String PATH_NOTES = "notes";
-        private static final String PATH_LAST_ONLINE = "last_online";
 
-        private final FirebaseDatabase fireDb;
-        private final FirebaseAuth auth;
-        private final DatabaseReference fireDbRef;
+        private FirebaseDatabase fireDb;
+        private FirebaseAuth auth;
+        private DatabaseReference fireDbRef;
         private DatabaseReference userPathRef;
         String userUid;
         String userEmail;
 
         FirebaseInstance() {
-            auth = FirebaseAuth.getInstance();
-            fireDb = FirebaseDatabase.getInstance();
-            fireDb.setPersistenceEnabled(true);
-            fireDbRef = fireDb.getReference();
-            userPathRef = fireDbRef.child(PATH_USER);
         }
 
         private void init() {
+
+            auth = FirebaseAuth.getInstance();
+            fireDb = FirebaseDatabase.getInstance();
+            fireDbRef = fireDb.getReference();
+            userPathRef = fireDbRef.child(PATH_USER);
 
             if (auth.getCurrentUser() == null) {
                 auth.signInWithEmailAndPassword(TempVals.USER, TempVals.CODE)
@@ -273,16 +277,16 @@ public class DataProvider {
         }
 
         private void checkUserExist() {
-            fireDbRef.child(userUid).addListenerForSingleValueEvent(
+            fireDbRef.child(PATH_USER).child(userUid).addListenerForSingleValueEvent(
                     new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (!dataSnapshot.exists()) {
-                                userPathRef.child(userUid).setValue(new User(userEmail))
-                                        .addOnCompleteListener(task ->
-                                                userPathRef = userPathRef.child(userUid));
+                                fireDbRef.child(PATH_USER).child(userUid)
+                                        .setValue(new User(userEmail)).addOnCompleteListener(task ->
+                                        userPathRef = fireDbRef.child(PATH_USER).child(userUid));
                             } else {
-                                userPathRef = userPathRef.child(userUid);
+                                userPathRef = fireDbRef.child(PATH_USER).child(userUid);
                             }
                         }
 
@@ -292,7 +296,6 @@ public class DataProvider {
                         }
                     });
         }
-
 
 
         private void handleFirebaseErrors(DatabaseError databaseError) {

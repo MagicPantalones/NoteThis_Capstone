@@ -14,10 +14,11 @@ import io.reactivex.disposables.Disposable;
 public class Utils {
 
     public static final String DIALOG_SAVE = "dialog_save";
+    public static final String DIALOG_CLOSE = "dialog_close";
 
     public static void dispose(Object... objects) {
         for (Object object : objects) {
-            if (object instanceof Disposable && ((Disposable) object).isDisposed()){
+            if (object instanceof Disposable && ((Disposable) object).isDisposed()) {
                 ((Disposable) object).dispose();
             }
             if (object instanceof Unbinder) {
@@ -26,18 +27,16 @@ public class Utils {
         }
     }
 
-    public static void setToolbarTitle(Context context, Toolbar toolbar, Object title,
-                                       int colorResId){
-        ActionBar ab = ((MainActivity) context).getSupportActionBar();
-        int color = ResourcesCompat.getColor(context.getResources(), colorResId, context.getTheme());
-        if (ab != null) {
-            if (title instanceof Integer) {
-                ab.setTitle((int) title);
-            } else if (title instanceof String) {
-                ab.setTitle((String) title);
-            }
-            toolbar.setTitleTextColor(color);
+    public static void setToolbarTitle(Toolbar toolbar, Object title, int colorResId) {
+        Context context = toolbar.getContext();
+        int color = ResourcesCompat.getColor(context.getResources(), colorResId, null);
+
+        if (title instanceof Integer) {
+            toolbar.setTitle((int) title);
+        } else if (title instanceof String) {
+            toolbar.setTitle((String) title);
         }
+        toolbar.setTitleTextColor(color);
 
     }
 
@@ -61,5 +60,9 @@ public class Utils {
         if (ab != null) {
             ab.show();
         }
+    }
+
+    public static void backPressed(Context context) {
+        ((MainActivity) context).onBackPressed();
     }
 }
