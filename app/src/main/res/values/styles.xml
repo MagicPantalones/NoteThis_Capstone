@@ -35,6 +35,12 @@
     <style name="text">
         <item name="android:fontFamily">sans-serif</item>
     </style>
+    
+    <style name="text.deleteText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:textSize">@dimen/text_size_body_large</item>
+    </style>
 
     <style name="text.lightTextNormal">
         <item name="android:textColor">@color/primaryTextColor</item>

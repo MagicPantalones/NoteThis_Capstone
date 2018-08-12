@@ -4,7 +4,9 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.magics.notethis.utils.models.Note;
@@ -13,16 +15,12 @@ import io.magics.notethis.utils.models.NoteTitle;
 public class NoteViewModel extends ViewModel {
 
     private MutableLiveData<List<NoteTitle>> noteTitles = new MutableLiveData<>();
-    private MutableLiveData<Note> note = new MutableLiveData<>();
+    private List<NoteTitle> recentlyDeletedTitles = new ArrayList<>();
+    private static final String TAG = "NoteViewModel";
 
-    public void setNoteTitles(List<NoteTitle> noteTitles) {
-        this.noteTitles.setValue(noteTitles);
+    public void setNoteTitles(List<NoteTitle> titles) {
+        noteTitles.setValue(titles);
     }
-
-    public void setNote(Note note) {
-        this.note.setValue(note);
-    }
-
 
     public void observeNoteTitles(LifecycleOwner owner, Observer<List<NoteTitle>> observer) {
         noteTitles.observe(owner, observer);
@@ -32,12 +30,32 @@ public class NoteViewModel extends ViewModel {
         noteTitles.removeObserver(observer);
     }
 
-
-    public void observeNote(LifecycleOwner owner, Observer<Note> observer) {
-        note.observe(owner, observer);
+    public int getDbNoteCount() {
+        if (noteTitles.getValue() == null) return -1;
+        return noteTitles.getValue().size();
     }
 
-    public void unObserveNote(Observer<Note> observer) {
-        note.removeObserver(observer);
+    public void addTitleToRecentlyDeleted(NoteTitle noteTitle) {
+        recentlyDeletedTitles.add(noteTitle);
+        if (noteTitles.getValue() != null) {
+            noteTitles.getValue().remove(noteTitle);
+        }
+    }
+
+    public List<NoteTitle> getRecentlyDeletedTitles() {
+        return recentlyDeletedTitles;
+    }
+
+    public NoteTitle getRecentlyDeleted(NoteTitle noteTitle) {
+        for (NoteTitle title : recentlyDeletedTitles) {
+            if (noteTitle.getId() == title.getId()) {
+                return title;
+            }
+        }
+        IllegalArgumentException e = new IllegalArgumentException(
+                "Recently deleted list does not contain NoteTitle with ID: " + noteTitle.getId()
+                        + ". This should not happen. Ever!");
+        Log.e(TAG, "getRecentlyDeleted: ", e);
+        return null;
     }
 }

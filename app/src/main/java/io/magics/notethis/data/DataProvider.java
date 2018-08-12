@@ -1,5 +1,7 @@
 package io.magics.notethis.data;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -16,9 +18,9 @@ import com.google.gson.GsonBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.DoubleAccumulator;
 
 import io.magics.notethis.data.db.AppDatabase;
-import io.magics.notethis.utils.FirebaseUtils;
 import io.magics.notethis.utils.RoomInsertException;
 import io.magics.notethis.utils.TempVals;
 import io.magics.notethis.utils.Utils;
@@ -41,6 +43,8 @@ public class DataProvider {
 
     private static final String BASE_URL = "https://api.imgur.com";
     private final AppDatabase appDatabase;
+    private final Activity activity;
+    private boolean connected;
 
     private Disposable roomTitleDisposable;
     private Disposable roomInsertNoteDisposable;
@@ -52,35 +56,31 @@ public class DataProvider {
 
     private FirebaseInstance fireBaseInstance;
 
-    public interface DataProviderHandler {
-        void onNoteTitlesFetched(List<NoteTitle> noteTitles);
-        void onNoteInserted(int id);
-        void onNoteFetched(Note note);
-        void onError(DataError dataError);
-    }
 
-    public DataProvider(AppDatabase appDatabase,
-                        DataProviderHandler providerHandler) {
-        this.appDatabase = appDatabase;
+
+    public DataProvider(Activity activity, DataProviderHandler providerHandler) {
+        this.activity = activity;
         this.providerHandler = providerHandler;
+        this.appDatabase = AppDatabase.getInMemoryDatabase(activity.getApplication());
     }
 
-    public void init(){
+    public void init() {
         startUpQuery();
         fireBaseInstance = new FirebaseInstance();
         fireBaseInstance.init();
     }
 
-    public void dispose(){
+    public void dispose(List<NoteTitle> titles) {
         Utils.dispose(
                 roomTitleDisposable,
                 roomInsertNoteDisposable,
                 roomUpdateDisposable,
                 roomNoteDisposable
         );
+        delNotesTableDisposable = deleteNotes(titles);
     }
 
-    private void startUpQuery(){
+    private void startUpQuery() {
         roomTitleDisposable = noteTitleRoomQuery();
     }
 
@@ -111,7 +111,7 @@ public class DataProvider {
                 .onErrorResumeNext(Observable.error(new RoomInsertException()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(longList -> {
-                    if (longList != null && longList.size() == 1){
+                    if (longList != null && longList.size() == 1) {
                         providerHandler.onNoteInserted(longList.get(0).intValue());
                         notes[0].setId(longList.get(0).intValue());
                     }
@@ -120,7 +120,7 @@ public class DataProvider {
     }
 
     private void insertNotesToFireBase(Note... notes) {
-        if (notes != null && notes.length > 0){
+        if (notes != null && notes.length > 0) {
             for (Note note : notes) {
                 fireBaseInstance.writeNewNote(note);
             }
@@ -129,6 +129,16 @@ public class DataProvider {
 
     public void updateNote(Note note) {
         roomUpdateDisposable = updateNoteRoom(note);
+    }
+
+    private Disposable deleteNotes(List<NoteTitle> noteTitles) {
+        return Completable.fromAction(() -> {
+            for (NoteTitle title : noteTitles) {
+                appDatabase.userNoteModel().deleteNotes(title.getId());
+            } })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> fireBaseInstance.deleteNote(noteTitles), this::handleRxErrors);
     }
 
     private Disposable dropNoteTable() {
@@ -150,7 +160,7 @@ public class DataProvider {
         fireBaseInstance.writeNewNote(note);
     }
 
-    public void getNoteById(int id){
+    public void getNoteById(int id) {
         roomNoteDisposable = getOneNote(id);
     }
 
@@ -175,6 +185,15 @@ public class DataProvider {
                 .build();
     }
 
+    public interface DataProviderHandler {
+        void onNoteTitlesFetched(List<NoteTitle> noteTitles);
+        void onNoteInserted(int id);
+        void onNoteFetched(Note note);
+        void onFirebaseTitlesFetched(List<Note> notes);
+        void onConnectionChange(Boolean connected);
+        void onError(DataError dataError);
+    }
+
     public enum DataError {
         NO_DATA_AVAILABLE,
         NO_INTERNET_LOG_IN,
@@ -187,81 +206,119 @@ public class DataProvider {
 
     private class FirebaseInstance {
 
-        private static final String PATH_USER = "path_user";
+        private static final String PATH_USER = "users";
+        private static final String PATH_NOTES = "notes";
+        private static final String PATH_LAST_ONLINE = "last_online";
 
+        private final FirebaseDatabase fireDb;
         private final FirebaseAuth auth;
-        private final DatabaseReference fireDatabase;
+        private final DatabaseReference fireDbRef;
+        private DatabaseReference userPathRef;
         String userUid;
         String userEmail;
 
         FirebaseInstance() {
             auth = FirebaseAuth.getInstance();
-            fireDatabase = FirebaseDatabase.getInstance().getReference();
+            fireDb = FirebaseDatabase.getInstance();
+            fireDb.setPersistenceEnabled(true);
+            fireDbRef = fireDb.getReference();
+            userPathRef = fireDbRef.child(PATH_USER);
         }
 
         private void init() {
 
-            fireDatabase.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Log.w(TAG, "Wrote successfully to DB");
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    
-                }
-            });
-
             if (auth.getCurrentUser() == null) {
                 auth.signInWithEmailAndPassword(TempVals.USER, TempVals.CODE)
-                        .addOnCompleteListener(task -> {
+                        .addOnCompleteListener(activity, task -> {
                             if (task.isSuccessful()) {
-                                Log.w(TAG, "Success");
-                                final FirebaseUser user = auth.getCurrentUser();
-                                userUid = user != null ? user.getUid() : auth.getUid();
-                                userEmail = user != null ? user.getEmail() : null;
-                                checkUserExist();
+                                onSignIn(task.getResult().getUser());
                             } else {
                                 Log.w(TAG, "Error signing in: ", task.getException());
                             }
                         });
             } else {
-                final FirebaseUser user = auth.getCurrentUser();
-                userUid = user.getUid();
-                userEmail = user.getEmail();
+                onSignIn(auth.getCurrentUser());
             }
         }
 
+        private void onSignIn(FirebaseUser user) {
+            userUid = user.getUid();
+            userEmail = user.getEmail();
+            checkUserExist();
+
+            fireDbRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Log.w(TAG, "Wrote successfully to DB");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    handleFirebaseErrors(databaseError);
+                }
+            });
+
+            fireDbRef.child(".info/connected").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    connected = dataSnapshot.getValue(Boolean.class);
+                    providerHandler.onConnectionChange(connected);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    handleFirebaseErrors(databaseError);
+                }
+            });
+        }
+
         private void checkUserExist() {
-            fireDatabase.child(PATH_USER).child(userUid).addListenerForSingleValueEvent(
+            fireDbRef.child(userUid).addListenerForSingleValueEvent(
                     new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (!dataSnapshot.exists()){
-                                Log.w(TAG, "User does not exist. Writing new user");
-                                writeNewUser();
+                            if (!dataSnapshot.exists()) {
+                                userPathRef.child(userUid).setValue(new User(userEmail))
+                                        .addOnCompleteListener(task ->
+                                                userPathRef = userPathRef.child(userUid));
                             } else {
-                                Log.w(TAG, "User exists");
+                                userPathRef = userPathRef.child(userUid);
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Log.w(TAG, "Firebase DB user write error: ", databaseError.toException());
+                            handleFirebaseErrors(databaseError);
                         }
                     });
         }
 
-        private void writeNewUser() {
-            fireDatabase.child(PATH_USER).child(userUid).setValue(new User(userEmail));
+
+
+        private void handleFirebaseErrors(DatabaseError databaseError) {
+            switch (databaseError.getCode()) {
+                case DatabaseError.NETWORK_ERROR:
+                    providerHandler.onError(DataError.NO_INTERNET_FIRE_DB);
+                    break;
+                case DatabaseError.WRITE_CANCELED:
+                    providerHandler.onError(DataError.FIREBASE_WRITE_ERROR);
+                    break;
+                default:
+                    providerHandler.onError(DataError.UNHANDLED_ERROR);
+                    break;
+            }
         }
 
         private void writeNewNote(Note note) {
             Map<String, Object> childUpdates = new HashMap<>();
-            childUpdates.put("/notes/" + note.getId(), note.toMap());
-            fireDatabase.child(PATH_USER).child(userUid).updateChildren(childUpdates);
+            childUpdates.put(PATH_NOTES + note.getId(), note.toMap());
+            userPathRef.updateChildren(childUpdates);
+        }
+
+        private void deleteNote(List<NoteTitle> noteTitles) {
+            for (NoteTitle title : noteTitles) {
+                userPathRef.child(PATH_NOTES).child(String.valueOf(title.getId())).removeValue();
+            }
         }
 
 

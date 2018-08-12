@@ -3,12 +3,16 @@ package io.magics.notethis.ui.fragments;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -72,6 +76,7 @@ public class NoteListFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_note_list, container, false);
         unbinder = ButterKnife.bind(this, root);
         adapter = new NoteTitleAdapter();
+        //noinspection ConstantConditions
         noteViewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
 
         return root;
@@ -91,6 +96,22 @@ public class NoteListFragment extends Fragment {
                 if (dy <= 0) listener.onNoteListScroll(SCROLL_UP);
             }
         });
+
+        ItemTouchHelper.SimpleCallback touchHelper = new NoteListItemTouchHelper(0,
+                ItemTouchHelper.START, (holder, direction, pos) -> {
+            final NoteTitle noteTitle = adapter.noteTitles.get(pos);
+            final int adapterPos = pos;
+            adapter.deleteTitle(noteTitle);
+            //noinspection ConstantConditions
+            Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.main_root),
+                    noteTitle.getTitle() + "deleted!", Snackbar.LENGTH_LONG);
+            snackbar.setAction("UNDO", v -> adapter.restoreTitle(noteTitle, adapterPos));
+            snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(),
+                    R.color.secondaryColor, null));
+            snackbar.show();
+        });
+
+        new ItemTouchHelper(touchHelper).attachToRecyclerView(noteListRecycler);
 
         newNoteButton.setOnClickListener(v -> listener.onNewNotePress());
 
@@ -118,14 +139,21 @@ public class NoteListFragment extends Fragment {
     void switchLayouts(List<NoteTitle> noteTitles) {
         noteListRecycler.setVisibility(noteTitles.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         noNotesLayout.setVisibility(noteTitles.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-        listener.onNoteListChange(noteListRecycler.getVisibility() == View.INVISIBLE);
+        listener.onNoteListChange(noteListRecycler.getVisibility() == View.VISIBLE);
     }
 
     public interface NoteListFragListener {
         void onNewNotePress();
+
         void onNoteListScroll(int state);
+
         void onNoteListChange(boolean showFab);
+
         void onNoteItemClicked(int id);
+    }
+
+    public interface NoteItemTouchListener {
+        void onSwiped(NoteTitleViewHolder holder, int direction, int pos);
     }
 
     private class NoteTitleAdapter extends RecyclerView.Adapter<NoteTitleViewHolder> {
@@ -169,6 +197,14 @@ public class NoteListFragment extends Fragment {
             int pos = noteTitles.indexOf(noteTitle);
             noteTitles.remove(pos);
             notifyItemRemoved(pos);
+            notifyItemRangeChanged(pos, noteTitles.size());
+            noteViewModel.addTitleToRecentlyDeleted(noteTitle);
+            switchLayouts(noteTitles);
+        }
+
+        void restoreTitle(NoteTitle title, int pos) {
+            noteTitles.add(pos, title);
+            notifyItemInserted(pos);
             switchLayouts(noteTitles);
         }
     }
@@ -179,10 +215,69 @@ public class NoteListFragment extends Fragment {
         TextView noteTitle;
         @BindView(R.id.note_subtitle)
         TextView noteSubtitle;
+        @BindView(R.id.note_vh_foreground)
+        ConstraintLayout foreground;
+        @BindView(R.id.note_vh_background)
+        ConstraintLayout background;
 
         NoteTitleViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+    }
+
+    //From https://www.androidhive.info/2017/09/android-recyclerview-swipe-delete-undo-using-itemtouchhelper/
+    class NoteListItemTouchHelper extends ItemTouchHelper.SimpleCallback {
+        private NoteItemTouchListener listener;
+
+        NoteListItemTouchHelper(int dragDirs, int swipeDirs,
+                                       NoteItemTouchListener listener) {
+            super(dragDirs, swipeDirs);
+            this.listener = listener;
+        }
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return true;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            listener.onSwiped(((NoteTitleViewHolder) viewHolder), direction,
+                    viewHolder.getAdapterPosition());
+        }
+
+        @Override
+        public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+            if (viewHolder != null) {
+                final View foreground = ((NoteTitleViewHolder) viewHolder).foreground;
+                getDefaultUIUtil().onSelected(foreground);
+            }
+        }
+
+        @Override
+        public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
+                                    RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                    int actionState, boolean isCurrentlyActive) {
+            final View foreground = ((NoteTitleViewHolder) viewHolder).foreground;
+
+            getDefaultUIUtil().onDrawOver(c, recyclerView, foreground, dX, dY,
+                    actionState, isCurrentlyActive);
+        }
+
+        @Override
+        public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            final View foreground = ((NoteTitleViewHolder) viewHolder).foreground;
+            getDefaultUIUtil().clearView(foreground);
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView,
+                                RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                int actionState, boolean isCurrentlyActive) {
+            final View foreground = ((NoteTitleViewHolder) viewHolder).foreground;
+            getDefaultUIUtil().onDraw(c, recyclerView, foreground, dX, dY, actionState,
+                    isCurrentlyActive);
         }
     }
 }

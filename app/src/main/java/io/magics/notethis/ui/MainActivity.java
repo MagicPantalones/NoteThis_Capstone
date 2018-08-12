@@ -68,8 +68,7 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
         editNoteViewModel = ViewModelProviders.of(this).get(EditNoteViewModel.class);
 
         setSupportActionBar(toolbar);
-        AppDatabase db = AppDatabase.getInMemoryDatabase(getApplication());
-        dataProvider = new DataProvider(db, this);
+        dataProvider = new DataProvider(this, this);
 
         mainFab.setOnClickListener(v -> onNewNotePress());
 
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
     @Override
     protected void onDestroy() {
         Utils.dispose(unbinder);
-        dataProvider.dispose();
+        dataProvider.dispose(noteViewModel.getRecentlyDeletedTitles());
         super.onDestroy();
     }
 
@@ -154,15 +153,27 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
                 .commit();
     }
 
+    @Override
+    public void onFirebaseTitlesFetched(List<Note> notes) {
+        if (!notes.isEmpty() && noteViewModel.getDbNoteCount() < notes.size()) {
+            for (Note note : notes){
+                dataProvider.insertNotes(note);
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionChange(Boolean connected) {
+
+    }
+
 
     private void showNotesList() {
         if (!showIntro) {
             fragManager.beginTransaction()
                     .setReorderingAllowed(true)
                     .replace(R.id.container_main, NoteListFragment.newInstance(), FRAG_NOTE_LIST)
-                    .addToBackStack(FRAG_NOTE_LIST)
                     .commit();
-            mainFab.show();
         }
     }
 

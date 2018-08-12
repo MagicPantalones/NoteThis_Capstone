@@ -16,7 +16,7 @@
 
     <string name="imgur_menu_copy">Copy link</string>
     
-    <string name="menu_delete">Delete</string>
+    <string name="menu_delete">DELETE</string>
     <string name="menu_search">Search</string>
     <string name="menu_search_a11y">Search for text in note</string>
     <string name="menu_close">Close</string>
