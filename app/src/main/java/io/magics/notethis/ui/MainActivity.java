@@ -1,21 +1,18 @@
 package io.magics.notethis.ui;
 
-import android.app.Dialog;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.CountDownTimer;
-import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-
-import com.bumptech.glide.util.Util;
 
 import java.util.List;
 
@@ -24,14 +21,12 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.data.DataProvider;
-import io.magics.notethis.ui.dialogs.SaveDialog;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.PreviewFragment;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.utils.models.Note;
-import io.magics.notethis.viewmodels.EditNoteViewModel;
 import io.magics.notethis.viewmodels.NoteViewModel;
-import io.magics.notethis.data.db.AppDatabase;
+import io.magics.notethis.viewmodels.NoteTitleViewModel;
 import io.magics.notethis.ui.fragments.IntroFragment;
 import io.magics.notethis.ui.fragments.NoteListFragment;
 import io.magics.notethis.utils.models.NoteTitle;
@@ -48,8 +43,8 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
     private boolean showIntro = true;
     private FragmentManager fragManager;
     private DataProvider dataProvider;
-    private NoteViewModel noteViewModel;
-    private EditNoteViewModel editNoteViewModel;
+    private NoteTitleViewModel noteViewModel;
+    private NoteViewModel editNoteViewModel;
     private boolean userSignedIn = false;
 
     @BindView(R.id.main_toolbar)
@@ -69,11 +64,11 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
         fragManager = getSupportFragmentManager();
-        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        editNoteViewModel = ViewModelProviders.of(this).get(EditNoteViewModel.class);
+        noteViewModel = ViewModelProviders.of(this).get(NoteTitleViewModel.class);
+        editNoteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
 
         setSupportActionBar(toolbar);
-        dataProvider = new DataProvider(this, this);
+        dataProvider = new DataProvider(this);
 
         mainFab.setOnClickListener(v -> onNewNotePress());
 
@@ -111,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
         editNoteViewModel.observeOnSave(this, note -> {
             if (note != null) {
                 String oldTitle = Utils.getToolbarTitle(this);
-                if (oldTitle.equals(EditNoteViewModel.NEW_NOTE_TITLE)) {
+                if (oldTitle.equals(NoteViewModel.NEW_NOTE_TITLE)) {
                     dataProvider.insertNotes(note);
                 } else {
                     dataProvider.updateNote(note);
@@ -202,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
 
         editNoteViewModel.newNote();
 
-        Utils.setToolbarTitle(toolbar, R.string.new_note_title, R.color.primaryTextColor);
+        Utils.setToolbarTitle(toolbar, NoteViewModel.NEW_NOTE_TITLE, R.color.primaryTextColor);
 
         fragManager.beginTransaction()
                 .replace(R.id.container_main, EditNoteFragment.newInstance())
@@ -261,10 +256,6 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
     @Override
     public void onError(DataProvider.DataError dataError) {
         switch (dataError) {
-            case NO_DATA_AVAILABLE:
-                int look;
-                //TODO Hide main fragment list layout, show no note layout.
-                break;
             case NO_INTERNET_LOG_IN:
                 String mom;
                 /* TODO Check if user is signed in else show log-in screen and show snakckbar telling
@@ -308,5 +299,4 @@ public class MainActivity extends AppCompatActivity implements DataProvider.Data
 
         }
     }
-
 }

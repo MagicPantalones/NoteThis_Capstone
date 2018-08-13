@@ -3,14 +3,10 @@ package io.magics.notethis.ui.fragments;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,13 +19,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
-import io.magics.notethis.ui.MainActivity;
-import io.magics.notethis.ui.SharedListeners;
 import io.magics.notethis.ui.dialogs.CloseDialog;
 import io.magics.notethis.ui.dialogs.SaveDialog;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.utils.models.Note;
-import io.magics.notethis.viewmodels.EditNoteViewModel;
 import io.magics.notethis.viewmodels.NoteViewModel;
 
 /**
@@ -50,7 +43,7 @@ public class EditNoteFragment extends Fragment {
     private EditNoteFragListener fragListener;
     Observer<Note> observer;
 
-    private EditNoteViewModel viewModel;
+    private NoteViewModel viewModel;
 
     public EditNoteFragment() {
         // Required empty public constructor
@@ -66,9 +59,9 @@ public class EditNoteFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_edit_note, container, false);
         unbinder = ButterKnife.bind(this, root);
         setHasOptionsMenu(true);
-        viewModel = ViewModelProviders.of(getActivity()).get(EditNoteViewModel.class);
+        viewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
 
-        if (!Utils.getToolbarTitle(getContext()).equals(EditNoteViewModel.NEW_NOTE_TITLE)) {
+        if (!Utils.getToolbarTitle(getContext()).equals(NoteViewModel.NEW_NOTE_TITLE)) {
             observer = note -> editNoteView.setText(note.getBody());
             viewModel.observeReadNote(getActivity(), observer);
         }
@@ -132,7 +125,7 @@ public class EditNoteFragment extends Fragment {
         String text = editNoteView.getText().toString();
         if (action == ACTION_SAVE && viewModel.hasUnsavedChanges(text)) {
             String title = Utils.getToolbarTitle(getContext());
-            if (title.equals(EditNoteViewModel.NEW_NOTE_TITLE)) {
+            if (title.equals(NoteViewModel.NEW_NOTE_TITLE)) {
                 SaveDialog.newInstance(ACTION_SAVE).show(getFragmentManager(), Utils.DIALOG_SAVE);
             } else {
                 viewModel.saveChanges(title);

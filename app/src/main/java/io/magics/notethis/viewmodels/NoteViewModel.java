@@ -1,61 +1,103 @@
 package io.magics.notethis.viewmodels;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Observable;
 
+import io.magics.notethis.data.db.AppDatabase;
+import io.magics.notethis.ui.dialogs.SaveDialog;
+import io.magics.notethis.utils.AppDbUtils;
+import io.magics.notethis.utils.RoomNoteCallback;
 import io.magics.notethis.utils.models.Note;
-import io.magics.notethis.utils.models.NoteTitle;
 
-public class NoteViewModel extends ViewModel {
+public class NoteViewModel extends AndroidViewModel {
 
-    private MutableLiveData<List<NoteTitle>> noteTitles = new MutableLiveData<>();
-    private List<NoteTitle> recentlyDeletedTitles = new ArrayList<>();
     private static final String TAG = "NoteViewModel";
+    public static final String NEW_NOTE_TITLE = "New Note";
 
-    public void setNoteTitles(List<NoteTitle> titles) {
-        noteTitles.setValue(titles);
+    private MutableLiveData<Note> note = new MutableLiveData<>();
+    private MutableLiveData<Note> savedNote = new MutableLiveData<>();
+
+    private AppDatabase appDatabase;
+
+
+    public NoteViewModel(@NonNull Application application) {
+        super(application);
     }
 
-    public void observeNoteTitles(LifecycleOwner owner, Observer<List<NoteTitle>> observer) {
-        noteTitles.observe(owner, observer);
+    public void init() {
+        appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
     }
 
-    public void unObserveNoteTitle(Observer<List<NoteTitle>> observer) {
-        noteTitles.removeObserver(observer);
+    public void newNote() {
+        note.setValue(new Note(NEW_NOTE_TITLE, "", ""));
     }
 
-    public int getDbNoteCount() {
-        if (noteTitles.getValue() == null) return -1;
-        return noteTitles.getValue().size();
-    }
-
-    public void addTitleToRecentlyDeleted(NoteTitle noteTitle) {
-        recentlyDeletedTitles.add(noteTitle);
-        if (noteTitles.getValue() != null) {
-            noteTitles.getValue().remove(noteTitle);
-        }
-    }
-
-    public List<NoteTitle> getRecentlyDeletedTitles() {
-        return recentlyDeletedTitles;
-    }
-
-    public NoteTitle getRecentlyDeleted(NoteTitle noteTitle) {
-        for (NoteTitle title : recentlyDeletedTitles) {
-            if (noteTitle.getId() == title.getId()) {
-                return title;
+    public void editNote(int id) {
+        AppDbUtils.fetchNote(appDatabase, id, new RoomNoteCallback<Note>() {
+            @Override
+            public void onComplete(Note data) {
+                note.setValue(data);
             }
+
+            @Override
+            public void onFail(Throwable e) {
+                AppDbUtils.handleDbErrors(TAG, e);
+            }
+        });
+    }
+
+    public void saveChanges(String title) {
+        if (note.getValue() == null) {
+            Log.d(TAG, "Trying to save nonexistent note");
+            return;
         }
-        IllegalArgumentException e = new IllegalArgumentException(
-                "Recently deleted list does not contain NoteTitle with ID: " + noteTitle.getId()
-                        + ". This should not happen. Ever!");
-        Log.e(TAG, "getRecentlyDeleted: ", e);
-        return null;
+
+        Note saveNote = note.getValue();
+        saveNote.setTitle(title);
+
+        if (TextUtils.isEmpty(saveNote.getPreview())) {
+            saveNote.setBodyPreview();
+        }
+
+        note.setValue(saveNote);
+        AppDbUtils.updateNote(appDatabase, saveNote);
+    }
+
+    public void observeOnSave(LifecycleOwner owner, Observer<Note> observer) {
+        savedNote.observe(owner, observer);
+    }
+
+    public void removeObserver(LifecycleOwner owner) {
+        savedNote.removeObservers(owner);
+    }
+
+    public boolean hasUnsavedChanges(String text) {
+        if (TextUtils.isEmpty(text)) return false;
+        if (note.getValue() == null) {
+            Log.w(TAG, "Tried to check if Null LiveData note had changes. " +
+                    "This should never happen");
+            note.setValue(new Note(NEW_NOTE_TITLE, "", ""));
+        }
+
+        boolean hasChanged = !note.getValue().getBody().equals(text);
+
+        if (hasChanged) {
+            Note tempNote = note.getValue();
+            note.setValue(tempNote);
+        }
+
+        return hasChanged;
     }
 }

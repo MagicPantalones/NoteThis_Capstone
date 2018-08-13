@@ -2,8 +2,6 @@ package io.magics.notethis.ui.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,7 +15,7 @@ import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.utils.models.Note;
-import io.magics.notethis.viewmodels.EditNoteViewModel;
+import io.magics.notethis.viewmodels.NoteViewModel;
 import ru.noties.markwon.Markwon;
 
 
@@ -27,7 +25,7 @@ public class PreviewFragment extends Fragment {
     TextView markdownTextView;
 
     Unbinder unbinder;
-    EditNoteViewModel model;
+    NoteViewModel model;
     Observer<Note> observer;
 
     public PreviewFragment() {
@@ -44,7 +42,7 @@ public class PreviewFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_preview, container, false);
         unbinder = ButterKnife.bind(this, root);
-        model = ViewModelProviders.of(getActivity()).get(EditNoteViewModel.class);
+        model = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
 
         observer = note -> Markwon.setMarkdown(markdownTextView, note.getBody());
         model.observeReadNote(getActivity(), observer);

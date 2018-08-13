@@ -29,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
-import io.magics.notethis.viewmodels.NoteViewModel;
+import io.magics.notethis.viewmodels.NoteTitleViewModel;
 import io.magics.notethis.utils.models.NoteTitle;
 
 
@@ -55,7 +55,7 @@ public class NoteListFragment extends Fragment {
     private NoteListFragListener listener;
 
     private Observer<List<NoteTitle>> titleObserver;
-    private NoteViewModel noteViewModel;
+    private NoteTitleViewModel noteViewModel;
 
     private NoteTitleAdapter adapter;
 
@@ -81,7 +81,7 @@ public class NoteListFragment extends Fragment {
         unbinder = ButterKnife.bind(this, root);
         adapter = new NoteTitleAdapter();
         //noinspection ConstantConditions
-        noteViewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
+        noteViewModel = ViewModelProviders.of(getActivity()).get(NoteTitleViewModel.class);
 
         return root;
     }

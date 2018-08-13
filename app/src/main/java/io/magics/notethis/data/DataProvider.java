@@ -42,133 +42,23 @@ public class DataProvider {
     private static final String TAG = "DataProvider";
 
     private static final String BASE_URL = "https://api.imgur.com";
-    private final AppDatabase appDatabase;
-    private final Activity activity;
     private boolean connected;
-
-    private Disposable roomTitleDisposable;
-    private Disposable roomInsertNoteDisposable;
-    private Disposable roomUpdateDisposable;
-    private Disposable roomNoteDisposable;
-    private Disposable delNotesTableDisposable;
 
     private DataProviderHandler providerHandler;
 
     private FirebaseInstance fireBaseInstance;
 
 
-    public DataProvider(Activity activity, DataProviderHandler providerHandler) {
-        this.activity = activity;
+    public DataProvider(DataProviderHandler providerHandler) {
         this.providerHandler = providerHandler;
-        this.appDatabase = AppDatabase.getInMemoryDatabase(activity.getApplication());
     }
 
     public void init() {
-        startUpQuery();
         fireBaseInstance = new FirebaseInstance();
         fireBaseInstance.init();
     }
 
     public void dispose(List<NoteTitle> titles) {
-        Utils.dispose(
-                roomTitleDisposable,
-                roomInsertNoteDisposable,
-                roomUpdateDisposable,
-                roomNoteDisposable
-        );
-        delNotesTableDisposable = deleteNotes(titles);
-    }
-
-    private void startUpQuery() {
-        roomTitleDisposable = noteTitleRoomQuery();
-    }
-
-    private Disposable noteTitleRoomQuery() {
-        return appDatabase.userNoteModel().getNoteTitles()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(noteTitles -> providerHandler.onNoteTitlesFetched(noteTitles),
-                        this::handleRxErrors);
-    }
-
-    private void handleRxErrors(Throwable e) {
-        Log.e(TAG, "handleRxErrors: ", e);
-        if (e instanceof RoomInsertException) {
-            providerHandler.onError(DataError.ROOM_WRITE_ERROR);
-        } else {
-            providerHandler.onError(DataError.UNHANDLED_ERROR);
-        }
-    }
-
-    public void insertNotes(Note... notes) {
-        roomInsertNoteDisposable = insertNotesToRoom(notes);
-    }
-
-    private Disposable insertNotesToRoom(Note... notes) {
-        return Observable.fromCallable(() -> appDatabase.userNoteModel().insertAll(notes))
-                .subscribeOn(Schedulers.io())
-                .onErrorResumeNext(Observable.error(new RoomInsertException()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(longList -> {
-                    if (longList != null && longList.size() == 1) {
-                        providerHandler.onNoteInserted(longList.get(0).intValue());
-                        notes[0].setId(longList.get(0).intValue());
-                    }
-                    insertNotesToFireBase(notes);
-                }, this::handleRxErrors);
-    }
-
-    private void insertNotesToFireBase(Note... notes) {
-        if (notes != null && notes.length > 0) {
-            for (Note note : notes) {
-                fireBaseInstance.writeNewNote(note);
-            }
-        }
-    }
-
-    public void updateNote(Note note) {
-        roomUpdateDisposable = updateNoteRoom(note);
-    }
-
-    private Disposable deleteNotes(List<NoteTitle> noteTitles) {
-        return Completable.fromAction(() -> {
-            for (NoteTitle title : noteTitles) {
-                appDatabase.userNoteModel().deleteNotes(title.getId());
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> fireBaseInstance.deleteNote(noteTitles), this::handleRxErrors);
-    }
-
-    private Disposable dropNoteTable() {
-        return Completable.fromAction(() -> appDatabase.userNoteModel().deleteAll())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
-    }
-
-    private Disposable updateNoteRoom(Note note) {
-        return Completable.fromAction(() -> appDatabase.userNoteModel().updateNote(note))
-                .subscribeOn(Schedulers.io())
-                .onErrorResumeNext(e -> Completable.error(new RoomInsertException("Update failed")))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> updateNoteFirebase(note), this::handleRxErrors);
-    }
-
-    private void updateNoteFirebase(Note note) {
-        fireBaseInstance.writeNewNote(note);
-    }
-
-    public void getNoteById(int id) {
-        roomNoteDisposable = getOneNote(id);
-    }
-
-    private Disposable getOneNote(int id) {
-        return Observable.fromCallable(() -> appDatabase.userNoteModel().getNote(id))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(note -> providerHandler.onNoteFetched(note));
     }
 
     private Retrofit getRetrofitClient() {
@@ -232,14 +122,7 @@ public class DataProvider {
             userPathRef = fireDbRef.child(PATH_USER);
 
             if (auth.getCurrentUser() == null) {
-                auth.signInWithEmailAndPassword(TempVals.USER, TempVals.CODE)
-                        .addOnCompleteListener(activity, task -> {
-                            if (task.isSuccessful()) {
-                                onSignIn(task.getResult().getUser());
-                            } else {
-                                Log.w(TAG, "Error signing in: ", task.getException());
-                            }
-                        });
+
             } else {
                 onSignIn(auth.getCurrentUser());
             }

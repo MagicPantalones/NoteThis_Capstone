@@ -2,23 +2,20 @@ package io.magics.notethis.ui.dialogs;
 
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.utils.Utils;
-import io.magics.notethis.viewmodels.EditNoteViewModel;
+import io.magics.notethis.viewmodels.NoteViewModel;
 
 public class SaveDialog extends DialogFragment{
 
@@ -51,8 +48,8 @@ public class SaveDialog extends DialogFragment{
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
         View view = View.inflate(getContext(), R.layout.dialog_save, null);
         ButterKnife.bind(this, view);
-        EditNoteViewModel viewModel =
-                ViewModelProviders.of(getActivity()).get(EditNoteViewModel.class);
+        NoteViewModel viewModel =
+                ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
 
         String oldTitle = Utils.getToolbarTitle(getContext());
 

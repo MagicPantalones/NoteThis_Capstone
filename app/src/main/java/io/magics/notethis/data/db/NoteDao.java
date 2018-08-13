@@ -1,5 +1,7 @@
 package io.magics.notethis.data.db;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -17,13 +19,13 @@ import io.reactivex.Flowable;
 public interface NoteDao {
 
     @Query("SELECT Note.id, Note.title, Note.preview FROM Note")
-    Flowable<List<NoteTitle>> getNoteTitles();
+    LiveData<List<NoteTitle>> getNoteTitles();
 
     @Query("SELECT * FROM Note WHERE Note.id = :id")
     Note getNote(int id);
 
     @Insert
-    List<Long> insertAll(Note... notes);
+    Long insertAll(Note... notes);
 
     @Update
     void updateNote(Note... notes);
