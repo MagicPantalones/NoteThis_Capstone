@@ -75,14 +75,6 @@ public class NoteViewModel extends AndroidViewModel {
         AppDbUtils.updateNote(appDatabase, saveNote);
     }
 
-    public void observeOnSave(LifecycleOwner owner, Observer<Note> observer) {
-        savedNote.observe(owner, observer);
-    }
-
-    public void removeObserver(LifecycleOwner owner) {
-        savedNote.removeObservers(owner);
-    }
-
     public boolean hasUnsavedChanges(String text) {
         if (TextUtils.isEmpty(text)) return false;
         if (note.getValue() == null) {
@@ -91,7 +83,7 @@ public class NoteViewModel extends AndroidViewModel {
             note.setValue(new Note(NEW_NOTE_TITLE, "", ""));
         }
 
-        boolean hasChanged = !note.getValue().getBody().equals(text);
+        boolean hasChanged = !text.equals(note.getValue().getBody());
 
         if (hasChanged) {
             Note tempNote = note.getValue();

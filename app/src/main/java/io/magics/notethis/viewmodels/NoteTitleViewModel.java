@@ -35,13 +35,8 @@ public class NoteTitleViewModel extends AndroidViewModel {
         noteTitles = appDatabase.userNoteModel().getNoteTitles();
     }
 
-
-    public void observeNoteTitles(LifecycleOwner owner, Observer<List<NoteTitle>> observer) {
-        noteTitles.observe(owner, observer);
-    }
-
-    public void unObserveNoteTitle(Observer<List<NoteTitle>> observer) {
-        noteTitles.removeObserver(observer);
+    public LiveData<List<NoteTitle>> getNoteTitles() {
+        return noteTitles;
     }
 
     public void addTitleToRecentlyDeleted(NoteTitle noteTitle) {
@@ -51,11 +46,19 @@ public class NoteTitleViewModel extends AndroidViewModel {
         recentlyDeletedTitles.setValue(tempData);
     }
 
-    public void deleteRecentTitle() {
+    public List<NoteTitle> deleteRecent() {
+        if (recentlyDeletedTitles.getValue() == null) return new ArrayList<>();
+        List<NoteTitle> retList = recentlyDeletedTitles.getValue();
+        deleteRecentTitle();
+        return retList;
+    }
+
+    private void deleteRecentTitle() {
         if (recentlyDeletedTitles.getValue() == null || recentlyDeletedTitles.getValue().isEmpty()){
             return;
         }
         AppDbUtils.deleteNotes(appDatabase, recentlyDeletedTitles.getValue());
+        recentlyDeletedTitles.setValue(new ArrayList<>());
     }
 
     public void restoreTitle(NoteTitle noteTitle) {
@@ -64,5 +67,4 @@ public class NoteTitleViewModel extends AndroidViewModel {
         }
         recentlyDeletedTitles.getValue().remove(noteTitle);
     }
-
 }
