@@ -40,7 +40,7 @@ public class CloseDialog extends DialogFragment{
                     SaveDialog.newInstance(EditNoteFragment.ACTION_CLOSE).show(getFragmentManager(),
                             Utils.DIALOG_SAVE);
                 } else {
-                    model.saveChanges(oldTitle);
+                    model.saveChanges(oldTitle, oldTitle);
                     dialog.dismiss();
                     Utils.backPressed(getContext());
                 }

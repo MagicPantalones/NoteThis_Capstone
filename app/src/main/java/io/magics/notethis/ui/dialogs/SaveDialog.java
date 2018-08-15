@@ -57,14 +57,18 @@ public class SaveDialog extends DialogFragment{
         alertBuilder.setView(view);
         alertBuilder.setPositiveButton(R.string.save, (dialog, which) -> {
             if (dialog != null) {
-                viewModel.saveChanges(titleText.getText().toString());
+                viewModel.saveChanges(titleText.getText().toString(), oldTitle);
                 dialog.dismiss();
                 if (action == EditNoteFragment.ACTION_CLOSE) {
                     Utils.backPressed(getContext());
+                } else {
+                    Utils.setToolbarTitle(getContext(), titleText.getText().toString(),
+                            R.color.primaryTextColor);
                 }
             }
         });
-        alertBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+
+        alertBuilder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
             if (dialog != null) {
                 dialog.dismiss();
             }

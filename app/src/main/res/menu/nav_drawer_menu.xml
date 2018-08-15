@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+    <item android:id="@+id/nav_drawer_notes"
+        android:title="@string/menu_nav_notes"
+        android:icon="@drawable/outline_note_24"/>
+    <item android:id="@+id/nav_drawer_imgur"
+        android:title="@string/menu_nav_imgur"
+        android:icon="@drawable/outline_image_24"/>
+    <item android:id="@+id/nav_drawer_help"
+        android:title="@string/menu_nav_help"
+        android:icon="@drawable/outline_help_outline_24"/>
+    <item android:id="@+id/nav_drawer_sign_out"
+        android:title="@string/menu_nav_sign_out"
+        android:icon="@drawable/outline_remove_circle_outline_24"/>
+    </group>
+</menu>

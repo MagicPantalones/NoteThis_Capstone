@@ -1,10 +1,13 @@
 package io.magics.notethis.data.db;
 
 import android.annotation.SuppressLint;
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -35,6 +38,7 @@ public abstract class AppDatabase extends RoomDatabase{
 
             instance = Room.databaseBuilder(
                     context.getApplicationContext(), AppDatabase.class, DB_NAME)
+                    .addMigrations(MIGRATION_1_2)
                     .build();
         }
 
@@ -44,6 +48,12 @@ public abstract class AppDatabase extends RoomDatabase{
     public static void disposeInstance(){
         instance = null;
     }
-    
+
+    private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("DROP TABLE IF EXISTS notes");
+        }
+    };
 
 }

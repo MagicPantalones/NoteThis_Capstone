@@ -20,6 +20,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
 }
 
 def supportVer = "27.1.1"
@@ -51,7 +52,7 @@ dependencies {
     //Firebase libs
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-database:16.0.1'
-    implementation 'com.google.firebase:firebase-auth:16.0.2'
+    implementation 'com.google.firebase:firebase-auth:16.0.3'
 
     implementation "com.firebaseui:firebase-ui-auth:${fireUiVer}"
     implementation "com.firebaseui:firebase-ui-database:${fireUiVer}"

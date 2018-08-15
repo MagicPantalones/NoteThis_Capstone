@@ -2,7 +2,10 @@ package io.magics.notethis.ui.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
+import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.viewmodels.NoteViewModel;
@@ -26,11 +30,13 @@ public class PreviewFragment extends Fragment {
 
     Unbinder unbinder;
     NoteViewModel model;
-    Observer<Note> observer;
+
+    FabListener fabListener;
 
     public PreviewFragment() {
         // Required empty public constructor
     }
+
     public static PreviewFragment newInstance() {
         return new PreviewFragment();
     }
@@ -44,16 +50,36 @@ public class PreviewFragment extends Fragment {
         unbinder = ButterKnife.bind(this, root);
         model = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
 
-        observer = note -> Markwon.setMarkdown(markdownTextView, note.getBody());
-        model.observeReadNote(getActivity(), observer);
-
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (fabListener != null) {
+            fabListener.hideFab();
+        }
+
+        model.getNote().observe(getActivity(), note -> {
+            if (getContext() != null) {
+                Utils.setToolbarTitle(getContext(), note.getTitle(), R.color.primaryTextColor);
+                CharSequence formattedText = Markwon.markdown(getContext(), note.getBody());
+                markdownTextView.setText(formattedText);
+            }
+        });
     }
 
     @Override
     public void onDetach() {
         Utils.dispose(unbinder);
-        model.removeReadObserver(observer);
+        fabListener = null;
         super.onDetach();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FabListener) fabListener = (FabListener) context;
     }
 }

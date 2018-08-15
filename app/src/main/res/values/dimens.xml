@@ -12,5 +12,6 @@
     <dimen name="margin_4dp">4dp</dimen>
     <dimen name="fab_margin">@dimen/margin_16dp</dimen>
     <dimen name="img_logo_size_big">120dp</dimen>
-    <dimen name="img_logo_size_med">68dp</dimen>
+    <dimen name="img_logo_size_med">96dp</dimen>
+    <dimen name="button_margin_empty_list">68dp</dimen>
 </resources>

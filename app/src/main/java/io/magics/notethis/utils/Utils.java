@@ -27,17 +27,18 @@ public class Utils {
         }
     }
 
-    public static void setToolbarTitle(Toolbar toolbar, Object title, int colorResId) {
-        Context context = toolbar.getContext();
-        int color = ResourcesCompat.getColor(context.getResources(), colorResId, null);
+    public static void setToolbarTitle(Context context, Object title, int colorResId) {
+        Toolbar toolbar = ((MainActivity) context).findViewById(R.id.main_toolbar);
+        if (toolbar != null) {
+            int color = ResourcesCompat.getColor(context.getResources(), colorResId, null);
 
-        if (title instanceof Integer) {
-            toolbar.setTitle((int) title);
-        } else if (title instanceof String) {
-            toolbar.setTitle((String) title);
+            if (title instanceof Integer) {
+                toolbar.setTitle((int) title);
+            } else if (title instanceof String) {
+                toolbar.setTitle((String) title);
+            }
+            toolbar.setTitleTextColor(color);
         }
-        toolbar.setTitleTextColor(color);
-
     }
 
     public static String getToolbarTitle(Context context) {

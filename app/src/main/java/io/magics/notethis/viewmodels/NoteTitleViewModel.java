@@ -17,14 +17,16 @@ import java.util.List;
 
 import io.magics.notethis.data.db.AppDatabase;
 import io.magics.notethis.utils.AppDbUtils;
+import io.magics.notethis.utils.RoomNoteCallback;
 import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.utils.models.NoteTitle;
 
 public class NoteTitleViewModel extends AndroidViewModel {
 
     private LiveData<List<NoteTitle>> noteTitles;
-    private MutableLiveData<List<NoteTitle>> recentlyDeletedTitles = new MutableLiveData<>();
+    private Note deletedTitle;
     private AppDatabase appDatabase;
+    private List<NoteTitle> deletedTitles = new ArrayList<>();
 
     public NoteTitleViewModel(@NonNull Application application) {
         super(application);
@@ -39,32 +41,26 @@ public class NoteTitleViewModel extends AndroidViewModel {
         return noteTitles;
     }
 
-    public void addTitleToRecentlyDeleted(NoteTitle noteTitle) {
-        List<NoteTitle> tempData = recentlyDeletedTitles.getValue() != null ?
-                recentlyDeletedTitles.getValue() : new ArrayList<>();
-        tempData.add(noteTitle);
-        recentlyDeletedTitles.setValue(tempData);
-    }
+    public void deleteTitle(NoteTitle noteTitle) {
+        AppDbUtils.fetchNote(appDatabase, noteTitle.getId(), new RoomNoteCallback<Note>() {
+            @Override
+            public void onComplete(Note data) {
+                deletedTitle = data;
+                AppDbUtils.deleteNote(appDatabase, noteTitle);
+                deletedTitles.add(noteTitle);
+            }
 
-    public List<NoteTitle> deleteRecent() {
-        if (recentlyDeletedTitles.getValue() == null) return new ArrayList<>();
-        List<NoteTitle> retList = recentlyDeletedTitles.getValue();
-        deleteRecentTitle();
-        return retList;
-    }
-
-    private void deleteRecentTitle() {
-        if (recentlyDeletedTitles.getValue() == null || recentlyDeletedTitles.getValue().isEmpty()){
-            return;
-        }
-        AppDbUtils.deleteNotes(appDatabase, recentlyDeletedTitles.getValue());
-        recentlyDeletedTitles.setValue(new ArrayList<>());
+            @Override
+            public void onFail(Throwable e) {
+                //No action
+            }
+        });
     }
 
     public void restoreTitle(NoteTitle noteTitle) {
-        if (recentlyDeletedTitles.getValue() == null || recentlyDeletedTitles.getValue().isEmpty()) {
-            return;
-        }
-        recentlyDeletedTitles.getValue().remove(noteTitle);
+        deletedTitles.remove(noteTitle);
+        AppDbUtils.insertNote(appDatabase, deletedTitle, null);
     }
+
+    public List<NoteTitle> getDeletedTitles() { return deletedTitles; }
 }

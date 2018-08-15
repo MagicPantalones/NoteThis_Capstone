@@ -1,6 +1,7 @@
 package io.magics.notethis.utils;
 
 import android.annotation.SuppressLint;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.List;
@@ -25,18 +26,23 @@ public class AppDbUtils {
                 .subscribe(callback::onComplete, callback::onFail);
     }
 
-    public static void insertNote(AppDatabase db, Note note, RoomNoteCallback<Note> listeners) {
+    public static void insertNote(AppDatabase db, Note note,
+                                  @Nullable RoomNoteCallback<Note> listeners) {
         Single.fromCallable(() -> db.userNoteModel().insertAll(note))
                 .subscribeOn(Schedulers.io())
                 .flatMap(l -> {
-                    if (l != null) {
-                        note.setId(l.intValue());
+                    if (l != null && !l.isEmpty()) {
+                        note.setId(l.get(0).intValue());
                         return Single.fromCallable(() -> note);
                     }
                     return Single.error(new RoomInsertException("Insert failed"));
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(listeners::onComplete, listeners::onFail);
+                .subscribe(note1 -> {
+                    if (listeners != null) listeners.onComplete(note1);
+                }, throwable -> {
+                    if (listeners != null) listeners.onFail(throwable);
+                });
     }
 
     public static void insertNotes(AppDatabase db, List<Note> notes) {
@@ -47,10 +53,9 @@ public class AppDbUtils {
                 .subscribe();
     }
 
-    public static void deleteNotes(AppDatabase db, List<NoteTitle> titles) {
-        Observable.fromIterable(titles)
+    public static void deleteNote(AppDatabase db, NoteTitle title) {
+        Completable.fromAction(() -> db.userNoteModel().deleteNotes(title.getId()))
                 .subscribeOn(Schedulers.io())
-                .doOnNext(noteTitle -> db.userNoteModel().deleteNotes(noteTitle.getId()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
     }

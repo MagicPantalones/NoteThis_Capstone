@@ -1,9 +1,7 @@
 package io.magics.notethis.ui;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -11,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
 import java.util.List;
@@ -24,16 +21,13 @@ import io.magics.notethis.data.DataProvider;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.PreviewFragment;
 import io.magics.notethis.utils.Utils;
-import io.magics.notethis.utils.models.Note;
-import io.magics.notethis.viewmodels.FirebaseViewModel;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
 import io.magics.notethis.ui.fragments.IntroFragment;
 import io.magics.notethis.ui.fragments.NoteListFragment;
-import io.magics.notethis.utils.models.NoteTitle;
 
 public class MainActivity extends AppCompatActivity implements
-        NoteListFragment.NoteListFragListener, EditNoteFragment.EditNoteFragListener {
+        NoteListFragment.NoteListFragListener, NoteListFragment.FabListener {
 
     private static final String TAG = "MainActivity";
 
@@ -46,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements
     private DataProvider dataProvider;
     private NoteTitleViewModel noteTitleViewModel;
     private NoteViewModel noteViewModel;
-    private FirebaseViewModel fbViewModel;
     private boolean userSignedIn = false;
     private boolean connected = true;
 
@@ -116,11 +109,7 @@ public class MainActivity extends AppCompatActivity implements
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
         noteViewModel.init();
-
-        fbViewModel = ViewModelProviders.of(this).get(FirebaseViewModel.class);
-        fbViewModel.init();
-
-        fbViewModel.getSignInStatus().observe(this, status -> {
+        noteViewModel.getSignInStatus().observe(this, status -> {
 
             connected = status;
             if (!status) {
@@ -130,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        fbViewModel.getSignInStatus().observe(this, signedIn -> {
+        noteViewModel.getSignInStatus().observe(this, signedIn -> {
 
             if (signedIn) {
                 exitIntro();
@@ -147,12 +136,10 @@ public class MainActivity extends AppCompatActivity implements
         Fragment frag = fragManager.findFragmentById(R.id.container_main);
 
         if (frag instanceof EditNoteFragment && ((EditNoteFragment) frag).hasUnsavedChanges()) {
-            ((EditNoteFragment) frag).prepareSave(EditNoteFragment.ACTION_CLOSE);
+            ((EditNoteFragment) frag).prepareSave(EditNoteFragment.ACTION_BACK);
         } else {
             appBarLayout.setExpanded(true, true);
-            if (Utils.getToolbarTitle(this).equals(getString(R.string.new_note_title))) {
-                Utils.setToolbarTitle(toolbar, R.string.app_name, R.color.secondaryColor);
-            }
+            Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
             super.onBackPressed();
         }
     }
@@ -160,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         Utils.dispose(unbinder);
-
+        noteViewModel.deleteNotes(noteTitleViewModel.getDeletedTitles());
         super.onDestroy();
     }
 
@@ -183,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements
 
         noteViewModel.newNote();
 
-        Utils.setToolbarTitle(toolbar, NoteViewModel.NEW_NOTE_TITLE, R.color.primaryTextColor);
+        Utils.setToolbarTitle(this, NoteViewModel.NEW_NOTE_TITLE, R.color.primaryTextColor);
 
         fragManager.beginTransaction()
                 .replace(R.id.container_main, EditNoteFragment.newInstance())
@@ -202,21 +189,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onNoteListChange(boolean showFab) {
-        if (!showFab) {
-            mainFab.hide();
-            Utils.setToolbarTitle(toolbar, R.string.app_name, R.color.secondaryColor);
-        } else {
-            Fragment frag = fragManager.findFragmentById(R.id.container_main);
-            if (!(frag instanceof EditNoteFragment) && frag.isVisible()) {
-                mainFab.show();
-                Utils.setToolbarTitle(toolbar, R.string.app_name, R.color.secondaryColor);
-            }
-        }
-    }
-
-    @Override
     public void onNoteItemClicked(int id, int action) {
+        noteViewModel.editNote(id);
         if (action == NoteListFragment.ACTION_EDIT) {
             fragManager.beginTransaction()
                     .setReorderingAllowed(true)
@@ -234,7 +208,16 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void hideFab() {
-        mainFab.hide();
+        if (mainFab != null) {
+            mainFab.hide();
+        }
+    }
+
+    @Override
+    public void showFab() {
+        if (mainFab != null) {
+            mainFab.show();
+        }
     }
 
     /* NO_INTERNET_LOG_IN

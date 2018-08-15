@@ -25,7 +25,7 @@ public interface NoteDao {
     Note getNote(int id);
 
     @Insert
-    Long insertAll(Note... notes);
+    List<Long> insertAll(Note... notes);
 
     @Update
     void updateNote(Note... notes);

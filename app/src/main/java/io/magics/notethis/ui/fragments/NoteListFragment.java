@@ -1,6 +1,5 @@
 package io.magics.notethis.ui.fragments;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -53,8 +52,8 @@ public class NoteListFragment extends Fragment {
     Unbinder unbinder;
 
     private NoteListFragListener listener;
+    private FabListener fabListener;
 
-    private Observer<List<NoteTitle>> titleObserver;
     private NoteTitleViewModel noteViewModel;
 
     private NoteTitleAdapter adapter;
@@ -90,6 +89,9 @@ public class NoteListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        noteViewModel.getNoteTitles().observe(getActivity(),
+                noteTitles -> adapter.insertAllNoteTitles(noteTitles));
+
         noteListRecycler.setAdapter(adapter);
 
         noteListRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -112,6 +114,7 @@ public class NoteListFragment extends Fragment {
             snackbar.setAction("UNDO", v -> adapter.restoreTitle(noteTitle, adapterPos));
             snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(),
                     R.color.secondaryColor, null));
+            snackbar.setDuration(7000);
             snackbar.show();
         });
 
@@ -119,41 +122,42 @@ public class NoteListFragment extends Fragment {
 
         newNoteButton.setOnClickListener(v -> listener.onNewNotePress());
 
-        titleObserver = noteTitles -> adapter.insertAllNoteTitles(noteTitles);
-
-        noteViewModel.observeNoteTitles(getActivity(), titleObserver);
 
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof NoteListFragListener) {
-            listener = (NoteListFragListener) context;
-        }
+        if (context instanceof NoteListFragListener) listener = (NoteListFragListener) context;
+        if (context instanceof FabListener) fabListener = (FabListener) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         listener = null;
-        noteViewModel.unObserveNoteTitle(titleObserver);
+        fabListener = null;
     }
 
     void switchLayouts(List<NoteTitle> noteTitles) {
         noteListRecycler.setVisibility(noteTitles.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         noNotesLayout.setVisibility(noteTitles.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-        listener.onNoteListChange(noteListRecycler.getVisibility() == View.VISIBLE);
+
+        if (fabListener != null) {
+            if (noteListRecycler.getVisibility() == View.VISIBLE) fabListener.showFab();
+            else fabListener.hideFab();
+        }
     }
 
     public interface NoteListFragListener {
         void onNewNotePress();
-
         void onNoteListScroll(int state);
-
-        void onNoteListChange(boolean showFab);
-
         void onNoteItemClicked(int id, int type);
+    }
+
+    public interface FabListener {
+        void hideFab();
+        void showFab();
     }
 
     public interface NoteItemTouchListener {
@@ -205,11 +209,12 @@ public class NoteListFragment extends Fragment {
             noteTitles.remove(pos);
             notifyItemRemoved(pos);
             notifyItemRangeChanged(pos, noteTitles.size());
-            noteViewModel.addTitleToRecentlyDeleted(noteTitle);
+            noteViewModel.deleteTitle(noteTitle);
             switchLayouts(noteTitles);
         }
 
         void restoreTitle(NoteTitle title, int pos) {
+            noteViewModel.restoreTitle(title);
             noteTitles.add(pos, title);
             notifyItemInserted(pos);
             switchLayouts(noteTitles);
