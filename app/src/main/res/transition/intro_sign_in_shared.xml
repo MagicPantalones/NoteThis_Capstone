@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="600"
+    android:startDelay="300"
+    android:transitionOrdering="together"
+    android:interpolator="@android:interpolator/fast_out_slow_in">
+    <changeBounds>
+        <targets>
+            <target android:excludeId="@+id/google_sign_in_btn" />
+        </targets>
+    </changeBounds>
+    <changeTransform>
+        <targets>
+            <target android:excludeId="@+id/google_sign_in_btn" />
+        </targets>
+    </changeTransform>
+    <changeClipBounds>
+        <targets>
+            <target android:excludeId="@+id/google_sign_in_btn" />
+        </targets>
+    </changeClipBounds>
+    <changeImageTransform>
+        <targets>
+            <target android:excludeId="@+id/google_sign_in_btn" />
+        </targets>
+    </changeImageTransform>
+
+</transitionSet>

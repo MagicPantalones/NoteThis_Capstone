@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/FragmentDarkBackground"
+    android:transitionGroup="false"
+    tools:context=".ui.fragments.SignInFragment">
+
+    <ImageView
+        android:id="@+id/sign_in_logo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:contentDescription="@string/logo_a11y"
+        android:src="@drawable/owl_24dp_color_nobg"
+        android:transitionName="@string/logo_transition_name"
+        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <Button
+        android:id="@+id/google_sign_in_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryLightColor"
+        android:drawablePadding="@dimen/margin_16dp"
+        android:drawableStart="@drawable/googleg_standard_color_18"
+        android:foregroundTint="@color/primaryColor"
+        android:padding="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/button_margin_empty_list"
+        android:text="@string/fui_sign_in_with_google"
+        android:textColor="@color/primaryTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_in_logo" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
+    <fade
+        android:duration="300"
+        android:startDelay="900">
+        <targets>
+            <target android:targetId="@+id/google_sign_in_btn"/>
+        </targets>
+    </fade>
+</transitionSet>

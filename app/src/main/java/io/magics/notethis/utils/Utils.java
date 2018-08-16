@@ -5,6 +5,9 @@ import android.content.Context;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionSet;
 
 import butterknife.Unbinder;
 import io.magics.notethis.R;
@@ -65,5 +68,17 @@ public class Utils {
 
     public static void backPressed(Context context) {
         ((MainActivity) context).onBackPressed();
+    }
+
+    public static Transition getSignInTransition(Context context) {
+        return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_shared);
+    }
+
+    public static Transition getSignInEnterTransition(Context context) {
+        return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_enter);
+    }
+
+    public static Transition getIntroToSignInTransition(Context context) {
+        return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_exit);
     }
 }

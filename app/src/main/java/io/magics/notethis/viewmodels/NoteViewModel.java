@@ -11,8 +11,17 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +49,7 @@ public class NoteViewModel extends AndroidViewModel {
     private DatabaseReference rootRef;
     private DatabaseReference userRef;
     private DatabaseReference noteRef;
+    private GoogleSignInClient googleSignInClient;
     private String uid;
     private MutableLiveData<Note> note = new MutableLiveData<>();
     private MutableLiveData<Boolean> signedIn = new MutableLiveData<>();
@@ -141,6 +151,23 @@ public class NoteViewModel extends AndroidViewModel {
                 signedIn.setValue(false);
             }
         });
+    }
+
+    public void signOut(){
+        auth.signOut();
+    }
+
+    public void onGoogleSignIn(GoogleSignInAccount account) {
+        Log.d(TAG, "Firebase Auth with Google: " + account.getId());
+        auth.signInWithCredential(GoogleAuthProvider.getCredential(account.getIdToken(), null))
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        signedIn.setValue(true);
+                        uid = task.getResult().getUser().getUid();
+                        userRef = FirebaseUtils.getUserPath(rootRef, uid);
+                        noteRef = FirebaseUtils.getNotesPath(rootRef, uid);
+                    }
+                });
     }
 
     public LiveData<List<Note>> fetchAllNotesFromServer() {

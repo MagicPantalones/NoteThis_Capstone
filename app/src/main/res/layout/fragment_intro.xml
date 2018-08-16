@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     style="@style/FragmentDarkBackground"
     android:fitsSystemWindows="true"
+    android:transitionGroup="false"
     tools:context=".ui.fragments.IntroFragment">
 
     <ImageView
@@ -19,7 +20,8 @@
         app:layout_constraintBottom_toTopOf="@+id/text_intro_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:transitionName="@string/logo_transition_name"/>
 
     <TextView
         android:id="@+id/text_intro_logo"
@@ -27,6 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_8dp"
+        android:transitionName="@string/title_transition_name"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -4,12 +4,21 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.CountDownTimer;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
+import android.transition.TransitionInflater;
+import android.transition.TransitionSet;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -20,6 +29,7 @@ import io.magics.notethis.R;
 import io.magics.notethis.data.DataProvider;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.PreviewFragment;
+import io.magics.notethis.ui.fragments.SignInFragment;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
@@ -31,6 +41,10 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "MainActivity";
 
+    private static final long MOVE_DEFAULT_TIME = 1000;
+    private static final long FADE_DEFAULT_TIME = 300;
+
+
     private static final String FRAG_INTRO = "frag_intro";
     private static final String FRAG_NOTE_LIST = "frag_note_list";
     private static final String FRAG_EDIT_NOTE = "frag_edit_note";
@@ -41,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements
     private NoteTitleViewModel noteTitleViewModel;
     private NoteViewModel noteViewModel;
     private boolean userSignedIn = false;
+    private boolean introTimeUp = false;
     private boolean connected = true;
 
     @BindView(R.id.main_toolbar)
@@ -51,6 +66,10 @@ public class MainActivity extends AppCompatActivity implements
     FloatingActionButton mainFab;
     @BindView(R.id.appbar_layout)
     AppBarLayout appBarLayout;
+    @BindView(R.id.nav_view)
+    NavigationView navDrawer;
+    @BindView(R.id.main_drawer_layout)
+    DrawerLayout drawerLayout;
 
     Unbinder unbinder;
 
@@ -64,9 +83,13 @@ public class MainActivity extends AppCompatActivity implements
         initViewModels();
 
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         dataProvider = new DataProvider();
 
         mainFab.setOnClickListener(v -> onNewNotePress());
+
 
         List<Fragment> frags = fragManager.getFragments();
         if (frags != null) {
@@ -93,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 @Override
                 public void onFinish() {
+                    introTimeUp = true;
                     exitIntro();
                 }
 
@@ -120,11 +144,25 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         noteViewModel.getSignInStatus().observe(this, signedIn -> {
-
+            userSignedIn = signedIn;
             if (signedIn) {
                 exitIntro();
             } else {
-                //TODO Show login screen
+                Fragment oldFrag = fragManager.findFragmentById(R.id.container_main);
+
+                if (oldFrag instanceof IntroFragment && oldFrag.isVisible()) {
+                    ImageView sharedLogo = oldFrag.getView().findViewById(R.id.img_intro_logo);
+                    SignInFragment newFrag = SignInFragment.newInstance();
+                    oldFrag.setExitTransition(Utils.getIntroToSignInTransition(this));
+                    newFrag.setSharedElementEnterTransition(Utils.getSignInTransition(this));
+                    newFrag.setEnterTransition(Utils.getSignInEnterTransition(this));
+
+                    fragManager.beginTransaction()
+                            .setReorderingAllowed(true)
+                            .addSharedElement(sharedLogo, sharedLogo.getTransitionName())
+                            .replace(R.id.container_main, newFrag)
+                            .commit();
+                }
             }
         });
 
@@ -152,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void exitIntro() {
-        if (showIntro) {
+        if (showIntro && introTimeUp && userSignedIn) {
             showIntro = false;
 
             Utils.showToolbar(this);

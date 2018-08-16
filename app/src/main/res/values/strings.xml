@@ -34,5 +34,8 @@
     <string name="menu_nav_imgur">Imgur Uploads</string>
     <string name="menu_nav_help">Help</string>
     <string name="menu_nav_sign_out">Sign Out</string>
+    
+    <string name="logo_transition_name">note_this_logo</string>
+    <string name="title_transition_name">note_this_title</string>
 
 </resources>
