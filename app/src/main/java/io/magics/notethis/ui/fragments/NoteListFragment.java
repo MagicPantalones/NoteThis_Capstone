@@ -140,6 +140,7 @@ public class NoteListFragment extends Fragment {
     }
 
     void switchLayouts(List<NoteTitle> noteTitles) {
+        startPostponedEnterTransition();
         noteListRecycler.setVisibility(noteTitles.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         noNotesLayout.setVisibility(noteTitles.isEmpty() ? View.VISIBLE : View.INVISIBLE);
 

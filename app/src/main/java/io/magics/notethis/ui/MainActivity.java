@@ -1,24 +1,23 @@
 package io.magics.notethis.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.CountDownTimer;
+import android.content.res.ColorStateList;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.transition.Fade;
-import android.transition.TransitionInflater;
-import android.transition.TransitionSet;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -28,12 +27,9 @@ import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.data.DataProvider;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
-import io.magics.notethis.ui.fragments.PreviewFragment;
-import io.magics.notethis.ui.fragments.SignInFragment;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
-import io.magics.notethis.ui.fragments.IntroFragment;
 import io.magics.notethis.ui.fragments.NoteListFragment;
 
 public class MainActivity extends AppCompatActivity implements
@@ -41,22 +37,17 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "MainActivity";
 
-    private static final long MOVE_DEFAULT_TIME = 1000;
-    private static final long FADE_DEFAULT_TIME = 300;
 
 
-    private static final String FRAG_INTRO = "frag_intro";
-    private static final String FRAG_NOTE_LIST = "frag_note_list";
-    private static final String FRAG_EDIT_NOTE = "frag_edit_note";
 
     private boolean showIntro = true;
     private FragmentManager fragManager;
     private DataProvider dataProvider;
     private NoteTitleViewModel noteTitleViewModel;
     private NoteViewModel noteViewModel;
-    private boolean userSignedIn = false;
-    private boolean introTimeUp = false;
+    private Snackbar disconnectSnack;
     private boolean connected = true;
+    private ActionBarDrawerToggle drawerToggle;
 
     @BindView(R.id.main_toolbar)
     Toolbar toolbar;
@@ -81,50 +72,51 @@ public class MainActivity extends AppCompatActivity implements
         fragManager = getSupportFragmentManager();
 
         initViewModels();
-
         setSupportActionBar(toolbar);
+        dataProvider = new DataProvider();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
-        dataProvider = new DataProvider();
+
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.open_drawer, R.string.close_drawer);
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
 
         mainFab.setOnClickListener(v -> onNewNotePress());
 
-
-        List<Fragment> frags = fragManager.getFragments();
-        if (frags != null) {
-            for (Fragment frag : frags) {
-                if (frag != null) {
-                    fragManager.beginTransaction().remove(frag).commit();
-                }
+        navDrawer.setNavigationItemSelectedListener(item -> {
+            drawerLayout.closeDrawers();
+            switch (item.getItemId()) {
+                case R.id.nav_drawer_notes:
+                    if (item.isChecked()) break;
+                    UiUtils.showNoteListFrag(this, fragManager);
+                    break;
+                case R.id.nav_drawer_imgur:
+                    if (item.isChecked()) break;
+                    Toast.makeText(this, "Show Imgur frag", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.nav_drawer_help:
+                    if (item.isChecked()) break;
+                    Toast.makeText(this, "Show help frag", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.nav_drawer_sign_out:
+                    item.setChecked(false);
+                    noteViewModel.signOut();
+                    UiUtils.handleUserSignOut(this,fragManager);
+                    break;
+                default:
+                    return true;
             }
-        }
+            return true;
+        });
 
         if (showIntro) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-            Utils.hideToolbar(this);
-            fragManager.beginTransaction()
-                    .replace(R.id.container_main, IntroFragment.newInstance(), FRAG_INTRO)
-                    .commit();
-
-            new CountDownTimer(3000, 1000) {
-
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    //Required override
-                }
-
-                @Override
-                public void onFinish() {
-                    introTimeUp = true;
-                    exitIntro();
-                }
-
-            }.start();
+            UiUtils.showIntroFrag(this, fragManager);
         }
-
-
     }
+
+
 
     @SuppressWarnings("ConstantConditions")
     private void initViewModels() {
@@ -133,44 +125,41 @@ public class MainActivity extends AppCompatActivity implements
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
         noteViewModel.init();
-        noteViewModel.getSignInStatus().observe(this, status -> {
+        noteViewModel.getConnectionStatus().observe(this, status -> {
 
             connected = status;
             if (!status) {
-                //TODO handle disconnect
+                disconnectSnack = Snackbar.make(mainRoot, getString(R.string.disconnect_snack),
+                        Snackbar.LENGTH_INDEFINITE);
+                disconnectSnack.show();
+                disconnectSnack.setAction(R.string.hide_snack, v -> disconnectSnack.dismiss());
+                int color = ResourcesCompat.getColor(getResources(), R.color.secondaryColor,
+                        getTheme());
+                disconnectSnack.setActionTextColor(color);
+                disconnectSnack.show();
             } else {
-                //TODO handle reconnect
-            }
-        });
-
-        noteViewModel.getSignInStatus().observe(this, signedIn -> {
-            userSignedIn = signedIn;
-            if (signedIn) {
-                exitIntro();
-            } else {
-                Fragment oldFrag = fragManager.findFragmentById(R.id.container_main);
-
-                if (oldFrag instanceof IntroFragment && oldFrag.isVisible()) {
-                    ImageView sharedLogo = oldFrag.getView().findViewById(R.id.img_intro_logo);
-                    SignInFragment newFrag = SignInFragment.newInstance();
-                    oldFrag.setExitTransition(Utils.getIntroToSignInTransition(this));
-                    newFrag.setSharedElementEnterTransition(Utils.getSignInTransition(this));
-                    newFrag.setEnterTransition(Utils.getSignInEnterTransition(this));
-
-                    fragManager.beginTransaction()
-                            .setReorderingAllowed(true)
-                            .addSharedElement(sharedLogo, sharedLogo.getTransitionName())
-                            .replace(R.id.container_main, newFrag)
-                            .commit();
+                if (disconnectSnack != null && disconnectSnack.isShown()) {
+                    disconnectSnack.dismiss();
                 }
             }
         });
 
+        noteViewModel.getSignInStatus().observe(this, signedIn -> {
+            if (signedIn) {
+                if (showIntro) {
+                    showIntro = false;
+                    UiUtils.introToListFrag(this, fragManager);
+                } else {
+                    UiUtils.showNoteListFrag(this, fragManager);
+                }
+            } else {
+                UiUtils.introToSignInFrag(this, fragManager);
+            }
+        });
     }
 
     @Override
     public void onBackPressed() {
-        //TODO When note has title "New note" list bugs, Find out why.
         Fragment frag = fragManager.findFragmentById(R.id.container_main);
 
         if (frag instanceof EditNoteFragment && ((EditNoteFragment) frag).hasUnsavedChanges()) {
@@ -189,19 +178,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onDestroy();
     }
 
-    private void exitIntro() {
-        if (showIntro && introTimeUp && userSignedIn) {
-            showIntro = false;
-
-            Utils.showToolbar(this);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-
-            fragManager.beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.container_main, NoteListFragment.newInstance(), FRAG_NOTE_LIST)
-                    .commit();
-        }
-    }
 
     @Override
     public void onNewNotePress() {
@@ -210,10 +186,7 @@ public class MainActivity extends AppCompatActivity implements
 
         Utils.setToolbarTitle(this, NoteViewModel.NEW_NOTE_TITLE, R.color.primaryTextColor);
 
-        fragManager.beginTransaction()
-                .replace(R.id.container_main, EditNoteFragment.newInstance())
-                .addToBackStack(null)
-                .commit();
+        UiUtils.showEditNoteFrag(fragManager);
     }
 
     @Override
@@ -230,17 +203,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onNoteItemClicked(int id, int action) {
         noteViewModel.editNote(id);
         if (action == NoteListFragment.ACTION_EDIT) {
-            fragManager.beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.container_main, EditNoteFragment.newInstance(), FRAG_EDIT_NOTE)
-                    .addToBackStack(FRAG_EDIT_NOTE)
-                    .commit();
+            UiUtils.showEditNoteFrag(fragManager);
         } else {
-            fragManager.beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.container_main, PreviewFragment.newInstance())
-                    .addToBackStack(null)
-                    .commit();
+            UiUtils.showPreviewFrag(fragManager);
         }
     }
 
@@ -256,6 +221,13 @@ public class MainActivity extends AppCompatActivity implements
         if (mainFab != null) {
             mainFab.show();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+
     }
 
     /* NO_INTERNET_LOG_IN

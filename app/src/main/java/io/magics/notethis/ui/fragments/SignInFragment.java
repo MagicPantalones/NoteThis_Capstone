@@ -28,6 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
+import io.magics.notethis.data.network.FirebaseUtils;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
 
@@ -42,7 +43,6 @@ public class SignInFragment extends Fragment {
 
     private Unbinder unbinder;
     private NoteViewModel model;
-    private GoogleSignInClient signInClient;
 
 
     public SignInFragment() {
@@ -66,14 +66,10 @@ public class SignInFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         signInBtn.setOnClickListener(v -> {
-            GoogleSignInOptions gso =
-                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.default_web_client_id))
-                    .requestEmail()
-                    .build();
-            signInClient = GoogleSignIn.getClient(getContext(), gso);
-            Intent signInIntent = signInClient.getSignInIntent();
-            startActivityForResult(signInIntent, RC_SIGN_IN);
+            if (getContext() != null) {
+                Intent signInIntent = FirebaseUtils.getGsiClient(getContext()).getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
         });
     }
 

@@ -1,7 +1,11 @@
 package io.magics.notethis.data.network;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -14,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.magics.notethis.R;
 import io.magics.notethis.utils.TempVals;
 import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.utils.models.NoteTitle;
@@ -23,6 +28,7 @@ public class FirebaseUtils {
 
     private static final String PATH_USERS = "users";
     private static final String PATH_NOTES = "notes";
+    private static final String PATH_EMAIL = "email";
 
     public interface FirebaseAuthCallback{
         void onSuccess(FirebaseUser user);
@@ -34,39 +40,35 @@ public class FirebaseUtils {
         void onError(DatabaseError error);
     }
 
-    public static void getUserFromAuth(FirebaseAuth auth, DatabaseReference rootRef,
-                                       FirebaseAuthCallback callback) {
+    public static void getUserFromAuth(FirebaseAuth auth, FirebaseAuthCallback callback) {
         if (auth.getCurrentUser() == null) {
-            auth.signInWithEmailAndPassword(TempVals.USER, TempVals.CODE)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = task.getResult().getUser();
-                            callback.onSuccess(user);
-                            initUserInDb(rootRef, user.getUid(), user.getEmail());
-                        } else {
-                            callback.onFailed(task.getException());
-                        }
-                    });
+            callback.onFailed(null);
         } else {
             callback.onSuccess(auth.getCurrentUser());
         }
     }
 
-    //Creates the "/users/$uid/notes/" path in Firebase if it's the users first sign-in.
-    private static void initUserInDb(DatabaseReference rootRef, String uid, String email) {
-        rootRef.child(PATH_USERS).child(uid).addListenerForSingleValueEvent(
-                new ValueEventListener() {
+    public static GoogleSignInClient getGsiClient(Context context) {
+        GoogleSignInOptions gso =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(context.getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
+        return GoogleSignIn.getClient(context, gso);
+    }
+
+    public static void checkForUserEmail(DatabaseReference userRef, String email) {
+        userRef.child(PATH_EMAIL).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
-                    getUserPath(rootRef, uid).setValue(new User(email));
-                    getNotesPath(rootRef, uid).setValue(null);
+                    userRef.child(PATH_EMAIL).setValue(email);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                //ignore
+                //Do nothing.
             }
         });
     }

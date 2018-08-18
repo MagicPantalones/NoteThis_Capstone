@@ -38,4 +38,10 @@
     <string name="logo_transition_name">note_this_logo</string>
     <string name="title_transition_name">note_this_title</string>
 
+    <string name="open_drawer">open_drawer</string>
+    <string name="close_drawer">close_drawer</string>
+
+    <string name="disconnect_snack">Disconnected. Notes will be uploaded when network connection is restored.</string>
+    <string name="hide_snack">HIDE</string>
+
 </resources>

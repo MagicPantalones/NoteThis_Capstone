@@ -2,6 +2,7 @@ package io.magics.notethis.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,8 @@ public class Utils {
 
     public static final String DIALOG_SAVE = "dialog_save";
     public static final String DIALOG_CLOSE = "dialog_close";
+
+    public static final int SDK_V = Build.VERSION.SDK_INT;
 
     public static void dispose(Object... objects) {
         for (Object object : objects) {

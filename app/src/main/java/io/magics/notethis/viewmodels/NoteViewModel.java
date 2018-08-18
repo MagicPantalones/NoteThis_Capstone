@@ -49,11 +49,9 @@ public class NoteViewModel extends AndroidViewModel {
     private DatabaseReference rootRef;
     private DatabaseReference userRef;
     private DatabaseReference noteRef;
-    private GoogleSignInClient googleSignInClient;
-    private String uid;
     private MutableLiveData<Note> note = new MutableLiveData<>();
     private MutableLiveData<Boolean> signedIn = new MutableLiveData<>();
-    private MutableLiveData<Boolean> connected = new MutableLiveData<>();
+    private ConnectionLiveData connected;
     private MutableLiveData<List<Note>> serverNotes = new MutableLiveData<>();
 
     private AppDatabase appDatabase;
@@ -66,7 +64,7 @@ public class NoteViewModel extends AndroidViewModel {
     public void init() {
         appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
         note.setValue(new Note(NEW_NOTE_TITLE, "", ""));
-        connected.setValue(true);
+        connected = new ConnectionLiveData(getApplication());
         auth = FirebaseAuth.getInstance();
         rootRef = FirebaseDatabase.getInstance().getReference();
         signIn();
@@ -136,14 +134,10 @@ public class NoteViewModel extends AndroidViewModel {
     }
 
     private void signIn(){
-        FirebaseUtils.getUserFromAuth(auth, rootRef, new FirebaseUtils.FirebaseAuthCallback() {
+        FirebaseUtils.getUserFromAuth(auth, new FirebaseUtils.FirebaseAuthCallback() {
             @Override
             public void onSuccess(FirebaseUser user) {
-                signedIn.setValue(true);
-                uid = user.getUid();
-                userRef = FirebaseUtils.getUserPath(rootRef, uid);
-                noteRef = FirebaseUtils.getNotesPath(rootRef, uid);
-                observeConnection();
+                handleSignIn(user);
             }
 
             @Override
@@ -155,6 +149,7 @@ public class NoteViewModel extends AndroidViewModel {
 
     public void signOut(){
         auth.signOut();
+        signedIn.setValue(false);
     }
 
     public void onGoogleSignIn(GoogleSignInAccount account) {
@@ -162,12 +157,17 @@ public class NoteViewModel extends AndroidViewModel {
         auth.signInWithCredential(GoogleAuthProvider.getCredential(account.getIdToken(), null))
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        signedIn.setValue(true);
-                        uid = task.getResult().getUser().getUid();
-                        userRef = FirebaseUtils.getUserPath(rootRef, uid);
-                        noteRef = FirebaseUtils.getNotesPath(rootRef, uid);
+                        handleSignIn(task.getResult().getUser());
                     }
                 });
+    }
+
+    private void handleSignIn(FirebaseUser user) {
+        signedIn.setValue(true);
+        String uid = user.getUid();
+        userRef = FirebaseUtils.getUserPath(rootRef, uid);
+        noteRef = FirebaseUtils.getNotesPath(rootRef, uid);
+        FirebaseUtils.checkForUserEmail(userRef, user.getEmail());
     }
 
     public LiveData<List<Note>> fetchAllNotesFromServer() {
@@ -183,20 +183,5 @@ public class NoteViewModel extends AndroidViewModel {
             }
         });
         return serverNotes;
-    }
-
-    private void observeConnection() {
-        FirebaseUtils.getConnectionStatusRef(rootRef).addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        connected.setValue(dataSnapshot.getValue(Boolean.class));
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        //Required override
-                    }
-                });
     }
 }
