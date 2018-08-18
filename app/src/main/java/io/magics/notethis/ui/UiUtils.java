@@ -16,6 +16,7 @@ import java.util.List;
 
 import io.magics.notethis.R;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
+import io.magics.notethis.ui.fragments.HelpFragment;
 import io.magics.notethis.ui.fragments.IntroFragment;
 import io.magics.notethis.ui.fragments.NoteListFragment;
 import io.magics.notethis.ui.fragments.PreviewFragment;
@@ -31,6 +32,7 @@ public class UiUtils {
     private static final String FRAG_NOTE_LIST = "frag_note_list";
     private static final String FRAG_EDIT_NOTE = "frag_edit_note";
     private static final String FRAG_PREVIEW = "frag_preview";
+    private static final String FRAG_HELP = "frag_help";
 
     private static final int CONTAINER = R.id.container_main;
 
@@ -154,11 +156,17 @@ public class UiUtils {
     }
 
     public static void showHelpFrag(FragmentManager manager) {
-        //TODO Implement after HelpFragment has been written.
         Fragment oldFrag = manager.findFragmentById(CONTAINER);
         if (oldFrag != null) {
             oldFrag.setExitTransition(getTransition(Gravity.START));
         }
+        HelpFragment newFrag = HelpFragment.newInstance();
+        newFrag.setEnterTransition(getTransition(Gravity.END));
+        manager.beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(CONTAINER, newFrag, FRAG_HELP)
+                .addToBackStack(FRAG_HELP)
+                .commit();
 
     }
 

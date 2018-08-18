@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.List;
@@ -84,9 +85,6 @@ public class MainActivity extends AppCompatActivity implements
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
-        List<String> mdTest = MarkdownUtils.loadHelpFile(this);
-        Log.w(TAG, "onCreate: " + mdTest.get(0));
-
 
         mainFab.setOnClickListener(v -> onNewNotePress());
 
@@ -103,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case R.id.nav_drawer_help:
                     if (item.isChecked()) break;
-                    Toast.makeText(this, "Show help frag", Toast.LENGTH_SHORT).show();
+                    UiUtils.showHelpFrag(fragManager);
                     break;
                 case R.id.nav_drawer_sign_out:
                     item.setChecked(false);
@@ -230,9 +228,16 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) return true;
 
-        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
-
+        switch (item.getItemId()) {
+            case R.id.edit_menu_help:
+                UiUtils.showHelpFrag(fragManager);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /* NO_INTERNET_LOG_IN
