@@ -76,6 +76,8 @@ dependencies {
     implementation "ru.noties:markwon:${markVer}"
     implementation "ru.noties:markwon-image-loader:${markVer}"
     implementation "ru.noties:markwon-syntax:${markVer}"
+    implementation "ru.noties:markwon-syntax:${markVer}"
+    implementation 'me.saket:better-link-movement-method:2.2.0'
 
     //Debug & testing
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${leakVer}"

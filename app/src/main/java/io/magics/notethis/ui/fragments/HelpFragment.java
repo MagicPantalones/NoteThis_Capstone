@@ -1,5 +1,8 @@
 package io.magics.notethis.ui.fragments;
 
+import android.content.res.Configuration;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,7 +25,16 @@ import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.utils.MarkdownUtils;
 import io.magics.notethis.utils.Utils;
+import me.saket.bettermovementmethod.BetterLinkMovementMethod;
+import okhttp3.OkHttpClient;
+import ru.noties.markwon.LinkResolverDef;
 import ru.noties.markwon.Markwon;
+import ru.noties.markwon.SpannableConfiguration;
+import ru.noties.markwon.UrlProcessorNoOp;
+import ru.noties.markwon.il.AsyncDrawableLoader;
+import ru.noties.markwon.renderer.ImageSize;
+import ru.noties.markwon.renderer.ImageSizeResolver;
+import ru.noties.markwon.spans.AsyncDrawable;
 
 
 public class HelpFragment extends Fragment {
@@ -52,6 +67,7 @@ public class HelpFragment extends Fragment {
         if (getContext() != null) {
             List<String> md = MarkdownUtils.loadHelpFile(getContext());
             recyclerView.setAdapter(new HelpFragmentAdapter(md));
+            recyclerView.clearAnimation();
         }
     }
 
@@ -64,9 +80,20 @@ public class HelpFragment extends Fragment {
     class HelpFragmentAdapter extends RecyclerView.Adapter<HelpViewHolder> {
 
         private List<String> paraGraphs;
+        private final SpannableConfiguration configuration;
 
         HelpFragmentAdapter(List<String> mdParagraphs) {
             this.paraGraphs = mdParagraphs;
+            AsyncDrawableLoader adl = AsyncDrawableLoader.builder()
+                    .client(new OkHttpClient())
+                    .executorService(Executors.newCachedThreadPool())
+                    .errorDrawable(getResources().getDrawable(R.drawable.owl_24dp_color_nobg))
+                    .build();
+
+            configuration = SpannableConfiguration.builder(getContext())
+                    .asyncDrawableLoader(adl)
+                    .urlProcessor(new UrlProcessorNoOp())
+                    .build();
         }
 
         @NonNull
@@ -79,12 +106,14 @@ public class HelpFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull HelpViewHolder holder, int position) {
-            String text = paraGraphs.get(position);
-            if (position > 0 && paraGraphs.get(position - 1).contains("## Code")) {
-                holder.mdView.setText(Html.fromHtml(text));
-            } else {
-                Markwon.setMarkdown(holder.mdView, text);
-            }
+            CharSequence renderedText = Markwon.markdown(configuration, paraGraphs.get(position));
+            holder.mdView.setMovementMethod(BetterLinkMovementMethod.newInstance());
+            Markwon.unscheduleDrawables(holder.mdView);
+            Markwon.unscheduleTableRows(holder.mdView);
+            holder.mdView.setText(renderedText);
+            Markwon.scheduleDrawables(holder.mdView);
+            Markwon.scheduleTableRows(holder.mdView);
+
         }
 
         @Override
@@ -98,7 +127,7 @@ public class HelpFragment extends Fragment {
         @BindView(R.id.md_help_tv)
         TextView mdView;
 
-        public HelpViewHolder(View itemView) {
+        HelpViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

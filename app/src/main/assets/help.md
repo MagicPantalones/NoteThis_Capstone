@@ -1,8 +1,9 @@
 ##Markdown Cheatsheet
-**Based on Markwon library's [Cheatsheet][markwon]
+
+Based on Markwon library's [Cheatsheet](https://github.com/noties/Markwon/blob/master/README.md)
 
 # Demo
-Based on [this cheatsheet][cheatsheet]
+Based on [this cheatsheet](cheatsheet)
 
 ---
 ```no-highlight
@@ -112,6 +113,18 @@ Or leave it empty and use the [link text itself].
 
 ---
 
+## Images
+```no-highlight
+Images can be added this way:
+![alt-text](https://www.placecage.com/c/300/150)
+```
+![alt-text](https://www.placecage.com/c/300/150)
+
+
+Alternatively you can upload an image from your phone to Imgur and from the app easily by either
+pressing the image icon on the bottom bar in the editor or by going to `Imgur Uploads` from the 
+navigation menu.
+
 <sup></sup>
 ## Code
 
@@ -121,24 +134,9 @@ Inline `code` has `back-ticks around` it.
 ```
 Inline `code` has `back-ticks around` it.
 
-Blocks of code are either fenced by lines with three back-ticks <code>```</code>, or are indented with four spaces. I recommend only using the fenced code blocks -- they're easier and only they support syntax highlighting.
-<sup></sup>
-<pre lang="no-highlight"><code>```javascript
-var s = "JavaScript syntax highlighting";
-alert(s);
-```
- 
-```python
-s = "Python syntax highlighting"
-print s
-```
- 
-```
-No language indicated, so no syntax highlighting. 
-But let's throw in a &lt;b&gt;tag&lt;/b&gt;.
-```
-</code></pre>
-<sup></sup>
+Blocks of code are either fenced by lines with three back-ticks <code>```</code>, or are indented with four spaces. I recommend only using the fenced code blocks -- they're easier and only they support syntax highlighting. 
+
+Syntax highlighting is done by writing the language name after the opening back-ticks <code>```java</code>
 
 ```javascript
 var s = "JavaScript syntax highlighting";
@@ -268,4 +266,3 @@ License: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
 [1]: http://slashdot.org
 [link text itself]: http://www.reddit.com
 [cheatsheet]: https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
-[markwon]: https://github.com/noties/Markwon/blob/master/README.md
