@@ -194,13 +194,6 @@ public class UiUtils {
         return slide;
     }
 
-    private static Transition getDelayedTransition(int gravity) {
-        Slide slide = new Slide();
-        slide.setSlideEdge(gravity);
-        slide.setDuration(SLIDE_DEFAULT_TIME);
-        slide.setStartDelay(SLIDE_DEFAULT_TIME);
-        return slide;
-    }
 
     private UiUtils() {}
 

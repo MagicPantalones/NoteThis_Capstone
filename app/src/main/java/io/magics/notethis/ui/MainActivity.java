@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.data.DataProvider;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
+import io.magics.notethis.utils.MarkdownUtils;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
@@ -81,6 +83,9 @@ public class MainActivity extends AppCompatActivity implements
                 R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
+
+        List<String> mdTest = MarkdownUtils.loadHelpFile(this);
+        Log.w(TAG, "onCreate: " + mdTest.get(0));
 
 
         mainFab.setOnClickListener(v -> onNewNotePress());
