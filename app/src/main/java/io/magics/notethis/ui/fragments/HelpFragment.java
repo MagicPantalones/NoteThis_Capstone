@@ -1,22 +1,16 @@
 package io.magics.notethis.ui.fragments;
 
-import android.content.res.Configuration;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import butterknife.BindView;
@@ -27,14 +21,10 @@ import io.magics.notethis.utils.MarkdownUtils;
 import io.magics.notethis.utils.Utils;
 import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 import okhttp3.OkHttpClient;
-import ru.noties.markwon.LinkResolverDef;
 import ru.noties.markwon.Markwon;
 import ru.noties.markwon.SpannableConfiguration;
 import ru.noties.markwon.UrlProcessorNoOp;
 import ru.noties.markwon.il.AsyncDrawableLoader;
-import ru.noties.markwon.renderer.ImageSize;
-import ru.noties.markwon.renderer.ImageSizeResolver;
-import ru.noties.markwon.spans.AsyncDrawable;
 
 
 public class HelpFragment extends Fragment {
@@ -92,6 +82,7 @@ public class HelpFragment extends Fragment {
 
             configuration = SpannableConfiguration.builder(getContext())
                     .asyncDrawableLoader(adl)
+                    .imageSizeResolver(new AdaptiveImageSizeResolver())
                     .urlProcessor(new UrlProcessorNoOp())
                     .build();
         }

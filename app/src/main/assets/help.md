@@ -120,6 +120,8 @@ Images can be added this way:
 ```
 ![alt-text](https://www.placecage.com/c/300/150)
 
+![alt-text](https://www.placecage.com/c/200/300)
+
 
 Alternatively you can upload an image from your phone to Imgur and from the app easily by either
 pressing the image icon on the bottom bar in the editor or by going to `Imgur Uploads` from the 
