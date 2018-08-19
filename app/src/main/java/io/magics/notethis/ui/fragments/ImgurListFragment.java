@@ -168,8 +168,8 @@ public class ImgurListFragment extends Fragment {
         }
 
         private void handleImageClick(String url) {
-
-
+            ImageSheetDialog dialog = ImageSheetDialog.newInstance(url);
+            dialog.show(getFragmentManager(), TAG_IMG_DIALOG);
         }
     }
 

@@ -1,4 +1,4 @@
-<FrameLayout
+<android.support.design.widget.CoordinatorLayout
     android:id="@+id/dialog_sheet"
     app:layout_behavior="@string/bottom_sheet_behavior"
     android:layout_width="match_parent"
@@ -8,10 +8,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
-        android:id="@+id/show_img_view"
+        android:id="@+id/sheet_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:ignore="ContentDescription"
         tools:src="@drawable/place_cage" />
 
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>
