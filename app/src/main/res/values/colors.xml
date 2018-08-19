@@ -13,5 +13,7 @@
     <color name="secondaryTextColor">#000000</color>
 
     <color name="backgroundColorMain">#EFEBDE</color>
+    
+    <color name="dark_transparent">#f21f001e</color>
 
 </resources>

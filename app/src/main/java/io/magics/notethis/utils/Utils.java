@@ -3,12 +3,14 @@ package io.magics.notethis.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.IdRes;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.transition.TransitionSet;
+import android.view.View;
 
 import butterknife.Unbinder;
 import io.magics.notethis.R;
@@ -71,6 +73,15 @@ public class Utils {
 
     public static void backPressed(Context context) {
         ((MainActivity) context).onBackPressed();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <V extends View> V bindEither(View view, @IdRes int id1, @IdRes int id2) {
+        View v1 = view.findViewById(id1);
+        View v2 = view.findViewById(id2);
+
+        if (v1 == null) return (V) v2;
+        else return (V) v1;
     }
 
     public static Transition getSignInTransition(Context context) {

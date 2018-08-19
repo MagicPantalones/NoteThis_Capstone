@@ -14,6 +14,7 @@
 
         <!-- Content description set programmatically -->
         <ImageView
+            android:id="@+id/vh_imgur_img_bot"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
@@ -38,7 +39,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
-                android:id="@+id/vh_imgur_menu_top"
+                android:id="@+id/vh_imgur_menu_bot"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/outline_more_vert_24"
@@ -47,6 +48,7 @@
                 android:layout_marginEnd="@dimen/margin_8dp"/>
             
             <TextView
+                android:id="@+id/vh_imgur_title_bot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Image Title"
@@ -55,7 +57,7 @@
                 android:layout_marginStart="@dimen/margin_8dp"
                 android:lines="1"
                 android:ellipsize="end"
-                android:layout_alignStart="@+id/vh_imgur_menu_top"
+                android:layout_alignStart="@+id/vh_imgur_menu_bot"
                 style="@style/text.lightTextNormal"
                 android:textSize="@dimen/text_size_body_large"
                 android:textStyle="bold"/>

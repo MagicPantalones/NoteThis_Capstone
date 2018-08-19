@@ -17,6 +17,7 @@ import java.util.List;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.HelpFragment;
+import io.magics.notethis.ui.fragments.ImgurListFragment;
 import io.magics.notethis.ui.fragments.IntroFragment;
 import io.magics.notethis.ui.fragments.NoteListFragment;
 import io.magics.notethis.ui.fragments.PreviewFragment;
@@ -33,6 +34,7 @@ public class UiUtils {
     private static final String FRAG_EDIT_NOTE = "frag_edit_note";
     private static final String FRAG_PREVIEW = "frag_preview";
     private static final String FRAG_HELP = "frag_help";
+    private static final String FRAG_IMGUR_LIST = "frag_imgur_list";
 
     private static final int CONTAINER = R.id.container_main;
 
@@ -171,11 +173,17 @@ public class UiUtils {
     }
 
     public static void showImgurList(FragmentManager manager) {
-        //TODO Implement after ImgurFragment has been written.
         Fragment oldFrag = manager.findFragmentById(CONTAINER);
         if (oldFrag != null) {
             oldFrag.setExitTransition(getTransition(Gravity.START));
         }
+        ImgurListFragment newFrag = ImgurListFragment.newInstance();
+        newFrag.setEnterTransition(getTransition(Gravity.END));
+        manager.beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(CONTAINER, newFrag, FRAG_IMGUR_LIST)
+                .addToBackStack(FRAG_IMGUR_LIST)
+                .commit();
     }
 
     public static void handleUserSignOut(Activity activity, FragmentManager manager) {

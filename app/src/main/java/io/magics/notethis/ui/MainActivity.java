@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case R.id.nav_drawer_imgur:
                     if (item.isChecked()) break;
-                    Toast.makeText(this, "Show Imgur frag", Toast.LENGTH_SHORT).show();
+                    UiUtils.showImgurList(fragManager);
                     break;
                 case R.id.nav_drawer_help:
                     if (item.isChecked()) break;
