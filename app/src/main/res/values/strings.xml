@@ -5,6 +5,7 @@
     <string name="logo_a11y">Logo for NoteThis</string>
     <string name="nav_drawer_a11y">Navigation Drawer</string>
     <string name="view_note_a11y">View Note</string>
+    <string name="imgur_menu_a11y">Imgur Menu</string>
 
     <string name="new_note_btn">New Note!</string>
     <string name="new_note_title">New Note</string>
@@ -44,7 +45,6 @@
     <string name="disconnect_snack">Disconnected. Notes will be uploaded when network connection is restored.</string>
     <string name="hide_snack">HIDE</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

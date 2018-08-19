@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/backgroundColorMain"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".ui.fragments.ImgurListFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/imgur_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        app:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"
+        app:spanCount="2"
+        tools:listitem="@layout/imgur_list_vh_bar_bottom"
+        />
+
+    <ProgressBar
+        android:id="@+id/imgur_list_progress"
+        android:layout_width="@dimen/button_margin_empty_list"
+        android:layout_height="@dimen/button_margin_empty_list"
+        android:layout_gravity="center"
+        tools:visibility="gone"/>
+
+</FrameLayout>
