@@ -241,19 +241,19 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    /* NO_INTERNET_LOG_IN
-    TODO Check if user is signed in else show log-in screen and show snakckbar telling
-    user to connect to the internet. Else just show Snackbar in loading screen
-    */
-
     /* NO_INTERNET_IMGUR
     TODO Show snackbar telling user that Image can't be uploaded, but will be uploaded as
     soon as they are reconnected to the internet. SnackBar has abort button.
     */
 
-    /* NO_INTERNET_FIRE_DB &&
-    TODO Tell user that they are working offline and notes will uploaded to the cloud once
-    they reconnect to the net. Turn on offline mode.
-    */
+    //TODO Imgur upload
+
+    //TODO Implement widget.
+
+    //TODO Fix fragment stack bug.
+
+    //TODO Implement Imgur API Logic, Room & Firebase bush and pull logic
+
+    //TODO Implement Firebase get all notes on sign in logic & drop table when user sign out.
 
 }

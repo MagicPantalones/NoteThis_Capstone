@@ -110,7 +110,7 @@ public class NoteListFragment extends Fragment {
             adapter.deleteTitle(noteTitle);
             //noinspection ConstantConditions
             Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.main_root),
-                    noteTitle.getTitle() + "deleted!", Snackbar.LENGTH_LONG);
+                    noteTitle.getTitle() + " deleted!", Snackbar.LENGTH_LONG);
             snackbar.setAction("UNDO", v -> adapter.restoreTitle(noteTitle, adapterPos));
             snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(),
                     R.color.secondaryColor, null));

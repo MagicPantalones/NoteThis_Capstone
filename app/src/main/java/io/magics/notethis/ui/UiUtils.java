@@ -67,7 +67,7 @@ public class UiUtils {
                         .setReorderingAllowed(true)
                         .addSharedElement(sharedLogo, sharedLogo.getTransitionName())
                         .replace(CONTAINER, newFrag, FRAG_SIGN_IN)
-                        .commit();
+                        .commitAllowingStateLoss();
             }
 
         }.start();
@@ -125,7 +125,7 @@ public class UiUtils {
         manager.beginTransaction()
                 .setReorderingAllowed(true)
                 .replace(CONTAINER, newFrag, FRAG_NOTE_LIST)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     public static void showEditNoteFrag(FragmentManager manager) {
