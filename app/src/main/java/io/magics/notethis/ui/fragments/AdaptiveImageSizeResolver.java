@@ -27,6 +27,12 @@ public class AdaptiveImageSizeResolver extends ImageSizeResolverDef {
         final float ratio = (float) imgBounds.width() / imgBounds.height();
         final int height = (int) (outWidth / ratio + .5f);
 
+        if (imgBounds.height() > imgBounds.width()) {
+            int left = (canvasWidth / 2) - (outWidth / 2);
+            int right = (canvasWidth / 2) + (outWidth / 2);
+            return new Rect(left, 0, right, height);
+        }
+
         return new Rect(0, 0, outWidth, height);
     }
 }

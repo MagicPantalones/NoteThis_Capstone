@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/help_recycler"
+    android:background="@color/backgroundColorMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/margin_16dp"
-    android:clipToPadding="false"
-    android:clipChildren="false"
-    android:background="@color/backgroundColorMain"
-    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.fragments.HelpFragment" />
+    tools:context=".ui.fragments.HelpFragment">
+    
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/help_recycler"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+    <ProgressBar
+        android:id="@+id/help_parse_progress"
+        android:layout_width="@dimen/button_margin_empty_list"
+        android:layout_height="@dimen/button_margin_empty_list"
+        android:layout_gravity="center"/>
+    
+</FrameLayout>

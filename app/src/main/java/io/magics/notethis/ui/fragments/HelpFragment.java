@@ -5,9 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -19,6 +21,10 @@ import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.utils.MarkdownUtils;
 import io.magics.notethis.utils.Utils;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 import okhttp3.OkHttpClient;
 import ru.noties.markwon.Markwon;
@@ -29,10 +35,15 @@ import ru.noties.markwon.il.AsyncDrawableLoader;
 
 public class HelpFragment extends Fragment {
 
+    private static final String TAG = "HelpFragment";
+
     @BindView(R.id.help_recycler)
     RecyclerView recyclerView;
+    @BindView(R.id.help_parse_progress)
+    ProgressBar helpParseProgress;
 
     private Unbinder unbinder;
+    private Disposable disposable;
 
     public HelpFragment() {
         //Required public constructor
@@ -55,10 +66,18 @@ public class HelpFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getContext() != null) {
-            List<String> md = MarkdownUtils.loadHelpFile(getContext());
-            recyclerView.setAdapter(new HelpFragmentAdapter(md));
-            recyclerView.clearAnimation();
+            disposable = Single.just(MarkdownUtils.loadHelpFile(getContext()))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::handleParsedList, e -> Log.w(TAG, "Parse Error", e));
         }
+    }
+
+    private void handleParsedList(List<String> md) {
+        recyclerView.setAdapter(new HelpFragmentAdapter(md));
+        recyclerView.clearAnimation();
+        recyclerView.setVisibility(View.VISIBLE);
+        helpParseProgress.setVisibility(View.GONE);
     }
 
     @Override
@@ -74,17 +93,7 @@ public class HelpFragment extends Fragment {
 
         HelpFragmentAdapter(List<String> mdParagraphs) {
             this.paraGraphs = mdParagraphs;
-            AsyncDrawableLoader adl = AsyncDrawableLoader.builder()
-                    .client(new OkHttpClient())
-                    .executorService(Executors.newCachedThreadPool())
-                    .errorDrawable(getResources().getDrawable(R.drawable.owl_24dp_color_nobg))
-                    .build();
-
-            configuration = SpannableConfiguration.builder(getContext())
-                    .asyncDrawableLoader(adl)
-                    .imageSizeResolver(new AdaptiveImageSizeResolver())
-                    .urlProcessor(new UrlProcessorNoOp())
-                    .build();
+            configuration = MarkdownUtils.getMarkdownConfig(getContext());
         }
 
         @NonNull
@@ -113,7 +122,7 @@ public class HelpFragment extends Fragment {
         }
     }
 
-    class HelpViewHolder extends RecyclerView.ViewHolder{
+    class HelpViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.md_help_tv)
         TextView mdView;

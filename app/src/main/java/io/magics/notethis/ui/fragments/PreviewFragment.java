@@ -17,10 +17,13 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
+import io.magics.notethis.utils.MarkdownUtils;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.viewmodels.NoteViewModel;
+import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 import ru.noties.markwon.Markwon;
+import ru.noties.markwon.SpannableConfiguration;
 
 
 public class PreviewFragment extends Fragment {
@@ -64,8 +67,20 @@ public class PreviewFragment extends Fragment {
         model.getNote().observe(getActivity(), note -> {
             if (getContext() != null) {
                 Utils.setToolbarTitle(getContext(), note.getTitle(), R.color.primaryTextColor);
-                CharSequence formattedText = Markwon.markdown(getContext(), note.getBody());
+
+                final SpannableConfiguration config = MarkdownUtils.getMarkdownConfig(getContext());
+                CharSequence formattedText = Markwon.markdown(config, note.getBody());
+
+                markdownTextView.setMovementMethod(BetterLinkMovementMethod.newInstance());
+
+                Markwon.unscheduleDrawables(markdownTextView);
+                Markwon.unscheduleTableRows(markdownTextView);
+
                 markdownTextView.setText(formattedText);
+
+                Markwon.scheduleDrawables(markdownTextView);
+                Markwon.scheduleTableRows(markdownTextView);
+
             }
         });
     }

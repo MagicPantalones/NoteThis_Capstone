@@ -10,11 +10,31 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
+
+import io.magics.notethis.R;
+import io.magics.notethis.ui.fragments.AdaptiveImageSizeResolver;
+import okhttp3.OkHttpClient;
+import ru.noties.markwon.SpannableConfiguration;
+import ru.noties.markwon.UrlProcessorNoOp;
+import ru.noties.markwon.il.AsyncDrawableLoader;
 
 public class MarkdownUtils {
 
     private static final String TAG = "MarkdownUtils";
     private static final String SPLIT_STRING = "<sup></sup>";
+
+    public static SpannableConfiguration getMarkdownConfig(Context context) {
+        AsyncDrawableLoader adl = AsyncDrawableLoader.builder()
+                .client(new OkHttpClient())
+                .executorService(Executors.newCachedThreadPool())
+                .build();
+        return SpannableConfiguration.builder(context)
+                .asyncDrawableLoader(adl)
+                .imageSizeResolver(new AdaptiveImageSizeResolver())
+                .urlProcessor(new UrlProcessorNoOp())
+                .build();
+    }
 
     public static List<String> loadHelpFile(Context context) {
         InputStream stream = null;
