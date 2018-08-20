@@ -1,6 +1,5 @@
 package io.magics.notethis.ui.fragments;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import io.magics.notethis.R;
 import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
 import io.magics.notethis.utils.MarkdownUtils;
 import io.magics.notethis.utils.Utils;
-import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 import ru.noties.markwon.Markwon;

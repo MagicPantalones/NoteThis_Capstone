@@ -8,7 +8,6 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:padding="@dimen/margin_4dp"
     tools:context=".ui.fragments.ImgurListFragment">
 
     <android.support.v7.widget.RecyclerView
@@ -20,6 +19,7 @@
         android:clipToPadding="false"
         android:clipChildren="false"
         tools:visibility="visible"
+        android:padding="@dimen/margin_4dp"
         app:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"
         app:spanCount="2"
         tools:listitem="@layout/imgur_list_vh_bar_bottom"

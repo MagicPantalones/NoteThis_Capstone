@@ -30,6 +30,7 @@ import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.data.DataProvider;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
+import io.magics.notethis.ui.fragments.ImgurListFragment;
 import io.magics.notethis.utils.MarkdownUtils;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements
     View mainRoot;
     @BindView(R.id.main_fab)
     FloatingActionButton mainFab;
+    @BindView(R.id.upload_fab)
+    FloatingActionButton uploadFab;
     @BindView(R.id.appbar_layout)
     AppBarLayout appBarLayout;
     @BindView(R.id.nav_view)
@@ -88,12 +91,14 @@ public class MainActivity extends AppCompatActivity implements
 
 
         mainFab.setOnClickListener(v -> onNewNotePress());
+        uploadFab.setOnClickListener(v -> onUploadImagePress());
 
         navDrawer.setNavigationItemSelectedListener(item -> {
             drawerLayout.closeDrawers();
             switch (item.getItemId()) {
                 case R.id.nav_drawer_notes:
                     if (item.isChecked()) break;
+                    if (UiUtils.isFragType(fragManager, ImgurListFragment.class)) uploadFab.hide();
                     UiUtils.showNoteListFrag(this, fragManager);
                     break;
                 case R.id.nav_drawer_imgur:
@@ -169,6 +174,9 @@ public class MainActivity extends AppCompatActivity implements
         if (frag instanceof EditNoteFragment && ((EditNoteFragment) frag).hasUnsavedChanges()) {
             ((EditNoteFragment) frag).prepareSave(EditNoteFragment.ACTION_BACK);
         } else {
+            if (frag instanceof ImgurListFragment) {
+                uploadFab.hide();
+            }
             appBarLayout.setExpanded(true, true);
             Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
             super.onBackPressed();
@@ -185,12 +193,13 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onNewNotePress() {
-
         noteViewModel.newNote();
-
         Utils.setToolbarTitle(this, NoteViewModel.NEW_NOTE_TITLE, R.color.primaryTextColor);
-
         UiUtils.showEditNoteFrag(fragManager);
+    }
+
+    private void onUploadImagePress() {
+
     }
 
     @Override
@@ -217,6 +226,20 @@ public class MainActivity extends AppCompatActivity implements
     public void hideFab() {
         if (mainFab != null) {
             mainFab.hide();
+            uploadFab.hide();
+        }
+    }
+
+    @Override
+    public void changeFab() {
+        if (mainFab != null) {
+            mainFab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+                @Override
+                public void onHidden(FloatingActionButton fab) {
+                    super.onHidden(fab);
+                    uploadFab.show();
+                }
+            });
         }
     }
 

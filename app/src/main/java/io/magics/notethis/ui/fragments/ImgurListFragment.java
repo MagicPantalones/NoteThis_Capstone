@@ -32,6 +32,7 @@ import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.MainActivity;
 import io.magics.notethis.ui.dialogs.ImageSheetDialog;
+import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
 import io.magics.notethis.utils.GlideApp;
 import io.magics.notethis.utils.Utils;
 
@@ -45,6 +46,8 @@ public class ImgurListFragment extends Fragment {
     ProgressBar imgurProgress;
 
     Unbinder unbinder;
+
+    FabListener mainFabListener;
 
     public ImgurListFragment() {
         // Required empty public constructor
@@ -69,11 +72,20 @@ public class ImgurListFragment extends Fragment {
         imgurRecycler.addItemDecoration(new ItemSpacingDecoration(
                 getResources().getDimensionPixelSize(R.dimen.margin_4dp)));
         imgurRecycler.setAdapter(new ImgurAdapter());
+
+        if (mainFabListener != null) mainFabListener.changeFab();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FabListener) mainFabListener = (FabListener) context;
     }
 
     @Override
     public void onDetach() {
         Utils.dispose(unbinder);
+        mainFabListener = null;
         super.onDetach();
     }
 

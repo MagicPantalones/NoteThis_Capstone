@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,11 +27,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import me.saket.bettermovementmethod.BetterLinkMovementMethod;
-import okhttp3.OkHttpClient;
 import ru.noties.markwon.Markwon;
 import ru.noties.markwon.SpannableConfiguration;
-import ru.noties.markwon.UrlProcessorNoOp;
-import ru.noties.markwon.il.AsyncDrawableLoader;
 
 
 public class HelpFragment extends Fragment {
