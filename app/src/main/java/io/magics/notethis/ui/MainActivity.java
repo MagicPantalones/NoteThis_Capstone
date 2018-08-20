@@ -1,7 +1,6 @@
 package io.magics.notethis.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.res.ColorStateList;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,23 +14,16 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.Toast;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
-import io.magics.notethis.data.DataProvider;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.ImgurListFragment;
-import io.magics.notethis.utils.MarkdownUtils;
+import io.magics.notethis.utils.DocUtils;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
@@ -47,11 +39,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private boolean showIntro = true;
     private FragmentManager fragManager;
-    private DataProvider dataProvider;
     private NoteTitleViewModel noteTitleViewModel;
     private NoteViewModel noteViewModel;
     private Snackbar disconnectSnack;
-    private boolean connected = true;
     private ActionBarDrawerToggle drawerToggle;
 
     @BindView(R.id.main_toolbar)
@@ -80,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements
 
         initViewModels();
         setSupportActionBar(toolbar);
-        dataProvider = new DataProvider();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -136,16 +125,19 @@ public class MainActivity extends AppCompatActivity implements
         noteViewModel.init();
         noteViewModel.getConnectionStatus().observe(this, status -> {
 
-            connected = status;
             if (!status) {
+
                 disconnectSnack = Snackbar.make(mainRoot, getString(R.string.disconnect_snack),
                         Snackbar.LENGTH_INDEFINITE);
                 disconnectSnack.show();
                 disconnectSnack.setAction(R.string.hide_snack, v -> disconnectSnack.dismiss());
+
                 int color = ResourcesCompat.getColor(getResources(), R.color.secondaryColor,
                         getTheme());
+
                 disconnectSnack.setActionTextColor(color);
                 disconnectSnack.show();
+
             } else {
                 if (disconnectSnack != null && disconnectSnack.isShown()) {
                     disconnectSnack.dismiss();
@@ -199,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void onUploadImagePress() {
-
+        startActivityForResult(DocUtils.getChoseFileIntent(), DocUtils.RC_PICK_IMG);
     }
 
     @Override
@@ -278,5 +270,7 @@ public class MainActivity extends AppCompatActivity implements
     //TODO Implement Imgur API Logic, Room & Firebase bush and pull logic
 
     //TODO Implement Firebase get all notes on sign in logic & drop table when user sign out.
+
+    //TODO Add support for RTL & D-PAD
 
 }

@@ -2,6 +2,7 @@ package io.magics.notethis.utils.models;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity
@@ -16,6 +17,9 @@ public class Image {
     @ColumnInfo(name = "title")
     private String title;
 
+    @Ignore
+    private int status;
+
     public Image(){}
 
     public int getId() { return id; }
@@ -26,5 +30,10 @@ public class Image {
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+
+    @Ignore
+    public int getStatus() { return status; }
+    @Ignore
+    public void setStatus(int status) { this.status = status; }
     
 }

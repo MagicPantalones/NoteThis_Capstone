@@ -2,6 +2,7 @@ package io.magics.notethis.utils;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
@@ -16,6 +17,8 @@ public class DocUtils {
     private static final Uri MEDIA_URI = Uri.parse("com.android.providers.media.documents");
     private static final Uri DOWNLOADS_URI = Uri.parse("com.android.providers.downloads.documents");
     private static final Uri STORAGE_URI = Uri.parse("com.android.externalstorage.documents");
+
+    public static final int RC_PICK_IMG = 2913;
 
 
     public static String getPath(Context context, Uri uri) {
@@ -94,4 +97,11 @@ public class DocUtils {
         return STORAGE_URI.equals(uri);
     }
 
+    public static Intent getChoseFileIntent() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        return intent;
+    }
+
+    private DocUtils() {}
 }

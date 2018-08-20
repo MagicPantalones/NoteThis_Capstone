@@ -22,6 +22,5 @@ public class ImageResponse {
         public String deletehash;
         public String name;
         public String link;
-
     }
 }

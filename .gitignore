@@ -81,3 +81,4 @@ src/main/java/io/magics/notethis/data/
 /app/src/main/java/io/magics/notethis/utils/TodoList.java
 /app/src/main/java/io/magics/notethis/utils/TempVals.java
 /.idea/sonarlint-state.xml
+/imgurId/gradle.properties

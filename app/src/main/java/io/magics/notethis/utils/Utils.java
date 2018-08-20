@@ -24,6 +24,7 @@ public class Utils {
 
     public static final int SDK_V = Build.VERSION.SDK_INT;
 
+
     public static void dispose(Object... objects) {
         for (Object object : objects) {
             if (object instanceof Disposable && ((Disposable) object).isDisposed()) {

@@ -111,10 +111,6 @@ public class FirebaseUtils {
         return getUserPath(rootRef, uid).child(PATH_NOTES);
     }
 
-    public static DatabaseReference getConnectionStatusRef(DatabaseReference rootRef) {
-        return rootRef.child(".info/connected");
-    }
-
 
 
 }
