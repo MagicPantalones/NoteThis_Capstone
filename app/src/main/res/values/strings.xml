@@ -6,6 +6,7 @@
     <string name="nav_drawer_a11y">Navigation Drawer</string>
     <string name="view_note_a11y">View Note</string>
     <string name="imgur_menu_a11y">Imgur Menu</string>
+    <string name="dialog_photo_a11y">Image to be uploaded</string>
 
     <string name="new_note_btn">New Note!</string>
     <string name="new_note_title">New Note</string>
@@ -46,8 +47,11 @@
     <string name="open_drawer">open_drawer</string>
     <string name="close_drawer">close_drawer</string>
 
+    <string name="imgur_snack">No network connection! Please try again later</string>
     <string name="disconnect_snack">Disconnected. Notes will be uploaded when network connection is restored.</string>
     <string name="hide_snack">HIDE</string>
 
+    <string name="dialog_upload">Upload</string>
+    <string name="dialog_et_hint">Title</string>
 
 </resources>

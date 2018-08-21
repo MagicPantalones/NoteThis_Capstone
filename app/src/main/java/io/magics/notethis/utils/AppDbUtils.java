@@ -95,4 +95,15 @@ public class AppDbUtils {
 
     private AppDbUtils() {}
 
+    public static class RoomInsertException extends RuntimeException {
+
+        public RoomInsertException() {
+            super();
+        }
+
+        public RoomInsertException(String message) {
+            super(message);
+        }
+
+    }
 }

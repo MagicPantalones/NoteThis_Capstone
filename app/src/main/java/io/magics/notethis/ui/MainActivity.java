@@ -1,12 +1,21 @@
 package io.magics.notethis.ui;
 
+import android.Manifest;
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -17,32 +26,44 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
+import io.magics.notethis.data.network.ImgurUtils;
+import io.magics.notethis.ui.dialogs.UploadImageDialog;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.ImgurListFragment;
 import io.magics.notethis.utils.DocUtils;
 import io.magics.notethis.utils.Utils;
+import io.magics.notethis.viewmodels.ImgurViewModel;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
 import io.magics.notethis.ui.fragments.NoteListFragment;
 
+import static io.magics.notethis.utils.Utils.DIALOG_UPLOAD;
+
 public class MainActivity extends AppCompatActivity implements
-        NoteListFragment.NoteListFragListener, NoteListFragment.FabListener {
+        NoteListFragment.NoteListFragListener, NoteListFragment.FabListener,
+        UploadImageDialog.UploadDialogHandler {
 
     private static final String TAG = "MainActivity";
 
-
-
+    private static final int READ_WRITE_PERMISSION = 7682;
 
     private boolean showIntro = true;
     private FragmentManager fragManager;
     private NoteTitleViewModel noteTitleViewModel;
     private NoteViewModel noteViewModel;
+    private ImgurViewModel imgurViewModel;
+
     private Snackbar disconnectSnack;
     private ActionBarDrawerToggle drawerToggle;
+
+    private Uri fileUri;
+    private boolean connected;
 
     @BindView(R.id.main_toolbar)
     Toolbar toolbar;
@@ -118,13 +139,15 @@ public class MainActivity extends AppCompatActivity implements
 
     @SuppressWarnings("ConstantConditions")
     private void initViewModels() {
+        imgurViewModel = ViewModelProviders.of(this).get(ImgurViewModel.class);
+
         noteTitleViewModel = ViewModelProviders.of(this).get(NoteTitleViewModel.class);
         noteTitleViewModel.init();
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
         noteViewModel.init();
         noteViewModel.getConnectionStatus().observe(this, status -> {
-
+            connected = status;
             if (!status) {
 
                 disconnectSnack = Snackbar.make(mainRoot, getString(R.string.disconnect_snack),
@@ -153,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
                     UiUtils.showNoteListFrag(this, fragManager);
                 }
+                imgurViewModel.init(noteViewModel.getUserRef());
             } else {
                 UiUtils.introToSignInFrag(this, fragManager);
             }
@@ -190,9 +214,6 @@ public class MainActivity extends AppCompatActivity implements
         UiUtils.showEditNoteFrag(fragManager);
     }
 
-    private void onUploadImagePress() {
-        startActivityForResult(DocUtils.getChoseFileIntent(), DocUtils.RC_PICK_IMG);
-    }
 
     @Override
     public void onNoteListScroll(int state) {
@@ -229,10 +250,60 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void onHidden(FloatingActionButton fab) {
                     super.onHidden(fab);
-                    uploadFab.show();
+                    if (connected) {
+                        uploadFab.show();
+                    }
                 }
             });
         }
+    }
+
+    private void onUploadImagePress() {
+        startActivityForResult(DocUtils.getChoseFileIntent(), DocUtils.RC_PICK_IMG);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == DocUtils.RC_PICK_IMG && resultCode == RESULT_OK) {
+            fileUri = data.getData();
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }, READ_WRITE_PERMISSION);
+            } else {
+                createUploadDialog();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == READ_WRITE_PERMISSION && grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            createUploadDialog();
+            return;
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void createUploadDialog() {
+        if (!connected) return;
+        String filePath = DocUtils.getPath(this, fileUri);
+        if (filePath == null || filePath.isEmpty()) return;
+        File img = new File(filePath);
+        imgurViewModel.prepareUpload(img);
+        UploadImageDialog.newInstance(img).show(fragManager, DIALOG_UPLOAD);
+    }
+
+    @Override
+    public void onUpload(String title) {
+        if (connected) imgurViewModel.upload(title);
     }
 
     @Override
@@ -255,6 +326,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     /* NO_INTERNET_IMGUR
     TODO Show snackbar telling user that Image can't be uploaded, but will be uploaded as

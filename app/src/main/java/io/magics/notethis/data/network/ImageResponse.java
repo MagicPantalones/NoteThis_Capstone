@@ -20,7 +20,7 @@ public class ImageResponse {
         public boolean favorite;
         public String account_url;
         public String deletehash;
-        public String name;
+        public String name  ;
         public String link;
     }
 }

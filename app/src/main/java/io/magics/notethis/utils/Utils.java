@@ -21,6 +21,7 @@ public class Utils {
 
     public static final String DIALOG_SAVE = "dialog_save";
     public static final String DIALOG_CLOSE = "dialog_close";
+    public static final String DIALOG_UPLOAD = "dialog_upload";
 
     public static final int SDK_V = Build.VERSION.SDK_INT;
 

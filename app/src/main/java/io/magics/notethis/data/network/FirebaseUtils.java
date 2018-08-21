@@ -2,6 +2,7 @@ package io.magics.notethis.data.network;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -19,12 +20,13 @@ import java.util.List;
 import java.util.Map;
 
 import io.magics.notethis.R;
-import io.magics.notethis.utils.TempVals;
+import io.magics.notethis.utils.models.Image;
 import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.utils.models.NoteTitle;
-import io.magics.notethis.utils.models.User;
 
 public class FirebaseUtils {
+
+    private static final String TAG = "FirebaseUtils";
 
     private static final String PATH_USERS = "users";
     private static final String PATH_NOTES = "notes";
@@ -35,9 +37,13 @@ public class FirebaseUtils {
         void onFailed(Throwable e);
     }
 
-    public interface FirebaseDbCallback {
+    public interface FirebaseNoteCallback {
         void onComplete(List<Note> notes);
         void onError(DatabaseError error);
+    }
+
+    public interface FirebaseImgurCallback {
+        void onComplete(List<Image> images);
     }
 
     public static void getUserFromAuth(FirebaseAuth auth, FirebaseAuthCallback callback) {
@@ -85,7 +91,7 @@ public class FirebaseUtils {
         }
     }
 
-    public static void getAllNotes(DatabaseReference userRef, FirebaseDbCallback callback) {
+    public static void getAllNotes(DatabaseReference userRef, FirebaseNoteCallback callback) {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -111,6 +117,36 @@ public class FirebaseUtils {
         return getUserPath(rootRef, uid).child(PATH_NOTES);
     }
 
+    public static void insertImgurLink(DatabaseReference imgurRef, Image image) {
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put(String.valueOf(image.getServerId()), image.toMap());
+        imgurRef.updateChildren(childUpdates);
+    }
 
+    public static void deleteImgurLink(DatabaseReference imgurRef, Image image) {
+        imgurRef.child(image.getServerId()).removeValue();
+    }
+
+    public static void getAllImgurLinks(DatabaseReference imgurRef, FirebaseImgurCallback cb) {
+        imgurRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Image> images = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    images.add(snapshot.getValue(Image.class));
+                }
+                cb.onComplete(images);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                handleFirebaseErrors(databaseError);
+            }
+        });
+    }
+
+    private static void handleFirebaseErrors(DatabaseError databaseError) {
+        Log.w(TAG, "Database error: ", databaseError.toException());
+    }
 
 }

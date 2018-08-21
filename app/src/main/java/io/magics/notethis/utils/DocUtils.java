@@ -13,10 +13,10 @@ import android.provider.MediaStore;
 //https://github.com/AKiniyalocts/imgur-android/blob/master/app/src/main/java/akiniyalocts/imgurapiexample/helpers/DocumentHelper.java
 public class DocUtils {
 
-    private static final Uri GOOGLE_URI = Uri.parse("com.google.android.apps.photos.content");
-    private static final Uri MEDIA_URI = Uri.parse("com.android.providers.media.documents");
-    private static final Uri DOWNLOADS_URI = Uri.parse("com.android.providers.downloads.documents");
-    private static final Uri STORAGE_URI = Uri.parse("com.android.externalstorage.documents");
+    private static final String GOOGLE_URI = "com.google.android.apps.photos.content";
+    private static final String MEDIA_URI = "com.android.providers.media.documents";
+    private static final String DOWNLOADS_URI = "com.android.providers.downloads.documents";
+    private static final String STORAGE_URI = "com.android.externalstorage.documents";
 
     public static final int RC_PICK_IMG = 2913;
 
@@ -81,20 +81,20 @@ public class DocUtils {
         return null;
     }
 
-    public static boolean isGoogleUri(Uri uri) {
-        return GOOGLE_URI.equals(uri);
+    private static boolean isGoogleUri(Uri uri) {
+        return GOOGLE_URI.equals(uri.getAuthority());
     }
 
-    public static boolean isMediaUri(Uri uri) {
-        return MEDIA_URI.equals(uri);
+    private static boolean isMediaUri(Uri uri) {
+        return MEDIA_URI.equals(uri.getAuthority());
     }
 
-    public static boolean isDownloadsUri(Uri uri) {
-        return DOWNLOADS_URI.equals(uri);
+    private static boolean isDownloadsUri(Uri uri) {
+        return DOWNLOADS_URI.equals(uri.getAuthority());
     }
 
-    public static boolean isStorageUri(Uri uri) {
-        return STORAGE_URI.equals(uri);
+    private static boolean isStorageUri(Uri uri) {
+        return STORAGE_URI.equals(uri.getAuthority());
     }
 
     public static Intent getChoseFileIntent() {

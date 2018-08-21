@@ -2,39 +2,24 @@ package io.magics.notethis.viewmodels;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Observable;
 
 import io.magics.notethis.data.db.AppDatabase;
 import io.magics.notethis.data.network.FirebaseUtils;
-import io.magics.notethis.ui.dialogs.SaveDialog;
 import io.magics.notethis.utils.AppDbUtils;
 import io.magics.notethis.utils.RoomNoteCallback;
 import io.magics.notethis.utils.models.Note;
@@ -60,6 +45,8 @@ public class NoteViewModel extends AndroidViewModel {
     public NoteViewModel(@NonNull Application application) {
         super(application);
     }
+
+    public DatabaseReference getUserRef() { return userRef; }
 
     public void init() {
         appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
@@ -171,7 +158,7 @@ public class NoteViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Note>> fetchAllNotesFromServer() {
-        FirebaseUtils.getAllNotes(userRef, new FirebaseUtils.FirebaseDbCallback() {
+        FirebaseUtils.getAllNotes(userRef, new FirebaseUtils.FirebaseNoteCallback() {
             @Override
             public void onComplete(List<Note> notes) {
                 serverNotes.setValue(notes);

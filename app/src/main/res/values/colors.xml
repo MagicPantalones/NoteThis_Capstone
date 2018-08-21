@@ -10,6 +10,7 @@
     <color name="secondaryDarkColor">#b70e2c</color>
 
     <color name="primaryTextColor">#ffffff</color>
+    <color name="primaryTextColorFaded">#a6ffffff</color>
     <color name="secondaryTextColor">#000000</color>
 
     <color name="backgroundColorMain">#EFEBDE</color>

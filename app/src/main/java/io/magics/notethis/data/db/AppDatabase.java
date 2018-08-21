@@ -1,6 +1,5 @@
 package io.magics.notethis.data.db;
 
-import android.annotation.SuppressLint;
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
@@ -9,20 +8,10 @@ import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
-import io.magics.notethis.utils.RoomInsertException;
-import io.magics.notethis.utils.RoomNoteCallback;
 import io.magics.notethis.utils.models.Image;
 import io.magics.notethis.utils.models.Note;
-import io.magics.notethis.utils.models.NoteTitle;
-import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
-@Database(entities = {Note.class, Image.class}, version = 2)
+@Database(entities = {Note.class, Image.class}, version = 3)
 public abstract class AppDatabase extends RoomDatabase{
 
 
@@ -38,7 +27,7 @@ public abstract class AppDatabase extends RoomDatabase{
 
             instance = Room.databaseBuilder(
                     context.getApplicationContext(), AppDatabase.class, DB_NAME)
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build();
         }
 
@@ -53,6 +42,13 @@ public abstract class AppDatabase extends RoomDatabase{
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("DROP TABLE IF EXISTS notes");
+        }
+    };
+
+    private static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE image ADD COLUMN serverId TEXT");
         }
     };
 
