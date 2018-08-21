@@ -1,6 +1,7 @@
 package io.magics.notethis.ui.fragments;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -23,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,6 +35,8 @@ import io.magics.notethis.ui.dialogs.ImageSheetDialog;
 import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
 import io.magics.notethis.utils.GlideApp;
 import io.magics.notethis.utils.Utils;
+import io.magics.notethis.utils.models.Image;
+import io.magics.notethis.viewmodels.ImgurViewModel;
 
 public class ImgurListFragment extends Fragment {
 
@@ -44,6 +46,7 @@ public class ImgurListFragment extends Fragment {
     RecyclerView imgurRecycler;
     @BindView(R.id.imgur_list_progress)
     ProgressBar imgurProgress;
+    ImgurViewModel model;
 
     Unbinder unbinder;
 
@@ -69,9 +72,14 @@ public class ImgurListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        model = ViewModelProviders.of(getActivity()).get(ImgurViewModel.class);
+        ImgurAdapter adapter = new ImgurAdapter();
+
         imgurRecycler.addItemDecoration(new ItemSpacingDecoration(
                 getResources().getDimensionPixelSize(R.dimen.margin_4dp)));
-        imgurRecycler.setAdapter(new ImgurAdapter());
+        imgurRecycler.setAdapter(adapter);
+
+        model.getImages().observe(getActivity(), adapter::insertImages);
 
         if (mainFabListener != null) mainFabListener.changeFab();
     }
@@ -91,12 +99,9 @@ public class ImgurListFragment extends Fragment {
 
     private class ImgurAdapter extends RecyclerView.Adapter<ImgurViewHolder> {
 
-        List<String> imgurImages = new ArrayList<>();
+        List<Image> images = new ArrayList<>();
 
-        ImgurAdapter() {
-            imgurImages.addAll(
-                    Arrays.asList(getResources().getStringArray(R.array.imgur_debug_list)));
-        }
+        ImgurAdapter() { }
 
         @Override
         public int getItemViewType(int position) {
@@ -120,45 +125,40 @@ public class ImgurListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull ImgurViewHolder holder, int position) {
-            String url = imgurImages.get(position);
+            Image image = images.get(position);
             GlideApp.with(ImgurListFragment.this)
-                    .load(url)
+                    .load(image.getLink())
                     .into(holder.imgurView);
-            holder.titleView.setText("Image Title " + position);
+            holder.titleView.setText(image.getTitle());
 
             holder.menuButton.setOnClickListener(v ->
-                    handlePopupClick(holder.menuButton, url, position));
-            holder.imgurView.setOnClickListener(v -> handleImageClick(url));
+                    handlePopupClick(holder.menuButton, image, position));
+            holder.imgurView.setOnClickListener(v -> handleImageClick(image.getLink()));
 
-            if (position == 4) {
-                imgurRecycler.setVisibility(View.VISIBLE);
-                imgurProgress.setVisibility(View.GONE);
-            }
         }
 
         @Override
         public int getItemCount() {
-            return imgurImages.size();
+            return images.size();
         }
 
-        private void handlePopupClick(View menuButton, String url, int position) {
+        private void handlePopupClick(View menuButton, Image image, int position) {
             int gravity = position % 2 == 0 ? Gravity.START : Gravity.END;
             PopupMenu popupMenu = new PopupMenu(getContext(), menuButton, gravity);
             popupMenu.inflate(R.menu.imgur_popup_menu);
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.popup_menu_copy) {
-                    Toast.makeText(getContext(), "Copy link: " + url, Toast.LENGTH_LONG)
-                            .show();
                     ClipboardManager clipMan = (ClipboardManager) getActivity()
                             .getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData data = ClipData.newPlainText("Imgur url", url);
+                    ClipData data = ClipData.newPlainText("Imgur url", image.getLink());
                     clipMan.setPrimaryClip(data);
                 } else {
                     handleDeleteClick(position);
+                    model.deleteImage(image);
                     Snackbar undoSnack = Snackbar.make(
                             ((MainActivity) getContext()).findViewById(R.id.main_root),
                             "Image deleted!", Snackbar.LENGTH_LONG);
-                    undoSnack.setAction("UNDO", v -> restore(url, position));
+                    undoSnack.setAction("UNDO", v -> restore(image, position));
                     undoSnack.setActionTextColor(ResourcesCompat.getColor(getResources(),
                             R.color.secondaryColor, null));
                     undoSnack.show();
@@ -168,14 +168,22 @@ public class ImgurListFragment extends Fragment {
             popupMenu.show();
         }
 
-        private void handleDeleteClick(int pos) {
-            imgurImages.remove(pos);
-            notifyItemRemoved(pos);
-            notifyItemRangeChanged(pos, imgurImages.size());
+        private void insertImages(List<Image> images) {
+            this.images = images;
+            notifyDataSetChanged();
+            imgurRecycler.setVisibility(View.VISIBLE);
+            imgurProgress.setVisibility(View.GONE);
         }
 
-        private void restore(String url, int position) {
-            imgurImages.add(position, url);
+        private void handleDeleteClick(int pos) {
+            images.remove(pos);
+            notifyItemRemoved(pos);
+            notifyItemRangeChanged(pos, images.size());
+        }
+
+        private void restore(Image image, int position) {
+            model.restoreImage(image);
+            images.add(position, image);
             notifyItemInserted(position);
         }
 

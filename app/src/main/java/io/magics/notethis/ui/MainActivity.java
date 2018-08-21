@@ -339,9 +339,11 @@ public class MainActivity extends AppCompatActivity implements
 
     //TODO Fix fragment stack bug.
 
-    //TODO Implement Imgur API Logic, Room & Firebase bush and pull logic
+    //TODO Implement Imgur API Logic, Room & Firebase push and pull logic
 
-    //TODO Implement Firebase get all notes on sign in logic & drop table when user sign out.
+    //TODO Implement Firebase get all notes & images on sign in logic & drop tables when user sign out.
+
+    //TODO Implement sync logic.
 
     //TODO Add support for RTL & D-PAD
 

@@ -1,5 +1,6 @@
 package io.magics.notethis.data.db;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -15,7 +16,7 @@ import io.reactivex.Flowable;
 public interface ImageDao {
 
     @Query("SELECT * FROM Image")
-    Flowable<List<Image>> getImages();
+    LiveData<List<Image>> getImages();
 
     @Insert
     void insertImages(Image... images);
