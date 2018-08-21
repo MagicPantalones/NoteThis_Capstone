@@ -339,17 +339,12 @@ public class MainActivity extends AppCompatActivity implements
     soon as they are reconnected to the internet. SnackBar has abort button.
     */
 
-    //TODO Imgur upload
-
     //TODO Implement widget.
 
-    //TODO Fix fragment stack bug.
-
-    //TODO Implement Imgur API Logic, Room & Firebase push and pull logic
-
     //TODO Implement Firebase get all notes & images on sign in logic & drop tables when user sign out.
-
     //TODO Implement sync logic.
+
+    //TODO Add theme color to save & close dialog fragments.
 
     //TODO Add support for RTL & D-PAD
 
