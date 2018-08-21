@@ -333,11 +333,9 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    //TODO Add bottom action bar for Markdown templates.
 
-    /* NO_INTERNET_IMGUR
-    TODO Show snackbar telling user that Image can't be uploaded, but will be uploaded as
-    soon as they are reconnected to the internet. SnackBar has abort button.
-    */
+    //TODO Fix rest of menus & test Imgur list delete function.
 
     //TODO Implement widget.
 
@@ -348,4 +346,5 @@ public class MainActivity extends AppCompatActivity implements
 
     //TODO Add support for RTL & D-PAD
 
+    //TODO Handle lifecycles.
 }
