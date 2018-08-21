@@ -58,7 +58,8 @@ public class EditNoteFragment extends Fragment {
         viewModel.getNote().observe(this, note -> {
             if (getContext() != null) {
                 Utils.setToolbarTitle(getContext(), note.getTitle(), R.color.primaryTextColor);
-                editNoteView.append(note.getBody());
+                editNoteView.setText(note.getBody());
+                editNoteView.setSelection(editNoteView.getText().length());
             }
         });
 

@@ -110,6 +110,7 @@ public class UiUtils {
     public static void showNoteListFrag(Activity activity, FragmentManager manager) {
         Fragment oldFrag = manager.findFragmentById(CONTAINER);
         if (oldFrag != null) {
+            if (oldFrag instanceof NoteListFragment) return;
             oldFrag.setExitTransition(getTransition(Gravity.END));
         }
 
@@ -131,9 +132,11 @@ public class UiUtils {
     public static void showEditNoteFrag(FragmentManager manager) {
         Fragment oldFrag = manager.findFragmentById(CONTAINER);
         if (oldFrag != null) {
+            if (oldFrag instanceof EditNoteFragment) return;
             oldFrag.setExitTransition(getTransition(Gravity.START));
         }
-        EditNoteFragment newFrag = EditNoteFragment.newInstance();
+        EditNoteFragment savedFrag = (EditNoteFragment) manager.findFragmentByTag(FRAG_EDIT_NOTE);
+        EditNoteFragment newFrag = savedFrag != null ? savedFrag : EditNoteFragment.newInstance();
         newFrag.setEnterTransition(getTransition(Gravity.END));
 
         manager.beginTransaction()
@@ -146,9 +149,11 @@ public class UiUtils {
     public static void showPreviewFrag(FragmentManager manager) {
         Fragment oldFrag = manager.findFragmentById(CONTAINER);
         if (oldFrag != null) {
+            if (oldFrag instanceof PreviewFragment) return;
             oldFrag.setExitTransition(getTransition(Gravity.START));
         }
-        PreviewFragment newFrag = PreviewFragment.newInstance();
+        PreviewFragment savedFrag = (PreviewFragment) manager.findFragmentByTag(FRAG_PREVIEW);
+        PreviewFragment newFrag = savedFrag != null ? savedFrag : PreviewFragment.newInstance();
         newFrag.setEnterTransition(getTransition(Gravity.END));
         manager.beginTransaction()
                 .setReorderingAllowed(true)
@@ -160,24 +165,27 @@ public class UiUtils {
     public static void showHelpFrag(FragmentManager manager) {
         Fragment oldFrag = manager.findFragmentById(CONTAINER);
         if (oldFrag != null) {
+            if (oldFrag instanceof HelpFragment) return;
             oldFrag.setExitTransition(getTransition(Gravity.START));
         }
-        HelpFragment newFrag = HelpFragment.newInstance();
+        HelpFragment savedFrag = (HelpFragment) manager.findFragmentByTag(FRAG_HELP);
+        HelpFragment newFrag = savedFrag != null ? savedFrag : HelpFragment.newInstance();
         newFrag.setEnterTransition(getTransition(Gravity.END));
         manager.beginTransaction()
                 .setReorderingAllowed(true)
                 .replace(CONTAINER, newFrag, FRAG_HELP)
                 .addToBackStack(FRAG_HELP)
                 .commit();
-
     }
 
     public static void showImgurList(FragmentManager manager) {
         Fragment oldFrag = manager.findFragmentById(CONTAINER);
         if (oldFrag != null) {
+            if (oldFrag instanceof ImgurListFragment) return;
             oldFrag.setExitTransition(getTransition(Gravity.START));
         }
-        ImgurListFragment newFrag = ImgurListFragment.newInstance();
+        ImgurListFragment saved = (ImgurListFragment) manager.findFragmentByTag(FRAG_IMGUR_LIST);
+        ImgurListFragment newFrag = saved != null ? saved : ImgurListFragment.newInstance();
         newFrag.setEnterTransition(getTransition(Gravity.END));
         manager.beginTransaction()
                 .setReorderingAllowed(true)

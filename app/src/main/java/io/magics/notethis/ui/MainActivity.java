@@ -43,6 +43,7 @@ import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
 import io.magics.notethis.ui.fragments.NoteListFragment;
 
+import static io.magics.notethis.utils.Utils.DIALOG_CLOSE;
 import static io.magics.notethis.utils.Utils.DIALOG_UPLOAD;
 
 public class MainActivity extends AppCompatActivity implements
@@ -186,8 +187,13 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         Fragment frag = fragManager.findFragmentById(R.id.container_main);
-
-        if (frag instanceof EditNoteFragment && ((EditNoteFragment) frag).hasUnsavedChanges()) {
+        Fragment dialogFrag = fragManager.findFragmentByTag(DIALOG_CLOSE);
+        if (dialogFrag != null && dialogFrag.getActivity() == this) {
+            appBarLayout.setExpanded(true, true);
+            Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
+            super.onBackPressed();
+        } else if (frag instanceof EditNoteFragment
+                && ((EditNoteFragment) frag).hasUnsavedChanges()) {
             ((EditNoteFragment) frag).prepareSave(EditNoteFragment.ACTION_BACK);
         } else {
             if (frag instanceof ImgurListFragment) {
