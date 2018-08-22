@@ -65,7 +65,6 @@ public class EditNoteFragment extends Fragment {
         unbinder = ButterKnife.bind(this, root);
         setHasOptionsMenu(true);
         viewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
-
         getActivity().getWindow()
                 .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
