@@ -7,6 +7,10 @@
     <string name="view_note_a11y">View Note</string>
     <string name="imgur_menu_a11y">Imgur Menu</string>
     <string name="dialog_photo_a11y">Image to be uploaded</string>
+    <string name="sheet_list_a11y">List templates</string>
+    <string name="sheet_headers_a11y">Header templates</string>
+    <string name="sheet_link_a11y">Link template</string>
+    <string name="sheet_image_a11y">Image insert options</string>
 
     <string name="new_note_btn">New Note!</string>
     <string name="new_note_title">New Note</string>
@@ -71,8 +75,12 @@
     <string name="dialog_upload">Upload</string>
     <string name="dialog_et_hint">Title</string>
 
-    <string name="dialog_url_text_hint">Link title/Image alt-text</string>
+    <string name="dialog_url_text_hint">Link title</string>
     <string name="dialog_url_hint">Url</string>
+    
+    <string name="sheet_pick_image">Chose an uploaded image</string>
+    <string name="sheet_upload_image">Upload an image</string>
+    <string name="sheet_template">Template</string>
     
     <string name="template_ordered_list">  \n1. First line  \n2. </string>
     <string name="template_unordered_list">  \n* First line  \n* </string>
@@ -84,5 +92,19 @@
     <string name="template_headers_6">  \n###### </string>
     <string name="template_link">[alt-text](URL)</string>
     <string name="template_image">![alt-text](IMG-URL)</string>
+    
+    <string name="sheet_preview_ordered_list">**Ordered List:**  \n  \n1. First line  \n2. Second line  \n3. \u2026</string>
+    <string name="sheet_preview_unordered_list">**Unordered List:**  \n  \n* One line  \n* Another line  \n* \u2026</string>
+    <string name="sheet_preview_h1"># Headline</string>
+    <string name="sheet_preview_h2">## Headline</string>
+    <string name="sheet_preview_h3">### Headline</string>
+    <string name="sheet_preview_h4">#### Headline</string>
+    <string name="sheet_preview_h5">##### Headline</string>
+    <string name="sheet_preview_h6">###### Headline</string>
+    <string name="sheet_preview_url_title_hint">Url text</string>
+    <string name="sheet_preview_url_hint">Url</string>
+    <string name="sheet_preview_img_title">Image Title</string>
+    <string name="sheet_preview_img_alt">Alt-text</string>
+    <string name="sheet_preview_img_url">Image Url</string>
 
 </resources>

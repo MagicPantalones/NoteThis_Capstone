@@ -14,4 +14,7 @@
     <dimen name="img_logo_size_big">120dp</dimen>
     <dimen name="img_logo_size_med">96dp</dimen>
     <dimen name="button_margin_empty_list">68dp</dimen>
+    <dimen name="button_area_size">64dp</dimen>
+    <dimen name="button_icon_padding">16dp</dimen>
+    <dimen name="sheet_preview_sizes">100dp</dimen>
 </resources>
