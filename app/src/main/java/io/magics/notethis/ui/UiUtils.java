@@ -10,6 +10,7 @@ import android.transition.Slide;
 import android.transition.Transition;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import java.util.List;

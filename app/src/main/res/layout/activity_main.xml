@@ -7,71 +7,82 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/main_root"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/primaryColor"
-        tools:context=".ui.MainActivity">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/main_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:title="@string/app_name"
-                app:titleTextAppearance="@style/toolbarText" />
-
-        </android.support.design.widget.AppBarLayout>
-
-        <FrameLayout
-            android:id="@+id/container_main"
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/main_root"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/primaryColor"
+            android:layout_above="@+id/markdown_template_nav"
+            tools:context=".ui.MainActivity">
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/main_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:src="@drawable/outline_add_24px"
-            android:visibility="gone"
-            app:fabSize="normal"/>
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appbar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/upload_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fabSize="normal"
-            android:visibility="gone"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/outline_cloud_upload_24px"/>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/main_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    app:title="@string/app_name"
+                    app:titleTextAppearance="@style/toolbarText" />
+
+            </android.support.design.widget.AppBarLayout>
+
+            <FrameLayout
+                android:id="@+id/container_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/main_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="@dimen/fab_margin"
+                android:layout_marginEnd="@dimen/fab_margin"
+                android:src="@drawable/outline_add_24px"
+                android:visibility="gone"
+                app:fabSize="normal" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/upload_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
+                android:src="@drawable/outline_cloud_upload_24px"
+                android:visibility="gone"
+                app:fabSize="normal" />
+
+
+        </android.support.design.widget.CoordinatorLayout>
 
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/markdown_template_nav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:elevation="@dimen/margin_8dp"
             android:background="@android:color/white"
+            android:elevation="@dimen/margin_8dp"
             android:visibility="gone"
             app:itemBackground="@drawable/md_nav_ripple"
-            app:menu="@menu/markdown_templates_menu"
             app:itemIconTint="@color/primaryTextColor"
-            app:itemTextColor="@color/primaryTextColor"/>
+            android:layout_alignParentBottom="true"
+            app:itemTextColor="@color/primaryTextColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/markdown_templates_menu" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </RelativeLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

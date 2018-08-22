@@ -1,18 +1,13 @@
 package io.magics.notethis.ui;
 
 import android.Manifest;
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -29,7 +24,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import java.io.File;
 
@@ -37,7 +31,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
-import io.magics.notethis.data.network.ImgurUtils;
 import io.magics.notethis.ui.dialogs.UploadImageDialog;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.ImgurListFragment;
@@ -75,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements
     Toolbar toolbar;
     @BindView(R.id.main_root)
     View mainRoot;
+    @BindView(R.id.container_main)
+    View fragContainer;
     @BindView(R.id.main_fab)
     FloatingActionButton mainFab;
     @BindView(R.id.upload_fab)

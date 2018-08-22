@@ -194,13 +194,15 @@ public class EditNoteFragment extends Fragment {
             String title = Utils.getToolbarTitle(getContext());
             if (title.equals(NoteViewModel.NEW_NOTE_TITLE)) {
                 SaveDialog.newInstance(ACTION_SAVE).show(getFragmentManager(), Utils.DIALOG_SAVE);
+                editNoteView.clearFocus();
             } else {
                 viewModel.saveChanges(title, title);
             }
         } else if (action == ACTION_CLOSE && hasUnsavedChanges()) {
             CloseDialog.newInstance().show(getFragmentManager(), Utils.DIALOG_CLOSE);
+            editNoteView.clearFocus();
         } else if (action == ACTION_BACK) {
-            CloseDialog.newInstance().show(getFragmentManager(), Utils.DIALOG_CLOSE);
+            editNoteView.clearFocus();
         }
 
     }
