@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <!-- Hint Set Programmatically -->
     <EditText
         android:id="@+id/dialog_url_text_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lines="1"
         android:layout_marginTop="@dimen/margin_16dp"
-        android:hint="@string/dialog_url_text_hint"
         android:inputType="textCapSentences"
-        tools:ignore="TextFields" />
+        tools:ignore="LabelFor,TextFields" />
 
     <EditText
         android:id="@+id/dialog_url_et"

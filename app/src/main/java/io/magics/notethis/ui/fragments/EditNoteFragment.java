@@ -1,6 +1,7 @@
 package io.magics.notethis.ui.fragments;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -9,7 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import butterknife.BindView;
@@ -43,6 +47,9 @@ public class EditNoteFragment extends Fragment {
     private EditNoteHandler handler;
 
     private NoteViewModel viewModel;
+
+    private PopupMenu popupHeaders;
+    private PopupMenu popupImages;
 
     public interface EditNoteHandler {
         void onMenuListenerReady(BottomNavigationView.OnNavigationItemSelectedListener listener);
@@ -86,41 +93,14 @@ public class EditNoteFragment extends Fragment {
                         editNoteView.append(getString(R.string.template_unordered_list));
                         break;
                     case R.id.action_md_headers:
+                        prepareHeaderMenu(item.getActionView());
                         break;
                     case R.id.action_md_link:
                         editNoteView.clearFocus();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        View etRoot = View.inflate(getContext(), R.layout.dialog_double_et, null);
-                        builder.setView(etRoot);
-                        builder.setPositiveButton(R.string.confirm, (dialog, which) -> {
-                            if (dialog != null) {
-                                EditText urlTitleEt = etRoot.findViewById(R.id.dialog_url_text_et);
-                                EditText urlEt = etRoot.findViewById(R.id.dialog_url_et);
-                                String urlTitle = urlTitleEt.getText().toString();
-                                String url = urlEt.getText().toString();
-                                String template = getString(R.string.template_link);
-
-                                if (!TextUtils.isEmpty(urlTitle)) {
-                                    template = template.replace("alt-text", urlTitle);
-                                }
-
-                                if (!TextUtils.isEmpty(url)) {
-                                    template = template.replace("URL", url);
-                                }
-                                dialog.dismiss();
-                                editNoteView.append(template);
-                            }
-                        });
-                        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
-                            if (dialog != null) {
-                                dialog.dismiss();
-                                editNoteView.setSelection(editNoteView.getText().length());
-                                editNoteView.requestFocus();
-                            }
-                        });
-                        builder.create().show();
+                        prepareUrlInsertDialog();
                         break;
                     case R.id.action_md_image:
+                        prepareImagesMenu(item.getActionView());
                         break;
                     default:
                         break;
@@ -205,6 +185,125 @@ public class EditNoteFragment extends Fragment {
             editNoteView.clearFocus();
         }
 
+    }
+
+    private void prepareHeaderMenu(View view) {
+        PopupMenu menu = new PopupMenu(getContext(), view, Gravity.TOP);
+        menu.inflate(R.menu.templates_sub_headers);
+        menu.setOnMenuItemClickListener(item -> {
+
+            switch (item.getItemId()) {
+                case R.id.sub_header_1:
+                    editNoteView.append(getString(R.string.template_headers_1));
+                    break;
+                case R.id.sub_header_2:
+                    editNoteView.append(getString(R.string.template_headers_2));
+                    break;
+                case R.id.sub_header_3:
+                    editNoteView.append(getString(R.string.template_headers_3));
+                    break;
+                case R.id.sub_header_4:
+                    editNoteView.append(getString(R.string.template_headers_4));
+                    break;
+                case R.id.sub_header_5:
+                    editNoteView.append(getString(R.string.template_headers_5));
+                    break;
+                case R.id.sub_header_6:
+                    editNoteView.append(getString(R.string.template_headers_6));
+                    break;
+            }
+
+            return true;
+        });
+
+        menu.show();
+    }
+
+    private void prepareImagesMenu(View view) {
+        PopupMenu menu = new PopupMenu(getContext(), view, Gravity.TOP);
+        menu.inflate(R.menu.templates_sub_headers);
+        menu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.sub_images_imgur) {
+                //TODO Launch ImgurList dialog
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                View etRoot = View.inflate(getContext(), R.layout.dialog_double_et, null);
+                builder.setView(etRoot);
+                EditText urlTitleEt = etRoot.findViewById(R.id.dialog_url_text_et);
+                EditText urlEt = etRoot.findViewById(R.id.dialog_url_et);
+                urlEt.setHint("Set Alt-Text");
+                builder.setPositiveButton(R.string.confirm, (dialog, which) -> {
+                    if (dialog != null) {
+                        String urlTitle = urlTitleEt.getText().toString();
+                        String url = urlEt.getText().toString();
+                        String template = getString(R.string.template_image);
+
+                        if (!TextUtils.isEmpty(urlTitle)) {
+                            template = template.replace("alt-text", urlTitle);
+                        }
+
+                        if (!TextUtils.isEmpty(url)) {
+                            template = template.replace("URL", url);
+                        }
+                        dialog.dismiss();
+                        editNoteView.append(template);
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+                    if (dialog != null) {
+                        dialog.dismiss();
+                        editNoteView.setSelection(editNoteView.getText().length());
+                        editNoteView.requestFocus();
+                    }
+                });
+                urlTitleEt.requestFocus();
+
+                Dialog dialog = builder.create();
+                dialog.getWindow()
+                        .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+                dialog.show();
+            }
+            return true;
+        });
+    }
+
+    private void prepareUrlInsertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        View etRoot = View.inflate(getContext(), R.layout.dialog_double_et, null);
+        builder.setView(etRoot);
+        EditText urlTitleEt = etRoot.findViewById(R.id.dialog_url_text_et);
+        EditText urlEt = etRoot.findViewById(R.id.dialog_url_et);
+        urlEt.setHint("Set url text");
+        builder.setPositiveButton(R.string.confirm, (dialog, which) -> {
+            if (dialog != null) {
+                String urlTitle = urlTitleEt.getText().toString();
+                String url = urlEt.getText().toString();
+                String template = getString(R.string.template_link);
+
+                if (!TextUtils.isEmpty(urlTitle)) {
+                    template = template.replace("alt-text", urlTitle);
+                }
+
+                if (!TextUtils.isEmpty(url)) {
+                    template = template.replace("URL", url);
+                }
+                dialog.dismiss();
+                editNoteView.append(template);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            if (dialog != null) {
+                dialog.dismiss();
+                editNoteView.setSelection(editNoteView.getText().length());
+                editNoteView.requestFocus();
+            }
+        });
+        urlTitleEt.requestFocus();
+
+        Dialog dialog = builder.create();
+        dialog.getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
     }
 
 }

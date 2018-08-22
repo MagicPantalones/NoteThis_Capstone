@@ -48,12 +48,12 @@
     <string name="menu_templates_link">Link</string>
     <string name="menu_templates_image">Image</string>
 
-    <string name="sub_menu_temp_header1">Header 1</string>
-    <string name="sub_menu_temp_header2">Header 2</string>
-    <string name="sub_menu_temp_header3">Header 3</string>
-    <string name="sub_menu_temp_header4">Header 4</string>
-    <string name="sub_menu_temp_header5">Header 5</string>
-    <string name="sub_menu_temp_header6">Header 6</string>
+    <string name="sub_menu_temp_header1">Largest</string>
+    <string name="sub_menu_temp_header2">Large</string>
+    <string name="sub_menu_temp_header3">Medium</string>
+    <string name="sub_menu_temp_header4">Small</string>
+    <string name="sub_menu_temp_header5">Smallest</string>
+    <string name="sub_menu_temp_header6">Smallest grey</string>
 
     <string name="sub_menu_temp_pick_img">Pick image</string>
     <string name="sub_menu_temp_paste_img_link">Paste link</string>
@@ -82,7 +82,7 @@
     <string name="template_headers_4">#### </string>
     <string name="template_headers_5">##### </string>
     <string name="template_headers_6">###### </string>
-    <string name="template_link">(alt-text)[URL]</string>
-    <string name="template_image">!(alt-text)[IMG-URL]</string>
+    <string name="template_link">[alt-text](URL)</string>
+    <string name="template_image">![alt-text](IMG-URL)</string>
 
 </resources>
