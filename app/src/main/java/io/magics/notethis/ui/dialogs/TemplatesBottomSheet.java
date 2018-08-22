@@ -133,8 +133,40 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
 
     private void headerPeekClicked() {
 
-
-
+        for (TextView h : headerPreviews) {
+            switch (h.getId()) {
+                case R.id.h1:
+                    h.setOnClickListener(v ->
+                            returnTemplate(getString(R.string.template_headers_1)));
+                break;
+                case R.id.h2:
+                    h.setOnClickListener(v ->
+                            returnTemplate(getString(R.string.template_headers_2)));
+                    break;
+                case R.id.h3:
+                    h.setOnClickListener(v ->
+                            returnTemplate(getString(R.string.template_headers_3)));
+                    break;
+                case R.id.h4:
+                    h.setOnClickListener(v ->
+                            returnTemplate(getString(R.string.template_headers_4)));
+                    break;
+                case R.id.h5:
+                    h.setOnClickListener(v ->
+                            returnTemplate(getString(R.string.template_headers_5)));
+                    break;
+                case R.id.h6:
+                    h.setOnClickListener(v ->
+                            returnTemplate(getString(R.string.template_headers_6)));
+                    break;
+                default:
+                    break;
+            }
+            String text = h.getText().toString();
+            Markwon.setMarkdown(h, text);
+        }
+        showViewHideRest(sheets.get(1), sheets.get(0), sheets.get(2), sheets.get(3));
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private void linkPeekClicked() {
