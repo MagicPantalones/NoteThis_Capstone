@@ -7,8 +7,10 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,11 +52,6 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
     List<View> imageSheetHeaders;
     @BindViews({R.id.sub_sheet_pick, R.id.sub_sheet_upload, R.id.sub_sheet_template})
     List<View> imageSubSheets;
-
-    @BindView(R.id.sheet_url_title)
-    EditText urlTitle;
-    @BindView(R.id.sheet_url)
-    EditText url;
 
     @BindView(R.id.image_picker_recycler)
     RecyclerView recyclerView;
@@ -170,7 +167,25 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void linkPeekClicked() {
-
+        View root = sheets.get(2);
+        EditText urlTitle = root.findViewById(R.id.sheet_url_title);
+        EditText url = root.findViewById(R.id.sheet_url);
+        setPeekConfirmationButtons(getString(R.string.confirm), v -> {
+            String retString = getString(R.string.template_link);
+            String retUrl = TextUtils.isEmpty(url.getText()) ? "URL" : url.getText().toString();
+            String retTitle = TextUtils.isEmpty(urlTitle.getText()) ? url.getText().toString()
+                    : urlTitle.getText().toString();
+            retString = retString.replace("alt-text", retTitle);
+            urlTitle.setText("");
+            url.setText("");
+            returnTemplate(retString.replace("URL", retUrl));
+        }, getString(R.string.cancel), v -> {
+            urlTitle.setText("");
+            urlTitle.setText("");
+            setDefaultState();
+        });
+        switchRows(buttonRow, peekRow);
+        showViewHideRest(sheets.get(2), sheets.get(0), sheets.get(1), sheets.get(3));
     }
 
     private void imgPeekClicked() {
@@ -179,19 +194,40 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
 
     private void returnTemplate(String string) {
         if (callback != null) callback.onTemplateChosen(string);
+        setDefaultState();
     }
 
 
 
-    private void setDefaultState(int mode) {
+    private void setDefaultState() {
+        switchRows(peekRow, buttonRow);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    private void setPeekConfirmationButtons(String positiveText, OnClickListener positiveListener,
+                                            String negativeText, OnClickListener negativeListener) {
+        positiveButton.setText(positiveText);
+        positiveButton.setOnClickListener(positiveListener);
+        negativeButton.setText(negativeText);
+        negativeButton.setOnClickListener(negativeListener);
     }
 
 
     private void showViewHideRest(View show, View... hide) {
         show.setVisibility(View.VISIBLE);
         for (View v : hide) {
-            v.setVisibility(View.GONE);
+            if (v.getVisibility() == View.VISIBLE) {
+                v.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void switchRows(View showRow, View hideRow) {
+        if (showRow.getVisibility() == View.INVISIBLE) {
+            showRow.setVisibility(View.VISIBLE);
+        }
+        if (hideRow.getVisibility() == View.VISIBLE) {
+            hideRow.setVisibility(View.INVISIBLE);
         }
     }
 
