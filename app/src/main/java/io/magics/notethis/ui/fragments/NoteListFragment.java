@@ -122,8 +122,7 @@ public class NoteListFragment extends Fragment {
         new ItemTouchHelper(touchHelper).attachToRecyclerView(noteListRecycler);
 
         newNoteButton.setOnClickListener(v -> listener.onNewNotePress());
-
-
+        switchLayouts(adapter.noteTitles);
     }
 
     @Override
