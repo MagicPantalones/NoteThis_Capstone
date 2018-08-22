@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 import io.magics.notethis.R;
 import io.magics.notethis.utils.GlideApp;
 import io.magics.notethis.utils.models.Image;
+import ru.noties.markwon.Markwon;
 
 public class TemplatesBottomSheet extends BottomSheetDialogFragment {
 
@@ -39,10 +40,7 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
     @BindView(R.id.peek_negative_button)
     Button negativeButton;
 
-    @BindView(R.id.ordered_list)
-    TextView orderedListPreview;
-    @BindView(R.id.unordered_list)
-    TextView unorderedListPreview;
+
 
     @BindViews({R.id.lists_sheet, R.id.headers_sheet, R.id.link_sheet, R.id.images_sheet})
     List<View> sheets;
@@ -71,11 +69,13 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
     @BindView(R.id.template_img_url)
     EditText templateImgUrl;
 
-
-
-
-
     BottomSheetBehavior behavior;
+
+    TemplateSheetCallback callback;
+
+    public interface TemplateSheetCallback {
+        void onTemplateChosen(String template);
+    }
 
     public TemplatesBottomSheet() {
         //Required public constructor
@@ -97,21 +97,61 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
         CoordinatorLayout.Behavior behavior = lp.getBehavior();
 
         if (behavior instanceof BottomSheetBehavior) {
-            setBehavior((BottomSheetBehavior) behavior);
-            setDefaultState();
-
+            setup((BottomSheetBehavior) behavior);
         } else {
             dismiss();
         }
     }
 
-    private void setBehavior(BottomSheetBehavior behavior) {
+    private void setup(BottomSheetBehavior behavior) {
         this.behavior = behavior;
+
 
     }
 
-    private void setDefaultState() {
+    private void listPeekClicked() {
+        View root = sheets.get(0);
 
+        TextView orderedListPreview = root.findViewById(R.id.ordered_list);
+        TextView unorderedListPreview = root.findViewById(R.id.unordered_list);
+
+        String numText = orderedListPreview.getText().toString();
+        String bulText = unorderedListPreview.getText().toString();
+
+        Markwon.setMarkdown(orderedListPreview, numText);
+        Markwon.setMarkdown(unorderedListPreview, bulText);
+
+        orderedListPreview.setOnClickListener(v ->
+                returnTemplate(getString(R.string.template_ordered_list)));
+        unorderedListPreview.setOnClickListener(v ->
+                returnTemplate(getString(R.string.template_unordered_list)));
+
+        showViewHideRest(root, sheets.get(1), sheets.get(2), sheets.get(3));
+
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    private void headerPeekClicked() {
+
+
+
+    }
+
+    private void linkPeekClicked() {
+
+    }
+
+    private void imgPeekClicked() {
+
+    }
+
+    private void returnTemplate(String string) {
+        if (callback != null) callback.onTemplateChosen(string);
+    }
+
+
+
+    private void setDefaultState(int mode) {
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
