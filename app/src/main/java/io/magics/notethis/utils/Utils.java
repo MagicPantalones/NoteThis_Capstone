@@ -4,13 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.IdRes;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.internal.BottomNavigationMenuView;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.transition.TransitionSet;
+import android.util.Log;
 import android.view.View;
+
+import java.lang.reflect.Field;
 
 import butterknife.Unbinder;
 import io.magics.notethis.R;
@@ -18,6 +24,8 @@ import io.magics.notethis.ui.MainActivity;
 import io.reactivex.disposables.Disposable;
 
 public class Utils {
+
+    private static final String TAG = "Utils";
 
     public static final String DIALOG_SAVE = "dialog_save";
     public static final String DIALOG_CLOSE = "dialog_close";
@@ -86,6 +94,25 @@ public class Utils {
         else return (V) v1;
     }
 
+    //Solution from rafsanahmad007's answer here: https://stackoverflow.com/questions/41718633/bottomnavigationview-with-more-than-3-items-tab-title-is-hiding
+    public static void removeShiftMode(BottomNavigationView botNav) {
+        BottomNavigationMenuView menuView = (BottomNavigationMenuView) botNav.getChildAt(0);
+        try {
+            Field shiftMode = menuView.getClass().getDeclaredField("mShiftingMode");
+            shiftMode.setAccessible(true);
+            shiftMode.setBoolean(menuView, false);
+            shiftMode.setAccessible(false);
+            for (int i = 0; i < menuView.getChildCount(); i++) {
+                BottomNavigationItemView item = (BottomNavigationItemView) menuView.getChildAt(i);
+                item.setShiftingMode(false);
+                item.setChecked(false);
+                item.setCheckable(false);
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Log.w(TAG, "removeShiftMode: ", e);
+        }
+    }
+
     public static Transition getSignInTransition(Context context) {
         return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_shared);
     }
@@ -97,4 +124,6 @@ public class Utils {
     public static Transition getIntroToSignInTransition(Context context) {
         return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_exit);
     }
+
+    private Utils() {}
 }

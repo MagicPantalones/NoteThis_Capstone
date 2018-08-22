@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_md_list_num"
+        android:title="@string/menu_templates_list_num"
+        android:orderInCategory="1"
+        android:icon="@drawable/outline_format_list_numbered_24px"
+        android:checkable="false"
+        app:showAsAction="always|withText"/>
+
+    <item android:id="@+id/action_md_list_bullet"
+        android:title="@string/menu_templates_list_bullet"
+        android:orderInCategory="2"
+        android:icon="@drawable/outline_format_list_bulleted_24px"
+        android:checkable="false"
+        app:showAsAction="always|withText"/>
+
+    <item android:id="@+id/action_md_headers"
+        android:title="@string/menu_templates_headers"
+        android:orderInCategory="3"
+        android:icon="@drawable/outline_format_size_24px"
+        android:checkable="false"
+        app:showAsAction="always|withText"/>
+
+    <item android:id="@+id/action_md_link"
+        android:orderInCategory="4"
+        android:title="@string/menu_templates_link"
+        android:icon="@drawable/outline_link_24px"
+        android:checkable="false"
+        app:showAsAction="always|withText"/>
+
+    <item android:id="@+id/action_md_image"
+        android:orderInCategory="5"
+        android:title="@string/menu_templates_image"
+        android:icon="@drawable/outline_image_24"
+        android:checkable="false"
+        app:showAsAction="always|withText"/>
+
+</menu>

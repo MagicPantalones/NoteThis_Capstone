@@ -14,7 +14,7 @@
     <color name="secondaryTextColor">#000000</color>
 
     <color name="backgroundColorMain">#EFEBDE</color>
-    
     <color name="dark_transparent">#f21f001e</color>
+    <color name="secondaryRipple">#42f04f55</color>
 
 </resources>

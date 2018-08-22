@@ -19,7 +19,6 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.bumptech.glide.request.target.ViewTarget;
-import com.labo.kaji.swipeawaydialog.support.v4.SwipeAwayDialogFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

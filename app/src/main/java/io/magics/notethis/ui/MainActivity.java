@@ -7,8 +7,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -48,7 +51,7 @@ import static io.magics.notethis.utils.Utils.DIALOG_UPLOAD;
 
 public class MainActivity extends AppCompatActivity implements
         NoteListFragment.NoteListFragListener, NoteListFragment.FabListener,
-        UploadImageDialog.UploadDialogHandler {
+        UploadImageDialog.UploadDialogHandler, EditNoteFragment.EditNoteHandler {
 
     private static final String TAG = "MainActivity";
 
@@ -80,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements
     NavigationView navDrawer;
     @BindView(R.id.main_drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.markdown_template_nav)
+    BottomNavigationView mdTemplateNav;
 
     Unbinder unbinder;
 
@@ -103,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements
 
         mainFab.setOnClickListener(v -> onNewNotePress());
         uploadFab.setOnClickListener(v -> onUploadImagePress());
+
+        Utils.removeShiftMode(mdTemplateNav);
 
         navDrawer.setNavigationItemSelectedListener(item -> {
             drawerLayout.closeDrawers();
@@ -134,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements
         if (showIntro) {
             UiUtils.showIntroFrag(this, fragManager);
         }
+
     }
 
 
@@ -199,6 +207,9 @@ public class MainActivity extends AppCompatActivity implements
             if (frag instanceof ImgurListFragment) {
                 uploadFab.hide();
             }
+            if (mdTemplateNav != null && mdTemplateNav.getVisibility() == View.VISIBLE) {
+                mdTemplateNav.setVisibility(View.GONE);
+            }
             appBarLayout.setExpanded(true, true);
             Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
             super.onBackPressed();
@@ -224,10 +235,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onNoteListScroll(int state) {
         if (state == NoteListFragment.SCROLL_UP && mainFab.getVisibility() != View.VISIBLE) {
-            mainFab.show();
+            showFab();
         } else if (state == NoteListFragment.SCROLL_DOWN
                 && mainFab.getVisibility() == View.VISIBLE) {
-            mainFab.hide();
+            hideFab();
         }
     }
 
@@ -243,9 +254,21 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void hideFab() {
+        if (mdTemplateNav != null && UiUtils.isFragType(fragManager, EditNoteFragment.class)) {
+            mdTemplateNav.setVisibility(View.VISIBLE);
+        }
         if (mainFab != null) {
             mainFab.hide();
+        }
+        if (uploadFab != null) {
             uploadFab.hide();
+        }
+    }
+
+    @Override
+    public void showFab() {
+        if (mainFab != null && UiUtils.isFragType(fragManager, NoteListFragment.class)) {
+            mainFab.show();
         }
     }
 
@@ -312,12 +335,6 @@ public class MainActivity extends AppCompatActivity implements
         if (connected) imgurViewModel.upload(title);
     }
 
-    @Override
-    public void showFab() {
-        if (mainFab != null) {
-            mainFab.show();
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -330,7 +347,19 @@ public class MainActivity extends AppCompatActivity implements
             default:
                 break;
         }
+
         return super.onOptionsItemSelected(item);
+
+    }
+
+    @Override
+    public void onMenuListenerReady(BottomNavigationView.OnNavigationItemSelectedListener listener) {
+        mdTemplateNav.setOnNavigationItemSelectedListener(listener);
+    }
+
+    @Override
+    public void onMenuClick() {
+        Utils.removeShiftMode(mdTemplateNav);
     }
 
     //TODO Add bottom action bar for Markdown templates.
@@ -347,4 +376,6 @@ public class MainActivity extends AppCompatActivity implements
     //TODO Add support for RTL & D-PAD
 
     //TODO Handle lifecycles.
+
+    //TODO Create release build.
 }

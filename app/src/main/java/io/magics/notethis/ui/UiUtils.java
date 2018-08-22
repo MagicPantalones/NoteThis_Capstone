@@ -206,6 +206,7 @@ public class UiUtils {
 
     public static boolean isFragType(FragmentManager manager, Class<?> clazz) {
         Fragment frag = manager.findFragmentById(CONTAINER);
+        if (frag == null) return false;
         return clazz.isAssignableFrom(frag.getClass());
     }
 

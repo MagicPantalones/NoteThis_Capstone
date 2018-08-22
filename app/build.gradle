@@ -82,7 +82,6 @@ dependencies {
     implementation "ru.noties:markwon-syntax:${markVer}"
     implementation "ru.noties:markwon-syntax:${markVer}"
     implementation 'me.saket:better-link-movement-method:2.2.0'
-    implementation 'com.labo.kaji:swipeawaydialog:0.1.1'
 
     //Debug & testing
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${leakVer}"

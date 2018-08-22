@@ -1,17 +1,22 @@
 package io.magics.notethis.ui.fragments;
 
+import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import butterknife.BindView;
@@ -35,8 +40,14 @@ public class EditNoteFragment extends Fragment {
 
     Unbinder unbinder;
     private FabListener fabListener;
+    private EditNoteHandler handler;
 
     private NoteViewModel viewModel;
+
+    public interface EditNoteHandler {
+        void onMenuListenerReady(BottomNavigationView.OnNavigationItemSelectedListener listener);
+        void onMenuClick();
+    }
 
     public EditNoteFragment() {
         // Required empty public constructor
@@ -55,6 +66,9 @@ public class EditNoteFragment extends Fragment {
         setHasOptionsMenu(true);
         viewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
 
+        getActivity().getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
         viewModel.getNote().observe(this, note -> {
             if (getContext() != null) {
                 Utils.setToolbarTitle(getContext(), note.getTitle(), R.color.primaryTextColor);
@@ -62,6 +76,63 @@ public class EditNoteFragment extends Fragment {
                 editNoteView.setSelection(editNoteView.getText().length());
             }
         });
+
+        if (handler != null) {
+            handler.onMenuListenerReady(item -> {
+                switch (item.getItemId()) {
+                    case R.id.action_md_list_num:
+                        editNoteView.append(getString(R.string.template_ordered_list));
+                        break;
+                    case R.id.action_md_list_bullet:
+                        editNoteView.append(getString(R.string.template_unordered_list));
+                        break;
+                    case R.id.action_md_headers:
+                        break;
+                    case R.id.action_md_link:
+                        editNoteView.clearFocus();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        View etRoot = View.inflate(getContext(), R.layout.dialog_double_et, null);
+                        builder.setView(etRoot);
+                        builder.setPositiveButton(R.string.confirm, (dialog, which) -> {
+                            if (dialog != null) {
+                                EditText urlTitleEt = etRoot.findViewById(R.id.dialog_url_text_et);
+                                EditText urlEt = etRoot.findViewById(R.id.dialog_url_et);
+                                String urlTitle = urlTitleEt.getText().toString();
+                                String url = urlEt.getText().toString();
+                                String template = getString(R.string.template_link);
+
+                                if (!TextUtils.isEmpty(urlTitle)) {
+                                    template = template.replace("alt-text", urlTitle);
+                                }
+
+                                if (!TextUtils.isEmpty(url)) {
+                                    template = template.replace("URL", url);
+                                }
+                                dialog.dismiss();
+                                editNoteView.append(template);
+                            }
+                        });
+                        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+                            if (dialog != null) {
+                                dialog.dismiss();
+                                editNoteView.setSelection(editNoteView.getText().length());
+                                editNoteView.requestFocus();
+                            }
+                        });
+                        builder.create().show();
+                        break;
+                    case R.id.action_md_image:
+                        break;
+                    default:
+                        break;
+                }
+                item.setChecked(false);
+                if (handler != null) {
+                    handler.onMenuClick();
+                }
+                return true;
+            });
+        }
 
         return root;
     }
@@ -80,12 +151,16 @@ public class EditNoteFragment extends Fragment {
         if (context instanceof FabListener) {
             fabListener = (FabListener) context;
         }
+        if (context instanceof EditNoteHandler) {
+            handler = (EditNoteHandler) context;
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         fabListener = null;
+        handler = null;
     }
 
     @Override
