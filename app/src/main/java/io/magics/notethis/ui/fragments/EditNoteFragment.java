@@ -218,8 +218,8 @@ public class EditNoteFragment extends Fragment {
     }
 
     private void prepareImagesMenu(View view) {
-        PopupMenu menu = new PopupMenu(getContext(), view, Gravity.TOP);
-        menu.inflate(R.menu.templates_sub_headers);
+        PopupMenu menu = new PopupMenu(getContext(), view, Gravity.START);
+        menu.inflate(R.menu.templates_sub_image);
         menu.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.sub_images_imgur) {
                 //TODO Launch ImgurList dialog
@@ -263,6 +263,7 @@ public class EditNoteFragment extends Fragment {
             }
             return true;
         });
+        menu.show();
     }
 
     private void prepareUrlInsertDialog() {

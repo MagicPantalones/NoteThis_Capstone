@@ -76,12 +76,12 @@
     
     <string name="template_ordered_list">  \n1. First line  \n2. </string>
     <string name="template_unordered_list">  \n* First line  \n* </string>
-    <string name="template_headers_1"># </string>
-    <string name="template_headers_2">## </string>
-    <string name="template_headers_3">### </string>
-    <string name="template_headers_4">#### </string>
-    <string name="template_headers_5">##### </string>
-    <string name="template_headers_6">###### </string>
+    <string name="template_headers_1">  \n# </string>
+    <string name="template_headers_2">  \n## </string>
+    <string name="template_headers_3">  \n### </string>
+    <string name="template_headers_4">  \n#### </string>
+    <string name="template_headers_5">  \n##### </string>
+    <string name="template_headers_6">  \n###### </string>
     <string name="template_link">[alt-text](URL)</string>
     <string name="template_image">![alt-text](IMG-URL)</string>
 
