@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
             super.onBackPressed();
         } else if (frag instanceof EditNoteFragment
                 && ((EditNoteFragment) frag).hasUnsavedChanges()) {
-            ((EditNoteFragment) frag).prepareSave(EditNoteFragment.ACTION_BACK);
+            ((EditNoteFragment) frag).prepareSave(EditNoteFragment.ACTION_CLOSE);
         } else {
             if (frag instanceof ImgurListFragment) {
                 uploadFab.hide();

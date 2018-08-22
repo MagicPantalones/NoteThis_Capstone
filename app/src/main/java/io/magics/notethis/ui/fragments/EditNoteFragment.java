@@ -38,6 +38,7 @@ public class EditNoteFragment extends Fragment {
 
     public static final int ACTION_SAVE = 765;
     public static final int ACTION_CLOSE = 592;
+    public static final int ACTION_MENU_CLOSE = 433;
     public static final int ACTION_BACK = 388;
 
     @BindView(R.id.edit_note_view)
@@ -123,7 +124,7 @@ public class EditNoteFragment extends Fragment {
                 prepareSave(ACTION_SAVE);
                 break;
             case R.id.edit_menu_close:
-                prepareSave(ACTION_CLOSE);
+                prepareClose();
                 break;
             default:
                 //MainActivity handles the other menu actions.
@@ -146,13 +147,20 @@ public class EditNoteFragment extends Fragment {
             } else {
                 viewModel.saveChanges(title, title);
             }
-        } else if (action == ACTION_CLOSE && hasUnsavedChanges()) {
+        } else if (action == ACTION_CLOSE) {
             CloseDialog.newInstance().show(getFragmentManager(), Utils.DIALOG_CLOSE);
-            editNoteView.clearFocus();
-        } else if (action == ACTION_BACK) {
             editNoteView.clearFocus();
         }
 
+    }
+
+    private void prepareClose() {
+        if (hasUnsavedChanges()) {
+            CloseDialog.newInstance().show(getFragmentManager(), Utils.DIALOG_CLOSE);
+            editNoteView.clearFocus();
+        } else {
+            Utils.backPressed(getContext());
+        }
     }
 
     public void prepareMenus(BottomNavigationView menu, EditNoteHandler handler) {
