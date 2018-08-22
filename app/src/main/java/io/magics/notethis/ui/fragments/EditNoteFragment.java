@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.internal.BottomNavigationMenu;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.PopupMenu;
@@ -44,7 +45,6 @@ public class EditNoteFragment extends Fragment {
 
     Unbinder unbinder;
     private FabListener fabListener;
-    private EditNoteHandler handler;
 
     private NoteViewModel viewModel;
 
@@ -53,6 +53,7 @@ public class EditNoteFragment extends Fragment {
 
     public interface EditNoteHandler {
         void onMenuListenerReady(BottomNavigationView.OnNavigationItemSelectedListener listener);
+
         void onMenuClick();
     }
 
@@ -83,35 +84,6 @@ public class EditNoteFragment extends Fragment {
             }
         });
 
-        if (handler != null) {
-            handler.onMenuListenerReady(item -> {
-                switch (item.getItemId()) {
-                    case R.id.action_md_list_num:
-                        editNoteView.append(getString(R.string.template_ordered_list));
-                        break;
-                    case R.id.action_md_list_bullet:
-                        editNoteView.append(getString(R.string.template_unordered_list));
-                        break;
-                    case R.id.action_md_headers:
-                        prepareHeaderMenu(item.getActionView());
-                        break;
-                    case R.id.action_md_link:
-                        editNoteView.clearFocus();
-                        prepareUrlInsertDialog();
-                        break;
-                    case R.id.action_md_image:
-                        prepareImagesMenu(item.getActionView());
-                        break;
-                    default:
-                        break;
-                }
-                item.setChecked(false);
-                if (handler != null) {
-                    handler.onMenuClick();
-                }
-                return true;
-            });
-        }
 
         return root;
     }
@@ -130,16 +102,12 @@ public class EditNoteFragment extends Fragment {
         if (context instanceof FabListener) {
             fabListener = (FabListener) context;
         }
-        if (context instanceof EditNoteHandler) {
-            handler = (EditNoteHandler) context;
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         fabListener = null;
-        handler = null;
     }
 
     @Override
@@ -185,6 +153,36 @@ public class EditNoteFragment extends Fragment {
             editNoteView.clearFocus();
         }
 
+    }
+
+    public void prepareMenus(BottomNavigationView menu, EditNoteHandler handler) {
+        handler.onMenuListenerReady(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_md_list_num:
+                    editNoteView.append(getString(R.string.template_ordered_list));
+                    break;
+                case R.id.action_md_list_bullet:
+                    editNoteView.append(getString(R.string.template_unordered_list));
+                    break;
+                case R.id.action_md_headers:
+                    prepareHeaderMenu(menu.findViewById(R.id.action_md_headers));
+                    break;
+                case R.id.action_md_link:
+                    editNoteView.clearFocus();
+                    prepareUrlInsertDialog();
+                    break;
+                case R.id.action_md_image:
+                    prepareImagesMenu(menu.findViewById(R.id.action_md_image));
+                    break;
+                default:
+                    break;
+            }
+            item.setChecked(false);
+
+            handler.onMenuClick();
+
+            return true;
+        });
     }
 
     private void prepareHeaderMenu(View view) {
@@ -304,6 +302,7 @@ public class EditNoteFragment extends Fragment {
         dialog.getWindow()
                 .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
+
     }
 
 }

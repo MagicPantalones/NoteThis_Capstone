@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onNewNotePress() {
         noteViewModel.newNote();
         Utils.setToolbarTitle(this, NoteViewModel.NEW_NOTE_TITLE, R.color.primaryTextColor);
-        UiUtils.showEditNoteFrag(fragManager);
+        UiUtils.showEditNoteFrag(fragManager, this, mdTemplateNav);
     }
 
 
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onNoteItemClicked(int id, int action) {
         noteViewModel.editNote(id);
         if (action == NoteListFragment.ACTION_EDIT) {
-            UiUtils.showEditNoteFrag(fragManager);
+            UiUtils.showEditNoteFrag(fragManager, this, mdTemplateNav);
         } else {
             UiUtils.showPreviewFrag(fragManager);
         }
