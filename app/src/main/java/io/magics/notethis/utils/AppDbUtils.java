@@ -94,14 +94,14 @@ public class AppDbUtils {
     }
 
     public static void lookForNoteData(AppDatabase db, RoomCountCallback callback) {
-        Single.just(db.userNoteModel().checkHasData())
+        Single.fromCallable(() ->  db.userNoteModel().checkHasData())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::onComplete);
     }
 
     public static void lookForImgurData(AppDatabase db, RoomCountCallback callback) {
-        Single.just(db.userImageModel().checkHasData())
+        Single.fromCallable(() -> db.userImageModel().checkHasData())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::onComplete);

@@ -45,6 +45,8 @@ public class NoteTitleViewModel extends AndroidViewModel {
     }
 
     public void deleteTitle(NoteTitle noteTitle) {
+        if (deletedTitle != null) deletedNote.setValue(deletedTitle);
+        deletedTitle = null;
         AppDbUtils.fetchNote(appDatabase, noteTitle.getId(), new RoomNoteCallback<Note>() {
             @Override
             public void onComplete(Note data) {
@@ -65,6 +67,7 @@ public class NoteTitleViewModel extends AndroidViewModel {
 
     public void deletePermanent() {
         deletedNote.setValue(deletedTitle);
+        deletedTitle = null;
     }
 
 }

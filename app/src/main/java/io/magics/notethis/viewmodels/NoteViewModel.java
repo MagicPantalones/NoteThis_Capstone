@@ -15,6 +15,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class NoteViewModel extends AndroidViewModel {
     private DatabaseReference rootRef;
     private DatabaseReference userRef;
     private DatabaseReference noteRef;
+    private FirebaseDatabase firebaseDatabase;
     private MutableLiveData<Note> note = new MutableLiveData<>();
     private MutableLiveData<Boolean> signedIn = new MutableLiveData<>();
     private ConnectionLiveData connected;
@@ -49,6 +51,8 @@ public class NoteViewModel extends AndroidViewModel {
     public DatabaseReference getUserRef() { return userRef; }
 
     public void init() {
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.setLogLevel(Logger.Level.DEBUG);
         appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
         note.setValue(new Note(NEW_NOTE_TITLE, "", ""));
         connected = new ConnectionLiveData(getApplication());
@@ -163,9 +167,7 @@ public class NoteViewModel extends AndroidViewModel {
             if (rows <= 0) {
                 FirebaseUtils.getAllNotes(noteRef, notes -> {
                     if (notes != null && !notes.isEmpty()) {
-                        for (Note note1 : notes) {
-                            FirebaseUtils.insertNote(noteRef, note1);
-                        }
+                        AppDbUtils.insertNotes(appDatabase, notes);
                     }
                 });
             }

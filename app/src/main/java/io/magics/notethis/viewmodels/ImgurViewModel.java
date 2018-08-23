@@ -94,9 +94,7 @@ public class ImgurViewModel extends AndroidViewModel {
             if (rows <= 0) {
                 FirebaseUtils.getAllImgurLinks(imgurRef, images1 -> {
                     if (images1 != null && !images1.isEmpty()) {
-                        for (Image image : images1) {
-                            FirebaseUtils.insertImgurLink(imgurRef, image);
-                        }
+                        AppDbUtils.insertImgurRefs(appDatabase, images1);
                     }
                 });
             }
