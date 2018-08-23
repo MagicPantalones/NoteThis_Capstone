@@ -1,6 +1,7 @@
 package io.magics.notethis.ui.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,8 +41,11 @@ public class TemplatesBottomSheet extends Fragment {
     private BottomSheetBehavior behavior;
     private ImageSheet imageSheet;
 
+    private SheetCallbacks callbacks;
+
     public interface SheetCallbacks {
         void onReturnTemplate(String template);
+        void hideAppBar();
     }
 
     public TemplatesBottomSheet() {
@@ -64,6 +68,17 @@ public class TemplatesBottomSheet extends Fragment {
         setup();
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof SheetCallbacks) callbacks = (SheetCallbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        callbacks = null;
+        super.onDetach();
+    }
 
     private void setup() {
         behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -104,6 +119,7 @@ public class TemplatesBottomSheet extends Fragment {
     }
 
     private void setPage(int pos) {
+        if (callbacks != null) callbacks.hideAppBar();
         sheetsPager.setCurrentItem(pos, true);
         setSheetExpanded();
     }

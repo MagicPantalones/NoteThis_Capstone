@@ -51,8 +51,6 @@ public class NoteViewModel extends AndroidViewModel {
     public DatabaseReference getUserRef() { return userRef; }
 
     public void init() {
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseDatabase.setLogLevel(Logger.Level.DEBUG);
         appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
         note.setValue(new Note(NEW_NOTE_TITLE, "", ""));
         connected = new ConnectionLiveData(getApplication());

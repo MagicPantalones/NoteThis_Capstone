@@ -376,6 +376,11 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void hideAppBar() {
+        appBarLayout.setExpanded(false, true);
+    }
+
     //TODO Add bottom action bar for Markdown templates.
 
     //TODO Fix rest of menus & test Imgur list delete function.
