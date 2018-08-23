@@ -381,14 +381,9 @@ public class MainActivity extends AppCompatActivity implements
         appBarLayout.setExpanded(false, true);
     }
 
-    //TODO Add bottom action bar for Markdown templates.
-
-    //TODO Fix rest of menus & test Imgur list delete function.
-
     //TODO Implement widget.
 
-    //TODO Implement Firebase get all notes & images on sign in logic & drop tables when user sign out.
-    //TODO Implement sync logic.
+    //TODO Fix Imgur Bug where it does not populate list when getting Images from firebase.
 
     //TODO Add support for RTL & D-PAD
 
