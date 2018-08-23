@@ -45,7 +45,7 @@
     <string name="menu_popup_delete">Delete</string>
     <string name="menu_popup_copy">Copy link</string>
     <string name="menu_popup_insert">Insert Image</string>
-    
+
     <string name="menu_templates_list_num">Numbered</string>
     <string name="menu_templates_list_bullet">Bulleted</string>
     <string name="menu_templates_headers">Headers</string>
@@ -77,11 +77,11 @@
 
     <string name="dialog_url_text_hint">Link title</string>
     <string name="dialog_url_hint">Url</string>
-    
+
     <string name="sheet_pick_image">Chose an uploaded image</string>
     <string name="sheet_upload_image">Upload an image</string>
     <string name="sheet_template">Template</string>
-    
+
     <string name="template_ordered_list">  \n1. First line  \n2. </string>
     <string name="template_unordered_list">  \n* First line  \n* </string>
     <string name="template_headers_1">  \n# </string>
@@ -90,9 +90,9 @@
     <string name="template_headers_4">  \n#### </string>
     <string name="template_headers_5">  \n##### </string>
     <string name="template_headers_6">  \n###### </string>
-    <string name="template_link">[alt-text](URL)</string>
+    <string name="template_link">[link-text](URL)</string>
     <string name="template_image">![alt-text](IMG-URL)</string>
-    
+
     <string name="sheet_preview_ordered_list">**Ordered List:**  \n  \n1. First line  \n2. Second line  \n3. \u2026</string>
     <string name="sheet_preview_unordered_list">**Unordered List:**  \n  \n* One line  \n* Another line  \n* \u2026</string>
     <string name="sheet_preview_h1"># Headline</string>
@@ -106,5 +106,8 @@
     <string name="sheet_preview_img_title">Image Title</string>
     <string name="sheet_preview_img_alt">Alt-text</string>
     <string name="sheet_preview_img_url">Image Url</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

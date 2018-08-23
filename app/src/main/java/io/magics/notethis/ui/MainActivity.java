@@ -46,7 +46,7 @@ import static io.magics.notethis.utils.Utils.DIALOG_UPLOAD;
 
 public class MainActivity extends AppCompatActivity implements
         NoteListFragment.NoteListFragListener, NoteListFragment.FabListener,
-        UploadImageDialog.UploadDialogHandler, EditNoteFragment.EditNoteHandler {
+        UploadImageDialog.UploadDialogHandler {
 
     private static final String TAG = "MainActivity";
 
@@ -80,8 +80,6 @@ public class MainActivity extends AppCompatActivity implements
     NavigationView navDrawer;
     @BindView(R.id.main_drawer_layout)
     DrawerLayout drawerLayout;
-    @BindView(R.id.markdown_template_nav)
-    BottomNavigationView mdTemplateNav;
 
     Unbinder unbinder;
 
@@ -105,8 +103,6 @@ public class MainActivity extends AppCompatActivity implements
 
         mainFab.setOnClickListener(v -> onNewNotePress());
         uploadFab.setOnClickListener(v -> onUploadImagePress());
-
-        Utils.removeShiftMode(mdTemplateNav);
 
         navDrawer.setNavigationItemSelectedListener(item -> {
             drawerLayout.closeDrawers();
@@ -204,9 +200,6 @@ public class MainActivity extends AppCompatActivity implements
             if (frag instanceof ImgurListFragment) {
                 uploadFab.hide();
             }
-            if (mdTemplateNav != null && mdTemplateNav.getVisibility() == View.VISIBLE) {
-                mdTemplateNav.setVisibility(View.GONE);
-            }
             appBarLayout.setExpanded(true, true);
             Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
             super.onBackPressed();
@@ -225,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onNewNotePress() {
         noteViewModel.newNote();
         Utils.setToolbarTitle(this, NoteViewModel.NEW_NOTE_TITLE, R.color.primaryTextColor);
-        UiUtils.showEditNoteFrag(fragManager, this, mdTemplateNav);
+        UiUtils.showEditNoteFrag(fragManager);
     }
 
 
@@ -243,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onNoteItemClicked(int id, int action) {
         noteViewModel.editNote(id);
         if (action == NoteListFragment.ACTION_EDIT) {
-            UiUtils.showEditNoteFrag(fragManager, this, mdTemplateNav);
+            UiUtils.showEditNoteFrag(fragManager);
         } else {
             UiUtils.showPreviewFrag(fragManager);
         }
@@ -251,9 +244,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void hideFab() {
-        if (mdTemplateNav != null && UiUtils.isFragType(fragManager, EditNoteFragment.class)) {
-            mdTemplateNav.setVisibility(View.VISIBLE);
-        }
         if (mainFab != null) {
             mainFab.hide();
         }
@@ -341,22 +331,15 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.edit_menu_help:
                 UiUtils.showHelpFrag(fragManager);
                 break;
+            case R.id.edit_menu_preview:
+                UiUtils.showPreviewFrag(fragManager);
+                break;
             default:
                 break;
         }
 
         return super.onOptionsItemSelected(item);
 
-    }
-
-    @Override
-    public void onMenuListenerReady(BottomNavigationView.OnNavigationItemSelectedListener listener) {
-        mdTemplateNav.setOnNavigationItemSelectedListener(listener);
-    }
-
-    @Override
-    public void onMenuClick() {
-        Utils.removeShiftMode(mdTemplateNav);
     }
 
     //TODO Add bottom action bar for Markdown templates.
@@ -367,8 +350,6 @@ public class MainActivity extends AppCompatActivity implements
 
     //TODO Implement Firebase get all notes & images on sign in logic & drop tables when user sign out.
     //TODO Implement sync logic.
-
-    //TODO Add theme color to save & close dialog fragments.
 
     //TODO Add support for RTL & D-PAD
 

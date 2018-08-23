@@ -19,7 +19,6 @@ import java.util.List;
 
 import io.magics.notethis.R;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
-import io.magics.notethis.ui.fragments.EditNoteFragment.EditNoteHandler;
 import io.magics.notethis.ui.fragments.HelpFragment;
 import io.magics.notethis.ui.fragments.ImgurListFragment;
 import io.magics.notethis.ui.fragments.IntroFragment;
@@ -133,8 +132,7 @@ public class UiUtils {
                 .commitAllowingStateLoss();
     }
 
-    public static void showEditNoteFrag(FragmentManager manager, EditNoteHandler handler,
-                                        BottomNavigationView menu) {
+    public static void showEditNoteFrag(FragmentManager manager) {
         Fragment oldFrag = manager.findFragmentById(CONTAINER);
         if (oldFrag != null) {
             if (oldFrag instanceof EditNoteFragment) return;
@@ -143,7 +141,6 @@ public class UiUtils {
         EditNoteFragment savedFrag = (EditNoteFragment) manager.findFragmentByTag(FRAG_EDIT_NOTE);
         EditNoteFragment newFrag = savedFrag != null ? savedFrag : EditNoteFragment.newInstance();
         newFrag.setEnterTransition(getTransition(Gravity.END));
-        newFrag.prepareMenus(menu, handler);
 
         manager.beginTransaction()
                 .setReorderingAllowed(true)

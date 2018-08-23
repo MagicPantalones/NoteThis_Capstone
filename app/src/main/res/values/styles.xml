@@ -66,7 +66,17 @@
         <item name="android:textSize">@dimen/margin_16dp</item>
         <item name="android:textColor">#de000000</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_height">@dimen/list_text_area_size</item>
         <item name="android:gravity">center_vertical</item>
+    </style>
+    
+    <style name="dialogButton" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/secondaryColor</item>
+    </style>
+    <style name="dialogButton.cancel">
+        <item name="android:text">@string/cancel</item>
+    </style>
+    <style name="dialogButton.ok">
+        <item name="android:text">@string/confirm</item>
     </style>
 </resources>

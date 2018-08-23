@@ -19,6 +19,7 @@ public class DocUtils {
     private static final String STORAGE_URI = "com.android.externalstorage.documents";
 
     public static final int RC_PICK_IMG = 2913;
+    public static final int RC_FRAG_PICK_IMG = 8567;
 
 
     public static String getPath(Context context, Uri uri) {

@@ -17,7 +17,6 @@
             android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"
             android:background="@color/primaryColor"
-            android:layout_above="@+id/markdown_template_nav"
             tools:context=".ui.MainActivity">
 
             <android.support.design.widget.AppBarLayout
@@ -64,23 +63,17 @@
                 android:visibility="gone"
                 app:fabSize="normal" />
 
+            <fragment
+                android:id="@+id/bottom_sheet_fragment"
+                android:name="io.magics.notethis.ui.fragments.TemplatesBottomSheet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/bottom_sheet_behavior"
+                tools:layout="@layout/templates_bottom_sheet"/>
 
         </android.support.design.widget.CoordinatorLayout>
 
-        <android.support.design.widget.BottomNavigationView
-            android:id="@+id/markdown_template_nav"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@android:color/white"
-            android:elevation="@dimen/margin_8dp"
-            android:visibility="gone"
-            app:itemBackground="@drawable/md_nav_ripple"
-            app:itemIconTint="@color/primaryTextColor"
-            android:layout_alignParentBottom="true"
-            app:itemTextColor="@color/primaryTextColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:menu="@menu/markdown_templates_menu" />
+
 
     </RelativeLayout>
 

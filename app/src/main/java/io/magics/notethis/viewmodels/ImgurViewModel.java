@@ -3,6 +3,7 @@ package io.magics.notethis.viewmodels;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
@@ -34,12 +35,12 @@ public class ImgurViewModel extends AndroidViewModel {
     private CompositeDisposable disposables = new CompositeDisposable();
     private AppDatabase appDatabase;
     private LiveData<List<Image>> images;
+    private MutableLiveData<Boolean> initialized = new MutableLiveData<>();
+    private MutableLiveData<Image> uploadedImage = new MutableLiveData<>();
     private List<Image> deletedImages = new ArrayList<>();
     private Image deletedImage;
 
-    public ImgurViewModel(@NonNull Application application) {
-        super(application);
-    }
+    public ImgurViewModel(@NonNull Application application) { super(application); }
 
     public void init(DatabaseReference userRef) {
         if (!isInitialized) {
@@ -47,12 +48,13 @@ public class ImgurViewModel extends AndroidViewModel {
             isInitialized = true;
             appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
             images = appDatabase.userImageModel().getImages();
+            initialized.setValue(true);
         }
     }
 
-    public LiveData<List<Image>> getImages() {
-        return images;
-    }
+    public LiveData<List<Image>> getImages() { return images; }
+    public LiveData<Image> getUploadedImage() { return uploadedImage; }
+    public LiveData<Boolean> getStatus() { return initialized; }
 
     private void uploadPhoto(File image, String title) {
         disposables.add(ImgurUtils.getRetrofitClient().create(ImgurUtils.ImgurService.class)
@@ -77,6 +79,7 @@ public class ImgurViewModel extends AndroidViewModel {
         if (image.getStatus() == ImgurUtils.IMGUR_SUCCESS) {
             AppDbUtils.insertImgurRef(appDatabase, image);
             FirebaseUtils.insertImgurLink(imgurRef, image);
+            uploadedImage.setValue(image);
             selectedFile = null;
         } else {
             if (ImgurUtils.IMGUR_ERRORS.containsKey(image.getStatus())) {

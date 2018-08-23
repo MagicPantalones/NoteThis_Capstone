@@ -2,6 +2,7 @@ package io.magics.notethis.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.annotation.IdRes;
 import android.support.design.internal.BottomNavigationItemView;
@@ -123,6 +124,13 @@ public class Utils {
 
     public static Transition getIntroToSignInTransition(Context context) {
         return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_exit);
+    }
+
+    public static boolean isConnected(Context context){
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+
     }
 
     private Utils() {}
