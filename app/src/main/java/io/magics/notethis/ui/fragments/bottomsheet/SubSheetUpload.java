@@ -11,8 +11,10 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -97,6 +99,7 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
         });
 
         cxlBtn.setOnClickListener(v -> dismiss());
+
     }
 
     private void setLoading(){

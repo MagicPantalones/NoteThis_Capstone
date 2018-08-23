@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -49,7 +50,8 @@ public class ListSheet extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Markwon.setMarkdown(orderedListView, orderedListView.getText().toString());
         Markwon.setMarkdown(unorderedListView, unorderedListView.getText().toString());
-
+        getActivity().getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         orderedListView.setOnClickListener(v ->
                 callback(getString(R.string.template_ordered_list)));
 

@@ -19,6 +19,7 @@ import io.reactivex.schedulers.Schedulers;
 @SuppressLint("CheckResult")
 public class AppDbUtils {
 
+
     public interface RoomCountCallback {
         void onComplete(int rows);
     }
@@ -59,6 +60,13 @@ public class AppDbUtils {
 
     public static void deleteNote(AppDatabase db, NoteTitle title) {
         Completable.fromAction(() -> db.userNoteModel().deleteNotes(title.getId()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+    }
+
+    public static void deleteNoteTable(AppDatabase db) {
+        Completable.fromAction(() -> db.userNoteModel().deleteAll())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
@@ -105,6 +113,13 @@ public class AppDbUtils {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::onComplete);
+    }
+
+    public static void deleteImgurTable(AppDatabase db) {
+        Completable.fromAction(() -> db.userImageModel().deleteAll())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 
     public static void handleDbErrors(String tag, Throwable e) {

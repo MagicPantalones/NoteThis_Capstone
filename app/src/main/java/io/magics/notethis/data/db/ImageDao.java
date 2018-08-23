@@ -22,9 +22,12 @@ public interface ImageDao {
     int checkHasData();
 
     @Insert
-    void insertImages(Image... images);
+    List<Long> insertImages(Image... images);
 
     @Delete
     void deleteImage(Image image);
+
+    @Query("DELETE FROM Image")
+    void deleteAll();
 
 }

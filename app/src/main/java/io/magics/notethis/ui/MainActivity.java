@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private boolean showIntro = true;
     private FragmentManager fragManager;
-    private NoteTitleViewModel noteTitleViewModel;
     private NoteViewModel noteViewModel;
     private ImgurViewModel imgurViewModel;
 
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements
     private ActionBarDrawerToggle drawerToggle;
 
     private Uri fileUri;
-    private boolean connected;
+    private boolean connected = true;
 
     @BindView(R.id.main_toolbar)
     Toolbar toolbar;
@@ -132,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.nav_drawer_sign_out:
                     item.setChecked(false);
                     noteViewModel.signOut();
+                    imgurViewModel.signOut();
                     UiUtils.handleUserSignOut(this,fragManager);
                     break;
                 default:
@@ -151,7 +151,8 @@ public class MainActivity extends AppCompatActivity implements
     private void initViewModels() {
         imgurViewModel = ViewModelProviders.of(this).get(ImgurViewModel.class);
 
-        noteTitleViewModel = ViewModelProviders.of(this).get(NoteTitleViewModel.class);
+        NoteTitleViewModel noteTitleViewModel = ViewModelProviders.of(this)
+                .get(NoteTitleViewModel.class);
         noteTitleViewModel.init();
         noteTitleViewModel.getDeletedNote().observe(this, note ->
                 noteViewModel.deleteNote(note));
@@ -275,16 +276,22 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void changeFab() {
         if (mainFab != null) {
-            mainFab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
-                @Override
-                public void onHidden(FloatingActionButton fab) {
-                    super.onHidden(fab);
-                    if (connected) {
-                        uploadFab.show();
-                        bottomSheet.hide();
+            if (mainFab.getVisibility() != View.VISIBLE) {
+                uploadFab.show();
+                bottomSheet.hide();
+            } else {
+                mainFab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+                    @Override
+                    public void onHidden(FloatingActionButton fab) {
+                        super.onHidden(fab);
+                        if (connected) {
+                            uploadFab.show();
+                            bottomSheet.hide();
+
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 

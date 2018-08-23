@@ -1,73 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sub_sheet_upload"
-    app:layout_behavior="@string/bottom_sheet_behavior"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/backgroundColorMain"
+    app:layout_behavior="@string/bottom_sheet_behavior">
 
-    <android.support.constraint.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/sub_upload_preview"
-            android:layout_width="@dimen/sheet_preview_sizes"
-            android:layout_height="@dimen/sheet_preview_sizes"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/dialog_photo_a11y"
-            android:scaleType="centerCrop"
-            android:layout_marginStart="@dimen/margin_16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/place_cage" />
-
-        <EditText
-            android:id="@+id/sub_upload_img_title"
-            android:layout_width="0dp"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_16dp"
-            android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginTop="8dp"
-            android:hint="@string/sheet_preview_img_title"
-            android:inputType="text|textCapSentences"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/sub_upload_preview"
-            app:layout_constraintTop_toTopOf="@+id/sub_upload_preview" />
+            android:layout_gravity="center">
 
-        <Button
-            android:id="@+id/sub_upload_ok_btn"
-            style="@style/dialogButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_16dp"
-            android:layout_marginEnd="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_16dp"
-            android:text="@string/dialog_upload"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sub_upload_img_title" />
+            <ImageView
+                android:id="@+id/sub_upload_preview"
+                android:layout_width="@dimen/sheet_preview_sizes"
+                android:layout_height="@dimen/sheet_preview_sizes"
+                android:layout_marginStart="@dimen/margin_16dp"
+                android:layout_marginTop="@dimen/margin_24dp"
+                android:layout_marginBottom="@dimen/margin_24dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/dialog_photo_a11y"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/place_cage" />
 
-        <Button
-            android:id="@+id/sub_upload_cxl_btn"
-            style="@style/dialogButton.cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_16dp"
-            app:layout_constraintBottom_toTopOf="@+id/sub_upload_ok_btn"
-            app:layout_constraintEnd_toStartOf="@+id/sub_upload_ok_btn"
-            app:layout_constraintTop_toBottomOf="@+id/sub_upload_ok_btn" />
-    </android.support.constraint.ConstraintLayout>
+            <EditText
+                android:id="@+id/sub_upload_img_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_16dp"
+                android:layout_marginStart="@dimen/margin_16dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/sheet_preview_img_title"
+                android:inputType="text|textCapSentences"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/sub_upload_preview"
+                app:layout_constraintTop_toTopOf="@+id/sub_upload_preview" />
+
+            <Button
+                android:id="@+id/sub_upload_ok_btn"
+                style="@style/dialogButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_16dp"
+                android:text="@string/dialog_upload"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sub_upload_img_title" />
+
+            <Button
+                android:id="@+id/sub_upload_cxl_btn"
+                style="@style/dialogButton.cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_16dp"
+                app:layout_constraintBottom_toTopOf="@+id/sub_upload_ok_btn"
+                app:layout_constraintEnd_toStartOf="@+id/sub_upload_ok_btn"
+                app:layout_constraintTop_toBottomOf="@+id/sub_upload_ok_btn" />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
     <ProgressBar
         android:id="@+id/sub_upload_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </android.support.design.widget.CoordinatorLayout>

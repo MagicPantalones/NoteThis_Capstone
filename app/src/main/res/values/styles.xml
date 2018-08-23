@@ -79,4 +79,5 @@
     <style name="dialogButton.ok">
         <item name="android:text">@string/confirm</item>
     </style>
+
 </resources>

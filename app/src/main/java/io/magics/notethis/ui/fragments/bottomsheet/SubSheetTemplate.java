@@ -1,6 +1,7 @@
 package io.magics.notethis.ui.fragments.bottomsheet;
 
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -57,11 +59,6 @@ public class SubSheetTemplate extends BottomSheetDialogFragment {
 
         cxlBtn.setOnClickListener(v -> dismiss());
 
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class SubSheetPick extends BottomSheetDialogFragment {
         View view = View.inflate(getContext(), R.layout.sub_sheet_pick, null);
         ButterKnife.bind(this, view);
         dialog.setContentView(view);
+        getActivity().getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         ImagePickDialogAdapter adapter = new ImagePickDialogAdapter();
 
 

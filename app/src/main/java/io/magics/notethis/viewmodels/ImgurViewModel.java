@@ -120,4 +120,8 @@ public class ImgurViewModel extends AndroidViewModel {
         AppDbUtils.insertImgurRef(appDatabase, image);
         FirebaseUtils.insertImgurLink(imgurRef, image);
     }
+
+    public void signOut() {
+        AppDbUtils.deleteImgurTable(appDatabase);
+    }
 }
