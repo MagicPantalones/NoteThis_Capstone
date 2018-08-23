@@ -10,6 +10,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 
@@ -69,6 +70,8 @@ public class SheetUtils {
                 //Required override
             }
         };
+
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         View coordinator;
         if (view.getParent() == null){

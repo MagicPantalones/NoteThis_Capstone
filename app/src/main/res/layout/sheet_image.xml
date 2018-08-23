@@ -28,6 +28,7 @@
         android:id="@+id/sheet_image_template"
         style="@style/text.sheetListText"
         android:text="@string/sheet_template"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sheet_image_upload" />
