@@ -2,14 +2,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/margin_16dp"
+    android:padding="@dimen/margin_24dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <TextView
         android:id="@+id/h1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lines="1"
         android:text="@string/sheet_preview_h1" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_4dp"
+        android:background="@color/secondaryColor"/>
 
     <TextView
         android:id="@+id/h2"
@@ -19,6 +25,12 @@
         android:lines="1"
         android:text="@string/sheet_preview_h2" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_4dp"
+        android:background="@color/secondaryColor"/>
+
     <TextView
         android:id="@+id/h3"
         android:layout_width="match_parent"
@@ -26,6 +38,12 @@
         android:layout_marginTop="@dimen/margin_16dp"
         android:lines="1"
         android:text="@string/sheet_preview_h3" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_4dp"
+        android:background="@color/secondaryColor"/>
 
     <TextView
         android:id="@+id/h4"
@@ -35,6 +53,12 @@
         android:lines="1"
         android:text="@string/sheet_preview_h4" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_4dp"
+        android:background="@color/secondaryColor"/>
+
     <TextView
         android:id="@+id/h5"
         android:layout_width="wrap_content"
@@ -43,6 +67,12 @@
         android:lines="1"
         android:text="@string/sheet_preview_h5" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_4dp"
+        android:background="@color/secondaryColor"/>
+
     <TextView
         android:id="@+id/h6"
         android:layout_width="wrap_content"
@@ -50,5 +80,11 @@
         android:layout_marginTop="@dimen/margin_16dp"
         android:lines="1"
         android:text="@string/sheet_preview_h6" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_4dp"
+        android:background="@color/secondaryColor"/>
 
 </LinearLayout>

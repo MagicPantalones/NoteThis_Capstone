@@ -19,6 +19,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/dialog_photo_a11y"
             android:scaleType="centerCrop"
+            android:layout_marginStart="@dimen/margin_16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

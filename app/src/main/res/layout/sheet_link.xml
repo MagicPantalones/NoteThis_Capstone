@@ -1,22 +1,54 @@
-<LinearLayout android:id="@+id/link_sheet"
+<android.support.constraint.ConstraintLayout android:id="@+id/link_sheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/margin_24dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <EditText
         android:id="@+id/sheet_url_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/sheet_preview_url_title_hint"
-        android:inputType="text|textCapSentences|textUri" />
+        android:hint="@string/sheet_preview_img_alt"
+        android:layout_marginStart="@dimen/margin_24dp"
+        android:layout_marginEnd="@dimen/margin_24dp"
+        android:inputType="text|textCapSentences|textUri"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/sheet_url"
-        android:layout_width="match_parent"
+        android:id="@+id/sheet_url_url"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_16dp"
-        android:hint="@string/sheet_preview_url_hint"
-        android:inputType="textUri" />
-</LinearLayout>
+        android:hint="@string/sheet_preview_img_url"
+        android:inputType="textUri"
+        android:layout_marginStart="@dimen/margin_24dp"
+        android:layout_marginEnd="@dimen/margin_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sheet_url_title" />
+
+    <Button
+        android:id="@+id/sheet_url_ok_btn"
+        style="@style/dialogButton.ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sheet_url_url" />
+
+    <Button
+        android:id="@+id/sheet_url_cxl_btn"
+        style="@style/dialogButton.cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_16dp"
+        app:layout_constraintBottom_toTopOf="@+id/sheet_url_ok_btn"
+        app:layout_constraintEnd_toStartOf="@+id/sheet_url_ok_btn"
+        app:layout_constraintTop_toBottomOf="@+id/sheet_url_ok_btn" />
+
+</android.support.constraint.ConstraintLayout>

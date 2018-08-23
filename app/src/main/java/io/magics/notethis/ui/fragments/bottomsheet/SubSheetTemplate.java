@@ -45,7 +45,14 @@ public class SubSheetTemplate extends BottomSheetDialogFragment {
         ButterKnife.bind(this, view);
         SheetUtils.setBehaviour(view, dialog);
 
+        okBtn.setOnClickListener(v -> {
+            if (callbacks != null) {
+                callbacks.onReturnTemplate(SheetUtils.getUrlTemplate(getResources(),
+                        altEtView.getText(), imgUrlView.getText()));
+            }
+        });
 
+        cxlBtn.setOnClickListener(v -> dismiss());
 
     }
 

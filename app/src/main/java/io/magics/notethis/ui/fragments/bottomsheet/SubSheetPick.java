@@ -36,6 +36,14 @@ public class SubSheetPick extends BottomSheetDialogFragment {
 
     SheetCallbacks callbacks;
 
+    public SubSheetPick() {
+        //Required
+    }
+
+    public static SubSheetPick newInstance(){
+        return new SubSheetPick();
+    }
+
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
