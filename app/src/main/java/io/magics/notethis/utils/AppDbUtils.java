@@ -19,6 +19,10 @@ import io.reactivex.schedulers.Schedulers;
 @SuppressLint("CheckResult")
 public class AppDbUtils {
 
+    public interface RoomCountCallback {
+        void onComplete(int rows);
+    }
+
     public static void fetchNote(AppDatabase db, int id, RoomNoteCallback<Note> callback) {
         Single.fromCallable(() -> db.userNoteModel().getNote(id))
                 .subscribeOn(Schedulers.io())
@@ -89,6 +93,20 @@ public class AppDbUtils {
                 .subscribe();
     }
 
+    public static void lookForNoteData(AppDatabase db, RoomCountCallback callback) {
+        Single.just(db.userNoteModel().checkHasData())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(callback::onComplete);
+    }
+
+    public static void lookForImgurData(AppDatabase db, RoomCountCallback callback) {
+        Single.just(db.userImageModel().checkHasData())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(callback::onComplete);
+    }
+
     public static void handleDbErrors(String tag, Throwable e) {
         Log.w(tag, "handleDbErrors: ", e);
     }
@@ -101,7 +119,7 @@ public class AppDbUtils {
             super();
         }
 
-        public RoomInsertException(String message) {
+        RoomInsertException(String message) {
             super(message);
         }
 

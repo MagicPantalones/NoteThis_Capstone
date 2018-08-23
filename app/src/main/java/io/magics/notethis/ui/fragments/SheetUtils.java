@@ -70,7 +70,12 @@ public class SheetUtils {
                 //Required override
             }
         };
-        View coordinator = (View) view.getParent();
+        View coordinator;
+        if (view.getParent() == null){
+            coordinator = view;
+        } else {
+            coordinator = (View) view.getParent();
+        }
 
         CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)
                 coordinator.getLayoutParams();

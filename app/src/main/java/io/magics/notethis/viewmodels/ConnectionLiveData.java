@@ -38,7 +38,7 @@ public class ConnectionLiveData extends LiveData<Boolean> {
     protected void onActive() {
         super.onActive();
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        postValue(networkInfo.isConnectedOrConnecting());
+        postValue(networkInfo != null && networkInfo.isConnectedOrConnecting());
 
         if (Utils.SDK_V >= Build.VERSION_CODES.N) {
             connectivityManager.registerDefaultNetworkCallback(networkCallback);

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
@@ -43,8 +44,9 @@ public class SubSheetTemplate extends BottomSheetDialogFragment {
         super.setupDialog(dialog, style);
         View view = View.inflate(getContext(), R.layout.sub_sheet_template, null);
         ButterKnife.bind(this, view);
-        SheetUtils.setBehaviour(view, dialog);
+        dialog.setContentView(view);
 
+        SheetUtils.setBehaviour(view, getDialog());
         okBtn.setOnClickListener(v -> {
             if (callbacks != null) {
                 callbacks.onReturnTemplate(SheetUtils.getUrlTemplate(getResources(),
@@ -55,6 +57,11 @@ public class SubSheetTemplate extends BottomSheetDialogFragment {
 
         cxlBtn.setOnClickListener(v -> dismiss());
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

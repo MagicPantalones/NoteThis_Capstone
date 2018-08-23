@@ -30,6 +30,9 @@ public interface NoteDao {
     @Update
     void updateNote(Note... notes);
 
+    @Query("SELECT count(*) FROM Note")
+    int checkHasData();
+
     @Query("DELETE FROM note")
     void deleteAll();
 

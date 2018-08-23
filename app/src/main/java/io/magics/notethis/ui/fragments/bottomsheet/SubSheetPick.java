@@ -49,14 +49,15 @@ public class SubSheetPick extends BottomSheetDialogFragment {
         super.setupDialog(dialog, style);
         View view = View.inflate(getContext(), R.layout.sub_sheet_pick, null);
         ButterKnife.bind(this, view);
+        dialog.setContentView(view);
         ImagePickDialogAdapter adapter = new ImagePickDialogAdapter();
 
-        SheetUtils.setBehaviour(view, dialog);
 
         recyclerView.setAdapter(adapter);
 
         ImgurViewModel model = ViewModelProviders.of(getActivity()).get(ImgurViewModel.class);
         model.getImages().observe(this, adapter::insertImages);
+        SheetUtils.setBehaviour(view, dialog);
 
     }
 

@@ -95,25 +95,6 @@ public class Utils {
         else return (V) v1;
     }
 
-    //Solution from rafsanahmad007's answer here: https://stackoverflow.com/questions/41718633/bottomnavigationview-with-more-than-3-items-tab-title-is-hiding
-    public static void removeShiftMode(BottomNavigationView botNav) {
-        BottomNavigationMenuView menuView = (BottomNavigationMenuView) botNav.getChildAt(0);
-        try {
-            Field shiftMode = menuView.getClass().getDeclaredField("mShiftingMode");
-            shiftMode.setAccessible(true);
-            shiftMode.setBoolean(menuView, false);
-            shiftMode.setAccessible(false);
-            for (int i = 0; i < menuView.getChildCount(); i++) {
-                BottomNavigationItemView item = (BottomNavigationItemView) menuView.getChildAt(i);
-                item.setShiftingMode(false);
-                item.setChecked(false);
-                item.setCheckable(false);
-            }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            Log.w(TAG, "removeShiftMode: ", e);
-        }
-    }
-
     public static Transition getSignInTransition(Context context) {
         return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_shared);
     }
@@ -129,7 +110,8 @@ public class Utils {
     public static boolean isConnected(Context context){
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
 
     }
 

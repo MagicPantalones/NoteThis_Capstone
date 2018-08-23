@@ -17,6 +17,7 @@ import io.magics.notethis.data.db.AppDatabase;
 import io.magics.notethis.data.network.FirebaseUtils;
 import io.magics.notethis.data.network.ImgurUtils;
 import io.magics.notethis.utils.AppDbUtils;
+import io.magics.notethis.utils.RoomNoteCallback;
 import io.magics.notethis.utils.models.Image;
 import io.magics.notethis.utils.models.NoteTitle;
 import io.reactivex.Observable;
@@ -37,8 +38,7 @@ public class ImgurViewModel extends AndroidViewModel {
     private LiveData<List<Image>> images;
     private MutableLiveData<Boolean> initialized = new MutableLiveData<>();
     private MutableLiveData<Image> uploadedImage = new MutableLiveData<>();
-    private List<Image> deletedImages = new ArrayList<>();
-    private Image deletedImage;
+
 
     public ImgurViewModel(@NonNull Application application) { super(application); }
 
@@ -49,12 +49,12 @@ public class ImgurViewModel extends AndroidViewModel {
             appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
             images = appDatabase.userImageModel().getImages();
             initialized.setValue(true);
+            checkDatabase();
         }
     }
 
     public LiveData<List<Image>> getImages() { return images; }
     public LiveData<Image> getUploadedImage() { return uploadedImage; }
-    public LiveData<Boolean> getStatus() { return initialized; }
 
     private void uploadPhoto(File image, String title) {
         disposables.add(ImgurUtils.getRetrofitClient().create(ImgurUtils.ImgurService.class)
@@ -89,6 +89,20 @@ public class ImgurViewModel extends AndroidViewModel {
         }
     }
 
+    private void checkDatabase() {
+        AppDbUtils.lookForImgurData(appDatabase, rows -> {
+            if (rows <= 0) {
+                FirebaseUtils.getAllImgurLinks(imgurRef, images1 -> {
+                    if (images1 != null && !images1.isEmpty()) {
+                        for (Image image : images1) {
+                            FirebaseUtils.insertImgurLink(imgurRef, image);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
     public void prepareUpload(File image) {
         selectedFile = image;
     }
@@ -100,13 +114,12 @@ public class ImgurViewModel extends AndroidViewModel {
     }
 
     public void deleteImage(Image image) {
-        deletedImage = image;
         AppDbUtils.deleteImgurRef(appDatabase, image);
-        deletedImages.add(image);
+        FirebaseUtils.deleteImgurLink(imgurRef, image);
     }
 
     public void restoreImage(Image image) {
-        deletedImages.remove(image);
         AppDbUtils.insertImgurRef(appDatabase, image);
+        FirebaseUtils.insertImgurLink(imgurRef, image);
     }
 }

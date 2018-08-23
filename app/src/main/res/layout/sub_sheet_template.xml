@@ -2,13 +2,14 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sub_sheet_template"
+    app:layout_behavior="@string/bottom_sheet_behavior"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_24dp"
-    app:layout_behavior="@string/bottom_sheet_behavior">
+    android:layout_marginTop="@dimen/margin_24dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
+        android:layout_gravity="center"
         android:layout_height="wrap_content">
 
         <EditText

@@ -31,6 +31,7 @@ import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
 import io.magics.notethis.utils.models.NoteTitle;
+import io.magics.notethis.viewmodels.NoteViewModel;
 
 
 public class NoteListFragment extends Fragment {
@@ -56,6 +57,7 @@ public class NoteListFragment extends Fragment {
     private FabListener fabListener;
 
     private NoteTitleViewModel noteViewModel;
+    private NoteViewModel model;
 
     private NoteTitleAdapter adapter;
 
@@ -82,7 +84,7 @@ public class NoteListFragment extends Fragment {
         adapter = new NoteTitleAdapter();
         //noinspection ConstantConditions
         noteViewModel = ViewModelProviders.of(getActivity()).get(NoteTitleViewModel.class);
-
+        model = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
         return root;
     }
 
@@ -116,6 +118,16 @@ public class NoteListFragment extends Fragment {
             snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(),
                     R.color.secondaryColor, null));
             snackbar.setDuration(7000);
+            snackbar.addCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    snackbar.removeCallback(this);
+                    if (event != DISMISS_EVENT_ACTION) {
+                        noteViewModel.deletePermanent();
+                    }
+                    super.onDismissed(transientBottomBar, event);
+                }
+            });
             snackbar.show();
         });
 
@@ -216,7 +228,7 @@ public class NoteListFragment extends Fragment {
         }
 
         void restoreTitle(NoteTitle title, int pos) {
-            noteViewModel.restoreTitle(title);
+            noteViewModel.restoreTitle();
             noteTitles.add(pos, title);
             notifyItemInserted(pos);
             switchLayouts(noteTitles);

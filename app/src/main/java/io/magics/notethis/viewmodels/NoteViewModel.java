@@ -22,6 +22,7 @@ import io.magics.notethis.data.db.AppDatabase;
 import io.magics.notethis.data.network.FirebaseUtils;
 import io.magics.notethis.utils.AppDbUtils;
 import io.magics.notethis.utils.RoomNoteCallback;
+import io.magics.notethis.utils.models.Image;
 import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.utils.models.NoteTitle;
 
@@ -37,7 +38,6 @@ public class NoteViewModel extends AndroidViewModel {
     private MutableLiveData<Note> note = new MutableLiveData<>();
     private MutableLiveData<Boolean> signedIn = new MutableLiveData<>();
     private ConnectionLiveData connected;
-    private MutableLiveData<List<Note>> serverNotes = new MutableLiveData<>();
 
     private AppDatabase appDatabase;
 
@@ -64,7 +64,7 @@ public class NoteViewModel extends AndroidViewModel {
     public LiveData<Note> getNote() { return note; }
     public LiveData<Boolean> getSignInStatus() { return signedIn; }
     public LiveData<Boolean> getConnectionStatus() { return connected; }
-    public void deleteNotes(List<NoteTitle> titles) { FirebaseUtils.deleteNote(noteRef, titles); }
+    public void deleteNote(Note note) { FirebaseUtils.deleteNote(noteRef, note); }
 
     public void editNote(int id) {
         AppDbUtils.fetchNote(appDatabase, id, new RoomNoteCallback<Note>() {
@@ -155,20 +155,20 @@ public class NoteViewModel extends AndroidViewModel {
         userRef = FirebaseUtils.getUserPath(rootRef, uid);
         noteRef = FirebaseUtils.getNotesPath(rootRef, uid);
         FirebaseUtils.checkForUserEmail(userRef, user.getEmail());
+        checkDatabase();
     }
 
-    public LiveData<List<Note>> fetchAllNotesFromServer() {
-        FirebaseUtils.getAllNotes(userRef, new FirebaseUtils.FirebaseNoteCallback() {
-            @Override
-            public void onComplete(List<Note> notes) {
-                serverNotes.setValue(notes);
-            }
-
-            @Override
-            public void onError(DatabaseError error) {
-                serverNotes.setValue(null);
+    private void checkDatabase() {
+        AppDbUtils.lookForNoteData(appDatabase, rows -> {
+            if (rows <= 0) {
+                FirebaseUtils.getAllNotes(noteRef, notes -> {
+                    if (notes != null && !notes.isEmpty()) {
+                        for (Note note1 : notes) {
+                            FirebaseUtils.insertNote(noteRef, note1);
+                        }
+                    }
+                });
             }
         });
-        return serverNotes;
     }
 }

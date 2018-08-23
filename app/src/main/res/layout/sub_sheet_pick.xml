@@ -1,17 +1,18 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/bottom_sheet_behavior"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:paddingBottom="@dimen/margin_24dp"
     android:paddingEnd="@dimen/margin_4dp"
     android:paddingStart="@dimen/margin_4dp"
-    android:paddingTop="@dimen/margin_24dp"
-    app:layout_behavior="@string/bottom_sheet_behavior">
+    android:paddingTop="@dimen/margin_24dp">
 
 
         <android.support.v7.widget.RecyclerView
+            android:layout_gravity="center"
             android:id="@+id/sub_pick_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

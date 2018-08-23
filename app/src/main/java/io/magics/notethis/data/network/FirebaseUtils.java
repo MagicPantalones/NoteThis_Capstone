@@ -39,7 +39,6 @@ public class FirebaseUtils {
 
     public interface FirebaseNoteCallback {
         void onComplete(List<Note> notes);
-        void onError(DatabaseError error);
     }
 
     public interface FirebaseImgurCallback {
@@ -85,10 +84,9 @@ public class FirebaseUtils {
         noteRef.updateChildren(childUpdates);
     }
 
-    public static void deleteNote(DatabaseReference noteRef, List<NoteTitle> noteTitles) {
-        for (NoteTitle title : noteTitles) {
-            noteRef.child(String.valueOf(title.getId())).removeValue();
-        }
+    public static void deleteNote(DatabaseReference noteRef, Note note) {
+        if (note == null) return;
+        noteRef.child(String.valueOf(note.getId())).removeValue();
     }
 
     public static void getAllNotes(DatabaseReference userRef, FirebaseNoteCallback callback) {
@@ -104,7 +102,7 @@ public class FirebaseUtils {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                callback.onError(databaseError);
+                handleFirebaseErrors(databaseError);
             }
         });
     }

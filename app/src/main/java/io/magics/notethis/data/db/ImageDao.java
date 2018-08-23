@@ -18,6 +18,9 @@ public interface ImageDao {
     @Query("SELECT * FROM Image")
     LiveData<List<Image>> getImages();
 
+    @Query("SELECT count(*) FROM Image")
+    int checkHasData();
+
     @Insert
     void insertImages(Image... images);
 

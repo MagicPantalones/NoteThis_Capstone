@@ -66,11 +66,13 @@ public class ImageSheet extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        imgPick.setOnClickListener(v -> SubSheetPick.newInstance()
-                .show(getFragmentManager(), TAG_PICK));
+        SubSheetPick pickDialog = SubSheetPick.newInstance();
+        SubSheetTemplate templateDialog = SubSheetTemplate.newInstance();
 
-        imgTemplate.setOnClickListener(v -> SubSheetTemplate.newInstance()
-                .show(getFragmentManager(), TAG_TEMPLATE));
+        imgPick.setOnClickListener(v -> pickDialog.show(getFragmentManager(), TAG_PICK));
+
+        imgTemplate.setOnClickListener(v ->
+                templateDialog.show(getFragmentManager(), TAG_TEMPLATE));
 
         imgUpload.setOnClickListener(v -> {
             if (getContext() == null) return;

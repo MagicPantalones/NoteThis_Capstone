@@ -26,7 +26,7 @@ public class NoteTitleViewModel extends AndroidViewModel {
     private LiveData<List<NoteTitle>> noteTitles;
     private Note deletedTitle;
     private AppDatabase appDatabase;
-    private List<NoteTitle> deletedTitles = new ArrayList<>();
+    private MutableLiveData<Note> deletedNote = new MutableLiveData<>();
 
     public NoteTitleViewModel(@NonNull Application application) {
         super(application);
@@ -40,6 +40,9 @@ public class NoteTitleViewModel extends AndroidViewModel {
     public LiveData<List<NoteTitle>> getNoteTitles() {
         return noteTitles;
     }
+    public LiveData<Note> getDeletedNote() {
+        return deletedNote;
+    }
 
     public void deleteTitle(NoteTitle noteTitle) {
         AppDbUtils.fetchNote(appDatabase, noteTitle.getId(), new RoomNoteCallback<Note>() {
@@ -47,7 +50,6 @@ public class NoteTitleViewModel extends AndroidViewModel {
             public void onComplete(Note data) {
                 deletedTitle = data;
                 AppDbUtils.deleteNote(appDatabase, noteTitle);
-                deletedTitles.add(noteTitle);
             }
 
             @Override
@@ -57,10 +59,12 @@ public class NoteTitleViewModel extends AndroidViewModel {
         });
     }
 
-    public void restoreTitle(NoteTitle noteTitle) {
-        deletedTitles.remove(noteTitle);
+    public void restoreTitle() {
         AppDbUtils.insertNote(appDatabase, deletedTitle, null);
     }
 
-    public List<NoteTitle> getDeletedTitles() { return deletedTitles; }
+    public void deletePermanent() {
+        deletedNote.setValue(deletedTitle);
+    }
+
 }

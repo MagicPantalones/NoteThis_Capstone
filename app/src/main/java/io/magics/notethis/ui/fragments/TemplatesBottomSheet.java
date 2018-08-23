@@ -113,21 +113,22 @@ public class TemplatesBottomSheet extends Fragment {
     }
 
     public void setSheetCollapsed() {
-        behavior.setHideable(false);
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (behavior.getState() != BottomSheetBehavior.STATE_COLLAPSED) {
+            behavior.setHideable(false);
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
     }
 
     public void hide() {
-        behavior.setHideable(true);
-        behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        if (behavior == null) return;
+        if (behavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
+            behavior.setHideable(true);
+            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        }
     }
 
     public void show() {
         setSheetCollapsed();
-    }
-
-    public int getState() {
-        return behavior.getState();
     }
 
     private class SheetsAdapter extends FragmentPagerAdapter {

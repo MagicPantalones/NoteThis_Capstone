@@ -110,6 +110,9 @@ public class MainActivity extends AppCompatActivity implements
         mainFab.setOnClickListener(v -> onNewNotePress());
         uploadFab.setOnClickListener(v -> onUploadImagePress());
 
+        bottomSheet =
+                (TemplatesBottomSheet) fragManager.findFragmentById(R.id.bottom_sheet_fragment);
+
         navDrawer.setNavigationItemSelectedListener(item -> {
             drawerLayout.closeDrawers();
             switch (item.getItemId()) {
@@ -140,9 +143,6 @@ public class MainActivity extends AppCompatActivity implements
         if (showIntro) {
             UiUtils.showIntroFrag(this, fragManager);
         }
-
-        bottomSheet =
-                (TemplatesBottomSheet) fragManager.findFragmentById(R.id.bottom_sheet_fragment);
     }
 
 
@@ -153,6 +153,9 @@ public class MainActivity extends AppCompatActivity implements
 
         noteTitleViewModel = ViewModelProviders.of(this).get(NoteTitleViewModel.class);
         noteTitleViewModel.init();
+        noteTitleViewModel.getDeletedNote().observe(this, note ->
+                noteViewModel.deleteNote(note));
+
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
         noteViewModel.init();
@@ -200,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements
         if (dialogFrag != null && dialogFrag.getActivity() == this) {
             appBarLayout.setExpanded(true, true);
             Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
+            bottomSheet.hide();
             super.onBackPressed();
         } else if (frag instanceof EditNoteFragment
                 && ((EditNoteFragment) frag).hasUnsavedChanges()) {
@@ -208,9 +212,7 @@ public class MainActivity extends AppCompatActivity implements
             if (frag instanceof ImgurListFragment) {
                 uploadFab.hide();
             }
-            if (bottomSheet.getState() != BottomSheetBehavior.STATE_HIDDEN) {
-                bottomSheet.hide();
-            }
+            bottomSheet.hide();
             appBarLayout.setExpanded(true, true);
             Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
             super.onBackPressed();
@@ -220,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         Utils.dispose(unbinder);
-        noteViewModel.deleteNotes(noteTitleViewModel.getDeletedTitles());
         super.onDestroy();
     }
 
@@ -267,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements
     public void showFab() {
         if (mainFab != null && UiUtils.isFragType(fragManager, NoteListFragment.class)) {
             mainFab.show();
+            bottomSheet.hide();
         }
     }
 
@@ -279,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements
                     super.onHidden(fab);
                     if (connected) {
                         uploadFab.show();
+                        bottomSheet.hide();
                     }
                 }
             });
