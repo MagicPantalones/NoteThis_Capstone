@@ -1,6 +1,7 @@
 package io.magics.notethis.ui.dialogs;
 
 import android.app.Dialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -26,6 +27,7 @@ import butterknife.ButterKnife;
 import io.magics.notethis.R;
 import io.magics.notethis.utils.GlideApp;
 import io.magics.notethis.utils.models.Image;
+import io.magics.notethis.viewmodels.ImgurViewModel;
 import ru.noties.markwon.Markwon;
 
 public class TemplatesBottomSheet extends BottomSheetDialogFragment {
@@ -36,14 +38,10 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
     View buttonRow;
     @BindViews({R.id.peek_lists, R.id.peek_headers, R.id.peek_links, R.id.peek_image})
     List<ImageView> peekIcons;
-
     @BindView(R.id.peek_positive_button)
     Button positiveButton;
     @BindView(R.id.peek_negative_button)
     Button negativeButton;
-
-
-
     @BindViews({R.id.lists_sheet, R.id.headers_sheet, R.id.link_sheet, R.id.images_sheet})
     List<View> sheets;
     @BindViews({R.id.h1, R.id.h2, R.id.h3, R.id.h4, R.id.h5, R.id.h6})
@@ -53,21 +51,9 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
     @BindViews({R.id.sub_sheet_pick, R.id.sub_sheet_upload, R.id.sub_sheet_template})
     List<View> imageSubSheets;
 
-    @BindView(R.id.image_picker_recycler)
-    RecyclerView recyclerView;
-
-    @BindView(R.id.sheet_upload_preview)
-    ImageView uploadPreview;
-    @BindView(R.id.sub_upload_img_title)
-    EditText uploadTitle;
-
-    @BindView(R.id.template_img_alt)
-    EditText templateAltText;
-    @BindView(R.id.template_img_url)
-    EditText templateImgUrl;
-
     BottomSheetBehavior behavior;
-
+    ImgurViewModel model;
+    ImagePickDialogAdapter adapter;
     TemplateSheetCallback callback;
 
     public interface TemplateSheetCallback {
@@ -91,10 +77,10 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
 
         CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)
                 ((View) view.getParent()).getLayoutParams();
-        CoordinatorLayout.Behavior behavior = lp.getBehavior();
+        CoordinatorLayout.Behavior lb = lp.getBehavior();
 
-        if (behavior instanceof BottomSheetBehavior) {
-            setup((BottomSheetBehavior) behavior);
+        if (lb instanceof BottomSheetBehavior) {
+            setup((BottomSheetBehavior) lb);
         } else {
             dismiss();
         }
@@ -102,7 +88,28 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
 
     private void setup(BottomSheetBehavior behavior) {
         this.behavior = behavior;
-
+        this.behavior.setHideable(false);
+        model = ViewModelProviders.of(getActivity()).get(ImgurViewModel.class);
+        adapter = new ImagePickDialogAdapter();
+        model.getImages().observe(this, adapter::insertImages);
+        for (ImageView icon : peekIcons) {
+            switch (icon.getId()) {
+                case R.id.peek_lists:
+                    icon.setOnClickListener(v -> listPeekClicked());
+                    break;
+                case R.id.peek_headers:
+                    icon.setOnClickListener(v -> headerPeekClicked());
+                    break;
+                case R.id.peek_links:
+                    icon.setOnClickListener(v -> linkPeekClicked());
+                    break;
+                case R.id.peek_image:
+                    icon.setOnClickListener(v -> imgPeekClicked());
+                    break;
+                default:
+                    break;
+            }
+        }
 
     }
 
@@ -186,10 +193,31 @@ public class TemplatesBottomSheet extends BottomSheetDialogFragment {
         });
         switchRows(buttonRow, peekRow);
         showViewHideRest(sheets.get(2), sheets.get(0), sheets.get(1), sheets.get(3));
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private void imgPeekClicked() {
 
+        imageSheetHeaders.get(0).setOnClickListener(v -> {
+            View root = imageSubSheets.get(0);
+            RecyclerView recyclerView = root.findViewById(R.id.image_picker_recycler);
+            recyclerView.setAdapter(adapter);
+            showViewHideRest(imageSubSheets.get(0), imageSubSheets.get(1), imageSubSheets.get(2));
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        });
+        imageSheetHeaders.get(1).setOnClickListener(v -> {
+            @BindView(R.id.sheet_upload_preview)
+            ImageView uploadPreview;
+            @BindView(R.id.sub_upload_img_title)
+            EditText uploadTitle;
+
+        });
+        imageSheetHeaders.get(2).setOnClickListener(v -> {
+            @BindView(R.id.template_img_alt)
+            EditText templateAltText;
+            @BindView(R.id.template_img_url)
+            EditText templateImgUrl;
+        });
     }
 
     private void returnTemplate(String string) {
