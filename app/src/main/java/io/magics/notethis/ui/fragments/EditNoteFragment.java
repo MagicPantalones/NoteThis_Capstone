@@ -25,8 +25,7 @@ import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
 
-public class EditNoteFragment extends Fragment implements
-        TemplatesBottomSheet.TemplateSheetCallback {
+public class EditNoteFragment extends Fragment {
 
     public static final int ACTION_SAVE = 765;
     public static final int ACTION_CLOSE = 592;
@@ -37,10 +36,15 @@ public class EditNoteFragment extends Fragment implements
 
     Unbinder unbinder;
     private FabListener fabListener;
+    private SheetVisibility sheetVisibilityHandler;
 
     private NoteViewModel viewModel;
 
     TemplatesBottomSheet bottomSheet;
+
+    public interface SheetVisibility {
+        void showSheet();
+    }
 
     public EditNoteFragment() {
         // Required empty public constructor
@@ -81,7 +85,7 @@ public class EditNoteFragment extends Fragment implements
         }
         bottomSheet = (TemplatesBottomSheet)
                 getFragmentManager().findFragmentById(R.id.bottom_sheet_fragment);
-        bottomSheet.setCallback(this);
+        if (sheetVisibilityHandler != null) sheetVisibilityHandler.showSheet();
     }
 
 
@@ -91,15 +95,14 @@ public class EditNoteFragment extends Fragment implements
         if (context instanceof FabListener) {
             fabListener = (FabListener) context;
         }
+        if (context instanceof SheetVisibility) sheetVisibilityHandler = (SheetVisibility) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         fabListener = null;
-        if (bottomSheet != null) {
-            bottomSheet.clearCallback();
-        }
+        sheetVisibilityHandler = null;
     }
 
     @Override
@@ -128,6 +131,14 @@ public class EditNoteFragment extends Fragment implements
         return viewModel.hasUnsavedChanges(editNoteView.getText().toString());
     }
 
+    public void setTemplate(String template) {
+        if (bottomSheet != null) bottomSheet.setSheetCollapsed();
+        if (template != null) {
+            editNoteView.append(template);
+        }
+        editNoteView.setSelection(editNoteView.getText().length());
+    }
+
     @SuppressWarnings("ConstantConditions")
     public void prepareSave(int action) {
         if (action == ACTION_SAVE && hasUnsavedChanges()) {
@@ -154,8 +165,4 @@ public class EditNoteFragment extends Fragment implements
         }
     }
 
-    @Override
-    public void onTemplateChosen(String template) {
-        editNoteView.append(template);
-    }
 }

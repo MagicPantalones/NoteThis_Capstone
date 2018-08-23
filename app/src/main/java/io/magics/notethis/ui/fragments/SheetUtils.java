@@ -8,6 +8,7 @@ import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -69,9 +70,10 @@ public class SheetUtils {
                 //Required override
             }
         };
+        View coordinator = (View) view.getParent();
 
         CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)
-                ((View) view.getParent()).getLayoutParams();
+                coordinator.getLayoutParams();
         CoordinatorLayout.Behavior behavior = lp.getBehavior();
         if(behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(behaviorCb);

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -28,12 +29,14 @@ import android.view.View;
 import java.io.File;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.dialogs.UploadImageDialog;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.ImgurListFragment;
+import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
 import io.magics.notethis.utils.DocUtils;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.ImgurViewModel;
@@ -46,7 +49,8 @@ import static io.magics.notethis.utils.Utils.DIALOG_UPLOAD;
 
 public class MainActivity extends AppCompatActivity implements
         NoteListFragment.NoteListFragListener, NoteListFragment.FabListener,
-        UploadImageDialog.UploadDialogHandler {
+        UploadImageDialog.UploadDialogHandler, TemplatesBottomSheet.SheetCallbacks,
+        EditNoteFragment.SheetVisibility {
 
     private static final String TAG = "MainActivity";
 
@@ -80,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements
     NavigationView navDrawer;
     @BindView(R.id.main_drawer_layout)
     DrawerLayout drawerLayout;
+
+    TemplatesBottomSheet bottomSheet;
 
     Unbinder unbinder;
 
@@ -135,6 +141,8 @@ public class MainActivity extends AppCompatActivity implements
             UiUtils.showIntroFrag(this, fragManager);
         }
 
+        bottomSheet =
+                (TemplatesBottomSheet) fragManager.findFragmentById(R.id.bottom_sheet_fragment);
     }
 
 
@@ -199,6 +207,9 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             if (frag instanceof ImgurListFragment) {
                 uploadFab.hide();
+            }
+            if (bottomSheet.getState() != BottomSheetBehavior.STATE_HIDDEN) {
+                bottomSheet.hide();
             }
             appBarLayout.setExpanded(true, true);
             Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
@@ -340,6 +351,19 @@ public class MainActivity extends AppCompatActivity implements
 
         return super.onOptionsItemSelected(item);
 
+    }
+
+    @Override
+    public void showSheet() {
+        bottomSheet.show();
+    }
+
+    @Override
+    public void onReturnTemplate(String template) {
+        Fragment frag = fragManager.findFragmentById(R.id.container_main);
+        if (frag instanceof EditNoteFragment) {
+            ((EditNoteFragment) frag).setTemplate(template);
+        }
     }
 
     //TODO Add bottom action bar for Markdown templates.

@@ -60,6 +60,7 @@ public class TemplatesBottomSheet extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         behavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.bottom_sheet_fragment));
+        hide();
         setup();
     }
 
@@ -84,16 +85,16 @@ public class TemplatesBottomSheet extends Fragment {
         for (ImageView icon : peekIcons) {
             switch (icon.getId()) {
                 case R.id.peek_lists:
-                    icon.setOnClickListener(v -> sheetsPager.setCurrentItem(0, true));
+                    icon.setOnClickListener(v -> setPage(0));
                     break;
                 case R.id.peek_headers:
-                    icon.setOnClickListener(v -> sheetsPager.setCurrentItem(1, true));
+                    icon.setOnClickListener(v -> setPage(1));
                     break;
                 case R.id.peek_links:
-                    icon.setOnClickListener(v -> sheetsPager.setCurrentItem(2, true));
+                    icon.setOnClickListener(v -> setPage(2));
                     break;
                 case R.id.peek_image:
-                    icon.setOnClickListener(v -> sheetsPager.setCurrentItem(3, true));
+                    icon.setOnClickListener(v -> setPage(3));
                     break;
                 default:
                     break;
@@ -102,20 +103,31 @@ public class TemplatesBottomSheet extends Fragment {
 
     }
 
+    private void setPage(int pos) {
+        sheetsPager.setCurrentItem(pos, true);
+        setSheetExpanded();
+    }
+
     public void setSheetExpanded() {
         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     public void setSheetCollapsed() {
+        behavior.setHideable(false);
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     public void hide() {
+        behavior.setHideable(true);
         behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     public void show() {
         setSheetCollapsed();
+    }
+
+    public int getState() {
+        return behavior.getState();
     }
 
     private class SheetsAdapter extends FragmentPagerAdapter {

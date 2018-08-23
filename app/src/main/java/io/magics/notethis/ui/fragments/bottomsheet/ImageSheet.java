@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import java.io.File;
 
+import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import io.magics.notethis.R;
@@ -36,11 +37,11 @@ public class ImageSheet extends Fragment {
 
     private static final int FRAG_READ_WRITE_RQ = 1245;
 
-    @BindViews(R.id.sheet_image_pick)
+    @BindView(R.id.sheet_image_pick)
     TextView imgPick;
-    @BindViews(R.id.sheet_image_upload)
+    @BindView(R.id.sheet_image_upload)
     TextView imgUpload;
-    @BindViews(R.id.sheet_image_template)
+    @BindView(R.id.sheet_image_template)
     TextView imgTemplate;
 
     private Uri fileUri;
@@ -123,6 +124,8 @@ public class ImageSheet extends Fragment {
 
 
     public void connectionState(Boolean connected) {
-        imgUpload.setEnabled(connected);
+        if (imgUpload != null) {
+            imgUpload.setEnabled(connected);
+        }
     }
 }

@@ -68,7 +68,7 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
         dialog.setContentView(view);
         model = ViewModelProviders.of(getActivity()).get(ImgurViewModel.class);
         SheetUtils.setBehaviour(view, dialog);
-        
+
         File img = (File) getArguments().getSerializable(ARG_IMG);
 
         GlideApp.with(this)
@@ -91,6 +91,7 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
                 if (callbacks != null) {
                     callbacks.onReturnTemplate(SheetUtils.getImgTemplate(getResources(),
                             image.getTitle(), image.getLink()));
+                    dismiss();
                 }
             });
         });

@@ -1,22 +1,23 @@
-<android.support.design.widget.CoordinatorLayout android:id="@+id/sub_sheet_pick"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/margin_4dp"
-    android:paddingEnd="@dimen/margin_4dp"
-    android:paddingTop="@dimen/margin_24dp"
-    android:paddingBottom="@dimen/margin_24dp"
     android:clipChildren="false"
-    app:layout_behavior="@string/bottom_sheet_behavior"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:paddingBottom="@dimen/margin_24dp"
+    android:paddingEnd="@dimen/margin_4dp"
+    android:paddingStart="@dimen/margin_4dp"
+    android:paddingTop="@dimen/margin_24dp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/sub_pick_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        app:layoutManager="android.support.v7.widget.GridLayoutManager"
-        app:spanCount="3" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/sub_pick_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            app:layoutManager="android.support.v7.widget.GridLayoutManager"
+            app:spanCount="3" />
 
 </android.support.design.widget.CoordinatorLayout>

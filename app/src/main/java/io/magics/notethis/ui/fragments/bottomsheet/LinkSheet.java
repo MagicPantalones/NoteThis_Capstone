@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import io.magics.notethis.R;
@@ -25,13 +26,13 @@ import static io.magics.notethis.ui.fragments.SheetUtils.getUrlTemplate;
  */
 public class LinkSheet extends Fragment {
 
-    @BindViews(R.id.sheet_url_title)
+    @BindView(R.id.sheet_url_title)
     EditText title;
-    @BindViews(R.id.sheet_url_url)
+    @BindView(R.id.sheet_url_url)
     EditText url;
-    @BindViews(R.id.sheet_url_ok_btn)
+    @BindView(R.id.sheet_url_ok_btn)
     Button okBtn;
-    @BindViews(R.id.sheet_url_cxl_btn)
+    @BindView(R.id.sheet_url_cxl_btn)
     Button cxlBtn;
 
     SheetCallbacks callbacks;

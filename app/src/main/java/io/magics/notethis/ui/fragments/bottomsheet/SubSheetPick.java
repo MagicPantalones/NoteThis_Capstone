@@ -49,8 +49,9 @@ public class SubSheetPick extends BottomSheetDialogFragment {
         super.setupDialog(dialog, style);
         View view = View.inflate(getContext(), R.layout.sub_sheet_pick, null);
         ButterKnife.bind(this, view);
-        SheetUtils.setBehaviour(view, dialog);
         ImagePickDialogAdapter adapter = new ImagePickDialogAdapter();
+
+        SheetUtils.setBehaviour(view, dialog);
 
         recyclerView.setAdapter(adapter);
 
@@ -100,6 +101,7 @@ public class SubSheetPick extends BottomSheetDialogFragment {
                         if (callbacks != null) {
                             callbacks.onReturnTemplate(getUrlTemplate(getResources(),
                                     image.getTitle(), image.getLink()));
+                            dismiss();
                         }
             });
         }

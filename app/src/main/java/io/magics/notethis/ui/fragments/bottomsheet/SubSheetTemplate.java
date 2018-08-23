@@ -49,6 +49,7 @@ public class SubSheetTemplate extends BottomSheetDialogFragment {
             if (callbacks != null) {
                 callbacks.onReturnTemplate(SheetUtils.getUrlTemplate(getResources(),
                         altEtView.getText(), imgUrlView.getText()));
+                dismiss();
             }
         });
 
