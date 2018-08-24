@@ -1,14 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/FragmentDarkBackground"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    style="@style/FragmentDarkBackground">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/widget_top_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/margin_24dp"
         android:background="@color/primaryDarkColor">
-        
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -16,16 +17,53 @@
             android:src="@drawable/owl_24dp_color_nobg" />
     </LinearLayout>
 
-    <GridView
-        android:id="@+id/widget_grid"
+    <LinearLayout
+        android:id="@+id/widget_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/widget_top_bar"
-        android:numColumns="1"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingTop="@dimen/margin_8dp"
-        android:paddingBottom="@dimen/margin_8dp"/>
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/widget_title"
+            style="@style/text.darkTextNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_16dp"
+            android:layout_marginStart="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_16dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/secondaryColor"
+            tools:text="@tools:sample/lorem/random" />
+
+        <TextView
+            android:id="@+id/widget_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_8dp"
+            android:layout_marginEnd="@dimen/margin_16dp"
+            android:layout_marginStart="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_8dp"
+            android:alpha="0.7"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/secondaryColor"
+            android:textSize="14sp"
+            tools:text="@tools:sample/lorem/random" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/widget_open_app"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/button_margin_empty_list"
+        android:background="@drawable/btn_background"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/appwidget_text"
+        android:textColor="@color/primaryTextColor"
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
 </RelativeLayout>

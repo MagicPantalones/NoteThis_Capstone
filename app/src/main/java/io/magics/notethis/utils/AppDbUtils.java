@@ -1,6 +1,7 @@
 package io.magics.notethis.utils;
 
 import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -120,6 +121,23 @@ public class AppDbUtils {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
+    }
+
+    public static void getNoteTitlesForWidget(AppDatabase db,
+                                              RoomNoteCallback<List<NoteTitle>> callback) {
+        new AsyncTask<Void, Void, List<NoteTitle>>() {
+
+            @Override
+            protected List<NoteTitle> doInBackground(Void... voids) {
+                return db.userNoteModel().getNoteTitlesList();
+            }
+
+            @Override
+            protected void onPostExecute(List<NoteTitle> noteTitles) {
+                super.onPostExecute(noteTitles);
+                callback.onComplete(noteTitles);
+            }
+        }.execute();
     }
 
     public static void handleDbErrors(String tag, Throwable e) {

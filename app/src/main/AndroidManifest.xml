@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".ui.widget.NoteWidget">
+        <receiver android:name=".ui.NoteWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -35,10 +35,6 @@
                 android:resource="@xml/note_widget_info" />
         </receiver>
 
-        <service
-            android:name=".ui.widget.NoteWidgetIntentService"
-            android:exported="false"></service>
-        <service android:name=".ui.widget.NoteWidgetGridService" />
     </application>
 
 </manifest>

@@ -51,7 +51,7 @@ public class SubSheetTemplate extends BottomSheetDialogFragment {
         SheetUtils.setBehaviour(view, getDialog());
         okBtn.setOnClickListener(v -> {
             if (callbacks != null) {
-                callbacks.onReturnTemplate(SheetUtils.getUrlTemplate(getResources(),
+                callbacks.onReturnTemplate(SheetUtils.getImgTemplate(getResources(),
                         altEtView.getText(), imgUrlView.getText()));
                 dismiss();
             }

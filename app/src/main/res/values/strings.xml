@@ -107,7 +107,7 @@
     <string name="sheet_preview_img_alt">Alt-text</string>
     <string name="sheet_preview_img_url">Image Url</string>
 
-    <string name="appwidget_text">EXAMPLE</string>
+    <string name="appwidget_text">Open App</string>
     <string name="add_widget">Add widget</string>
 
 </resources>

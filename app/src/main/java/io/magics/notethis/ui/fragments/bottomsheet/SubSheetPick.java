@@ -28,6 +28,7 @@ import io.magics.notethis.utils.GlideApp;
 import io.magics.notethis.utils.models.Image;
 import io.magics.notethis.viewmodels.ImgurViewModel;
 
+import static io.magics.notethis.ui.fragments.SheetUtils.getImgTemplate;
 import static io.magics.notethis.ui.fragments.SheetUtils.getUrlTemplate;
 
 public class SubSheetPick extends BottomSheetDialogFragment {
@@ -103,7 +104,7 @@ public class SubSheetPick extends BottomSheetDialogFragment {
                     .into(holder.image);
                     holder.image.setOnClickListener(v -> {
                         if (callbacks != null) {
-                            callbacks.onReturnTemplate(getUrlTemplate(getResources(),
+                            callbacks.onReturnTemplate(getImgTemplate(getResources(),
                                     image.getTitle(), image.getLink()));
                             dismiss();
                         }

@@ -19,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
+import io.magics.notethis.ui.NoteWidget;
 import io.magics.notethis.ui.dialogs.CloseDialog;
 import io.magics.notethis.ui.dialogs.SaveDialog;
 import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;

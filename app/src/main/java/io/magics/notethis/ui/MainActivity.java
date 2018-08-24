@@ -32,6 +32,7 @@ import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.ImgurListFragment;
+import io.magics.notethis.ui.fragments.PreviewFragment;
 import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
 import io.magics.notethis.ui.fragments.bottomsheet.SubSheetUpload;
 import io.magics.notethis.utils.DocUtils;
@@ -137,7 +138,11 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         });
 
-        if (showIntro) {
+        if (getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1) != -1) {
+            int id = getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1);
+            noteViewModel.editNote(id);
+            UiUtils.showPreviewFrag(fragManager);
+        } else if (showIntro) {
             UiUtils.showIntroFrag(this, fragManager);
         }
     }
@@ -183,9 +188,13 @@ public class MainActivity extends AppCompatActivity implements
             if (signedIn) {
                 if (showIntro) {
                     showIntro = false;
-                    UiUtils.introToListFrag(this, fragManager);
+                    if (!UiUtils.isFragType(fragManager, PreviewFragment.class)){
+                        UiUtils.introToListFrag(this, fragManager);
+                    }
                 } else {
-                    UiUtils.showNoteListFrag(this, fragManager);
+                    if (!UiUtils.isFragType(fragManager, PreviewFragment.class)) {
+                        UiUtils.showNoteListFrag(this, fragManager);
+                    }
                 }
                 imgurViewModel.init(noteViewModel.getUserRef());
             } else {

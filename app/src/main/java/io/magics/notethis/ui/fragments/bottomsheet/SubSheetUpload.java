@@ -98,7 +98,7 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
                 model.getUploadedImage().removeObservers(this);
                 if (image == null)return;
                 if (callbacks != null && instance == EDIT_INS) {
-                    callbacks.onReturnTemplate(SheetUtils.getImgTemplate(getResources(),
+                    callbacks.onReturnTemplate(SheetUtils.getUrlTemplate(getResources(),
                             image.getTitle(), image.getLink()));
                     dismiss();
                 } else if (handler != null && instance == LIST_INS) {

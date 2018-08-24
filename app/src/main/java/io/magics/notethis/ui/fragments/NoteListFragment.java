@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
@@ -29,9 +28,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
+import io.magics.notethis.ui.NoteWidget;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
 import io.magics.notethis.utils.models.NoteTitle;
-import io.magics.notethis.viewmodels.NoteViewModel;
 
 
 public class NoteListFragment extends Fragment {
@@ -57,7 +56,6 @@ public class NoteListFragment extends Fragment {
     private FabListener fabListener;
 
     private NoteTitleViewModel noteViewModel;
-    private NoteViewModel model;
 
     private NoteTitleAdapter adapter;
 
@@ -84,7 +82,6 @@ public class NoteListFragment extends Fragment {
         adapter = new NoteTitleAdapter();
         //noinspection ConstantConditions
         noteViewModel = ViewModelProviders.of(getActivity()).get(NoteTitleViewModel.class);
-        model = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
         return root;
     }
 
@@ -92,8 +89,13 @@ public class NoteListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        noteViewModel.getNoteTitles().observe(getActivity(),
-                noteTitles -> adapter.insertAllNoteTitles(noteTitles));
+        noteViewModel.getNoteTitles().observe(getActivity(), noteTitles -> {
+                    adapter.insertAllNoteTitles(noteTitles);
+                    if (noteTitles != null && !noteTitles.isEmpty()){
+                        NoteWidget.updateWidget(getContext(),
+                                noteTitles.get(noteTitles.size() - 1));
+                    }
+                });
 
         noteListRecycler.setAdapter(adapter);
 
@@ -164,13 +166,17 @@ public class NoteListFragment extends Fragment {
 
     public interface NoteListFragListener {
         void onNewNotePress();
+
         void onNoteListScroll(int state);
+
         void onNoteItemClicked(int id, int type);
     }
 
     public interface FabListener {
         void hideFab();
+
         void changeFab();
+
         void showFab();
     }
 
@@ -261,7 +267,7 @@ public class NoteListFragment extends Fragment {
         private NoteItemTouchListener listener;
 
         NoteListItemTouchHelper(int dragDirs, int swipeDirs,
-                                       NoteItemTouchListener listener) {
+                                NoteItemTouchListener listener) {
             super(dragDirs, swipeDirs);
             this.listener = listener;
         }
