@@ -7,8 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -29,14 +27,13 @@ import android.view.View;
 import java.io.File;
 
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
-import io.magics.notethis.ui.dialogs.UploadImageDialog;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.ImgurListFragment;
 import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
+import io.magics.notethis.ui.fragments.bottomsheet.SubSheetUpload;
 import io.magics.notethis.utils.DocUtils;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.ImgurViewModel;
@@ -49,7 +46,7 @@ import static io.magics.notethis.utils.Utils.DIALOG_UPLOAD;
 
 public class MainActivity extends AppCompatActivity implements
         NoteListFragment.NoteListFragListener, NoteListFragment.FabListener,
-        UploadImageDialog.UploadDialogHandler, TemplatesBottomSheet.SheetCallbacks,
+        SubSheetUpload.UploadDialogHandler, TemplatesBottomSheet.SheetCallbacks,
         EditNoteFragment.SheetVisibility {
 
     private static final String TAG = "MainActivity";
@@ -336,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements
         if (filePath == null || filePath.isEmpty()) return;
         File img = new File(filePath);
         imgurViewModel.prepareUpload(img);
-        UploadImageDialog.newInstance(img).show(fragManager, DIALOG_UPLOAD);
+        SubSheetUpload.newInstance(img, SubSheetUpload.LIST_INS).show(fragManager, DIALOG_UPLOAD);
     }
 
     @Override

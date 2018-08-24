@@ -34,6 +34,10 @@ import io.magics.notethis.viewmodels.ImgurViewModel;
 public class SubSheetUpload extends BottomSheetDialogFragment {
 
     private static final String ARG_IMG = "img";
+    private static final String ARG_INSTANCE = "instance";
+
+    public static final int LIST_INS = 111;
+    public static final int EDIT_INS = 222;
 
     @BindView(R.id.sub_upload_preview)
     ImageView previewView;
@@ -49,15 +53,17 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
     ImgurViewModel model;
 
     SheetCallbacks callbacks;
+    UploadDialogHandler handler;
 
     public SubSheetUpload() {
         //Required
     }
 
-    public static SubSheetUpload newInstance(File imgFile) {
+    public static SubSheetUpload newInstance(File imgFile, int instance) {
         SubSheetUpload frag = new SubSheetUpload();
         Bundle args = new Bundle();
         args.putSerializable(ARG_IMG, imgFile);
+        args.putInt(ARG_INSTANCE, instance);
         frag.setArguments(args);
         return frag;
     }
@@ -72,6 +78,7 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
         SheetUtils.setBehaviour(view, dialog);
 
         File img = (File) getArguments().getSerializable(ARG_IMG);
+        int instance = getArguments().getInt(ARG_INSTANCE);
 
         GlideApp.with(this)
                 .load(img)
@@ -90,10 +97,12 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
             model.getUploadedImage().observe(this, image -> {
                 model.getUploadedImage().removeObservers(this);
                 if (image == null)return;
-                if (callbacks != null) {
+                if (callbacks != null && instance == EDIT_INS) {
                     callbacks.onReturnTemplate(SheetUtils.getImgTemplate(getResources(),
                             image.getTitle(), image.getLink()));
                     dismiss();
+                } else if (handler != null && instance == LIST_INS) {
+                    handler.onUpload(image.getTitle());
                 }
             });
         });
@@ -113,14 +122,19 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof SheetCallbacks) callbacks = (SheetCallbacks) context;
+        if (context instanceof UploadDialogHandler) handler = (UploadDialogHandler) context;
     }
 
     @Override
     public void onDetach() {
         callbacks = null;
+        handler = null;
         super.onDetach();
     }
 
 
+    public interface UploadDialogHandler {
+        void onUpload(String title);
+    }
 }
 

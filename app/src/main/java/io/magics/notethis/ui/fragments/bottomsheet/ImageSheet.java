@@ -90,7 +90,7 @@ public class ImageSheet extends Fragment {
 
         ImgurViewModel model = ViewModelProviders.of(getActivity()).get(ImgurViewModel.class);
         model.prepareUpload(img);
-        SubSheetUpload subSheetUpload = SubSheetUpload.newInstance(img);
+        SubSheetUpload subSheetUpload = SubSheetUpload.newInstance(img, SubSheetUpload.EDIT_INS);
         subSheetUpload.show(getFragmentManager(), TAG_UPLOAD);
     }
 

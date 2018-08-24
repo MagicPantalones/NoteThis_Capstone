@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/FragmentDarkBackground">
+
+    <LinearLayout
+        android:id="@+id/widget_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_24dp"
+        android:background="@color/primaryDarkColor">
+        
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/logo_a11y"
+            android:src="@drawable/owl_24dp_color_nobg" />
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/widget_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/widget_top_bar"
+        android:numColumns="1"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/margin_8dp"
+        android:paddingBottom="@dimen/margin_8dp"/>
+
+
+</RelativeLayout>
