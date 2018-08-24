@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.transition.Slide;
 import android.transition.Transition;
@@ -147,7 +148,7 @@ public class UiUtils {
                 .commit();
     }
 
-    public static void showPreviewFrag(FragmentManager manager) {
+    public static void showPreviewFrag(FragmentManager manager, boolean addToBackStack) {
         Fragment oldFrag = manager.findFragmentById(CONTAINER);
         if (oldFrag != null) {
             if (oldFrag instanceof PreviewFragment) return;
@@ -156,11 +157,16 @@ public class UiUtils {
         PreviewFragment savedFrag = (PreviewFragment) manager.findFragmentByTag(FRAG_PREVIEW);
         PreviewFragment newFrag = savedFrag != null ? savedFrag : PreviewFragment.newInstance();
         newFrag.setEnterTransition(getTransition(Gravity.END));
-        manager.beginTransaction()
+        FragmentTransaction transaction = manager.beginTransaction()
                 .setReorderingAllowed(true)
-                .replace(CONTAINER, newFrag, FRAG_PREVIEW)
-                .addToBackStack(FRAG_PREVIEW)
-                .commit();
+                .replace(CONTAINER, newFrag, FRAG_PREVIEW);
+        if (addToBackStack) {
+            transaction
+                    .addToBackStack(FRAG_PREVIEW)
+                    .commit();
+        } else {
+            transaction.commit();
+        }
     }
 
     public static void showHelpFrag(FragmentManager manager) {

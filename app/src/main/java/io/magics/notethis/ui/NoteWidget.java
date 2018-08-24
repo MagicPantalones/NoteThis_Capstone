@@ -25,22 +25,24 @@ public class NoteWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId, NoteTitle noteTitle) {
         Intent appIntent = new Intent(context, MainActivity.class);
+        Intent noteIntent = new Intent(context, MainActivity.class);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.note_widget);
         if (TextUtils.isEmpty(noteTitle.getTitle())) {
             views.setViewVisibility(R.id.widget_title, View.GONE);
             views.setViewVisibility(R.id.widget_preview, View.GONE);
             views.setViewVisibility(R.id.widget_open_app, View.VISIBLE);
             views.setOnClickPendingIntent(R.id.widget_open_app,
-                    PendingIntent.getActivity(context, 0, appIntent, 0));
+                    PendingIntent.getActivity(context, 0, appIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT));
         } else {
             views.setTextViewText(R.id.widget_title, noteTitle.getTitle());
             views.setTextViewText(R.id.widget_preview, noteTitle.getPreview());
             views.setViewVisibility(R.id.widget_title, View.VISIBLE);
             views.setViewVisibility(R.id.widget_preview, View.VISIBLE);
             views.setViewVisibility(R.id.widget_open_app, View.GONE);
-            appIntent.putExtra(EXTRA_NOTE_ID, noteTitle.getId());
+            noteIntent.putExtra(EXTRA_NOTE_ID, noteTitle.getId());
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                    appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    noteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.widget_container, pendingIntent);
         }
 

@@ -1,4 +1,4 @@
-package io.magics.notethis.ui.fragments;
+package io.magics.notethis.utils;
 
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
@@ -26,13 +26,7 @@ public class AdaptiveImageSizeResolver extends ImageSizeResolverDef {
                 ? canvasWidth / 2 : canvasWidth;
         final float ratio = (float) imgBounds.width() / imgBounds.height();
         final int height = (int) (outWidth / ratio + .5f);
-
-        if (imgBounds.height() > imgBounds.width()) {
-            int left = (canvasWidth / 2) - (outWidth / 2);
-            int right = (canvasWidth / 2) + (outWidth / 2);
-            return new Rect(left, 0, right, height);
-        }
-
+        
         return new Rect(0, 0, outWidth, height);
     }
 }

@@ -12,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-import io.magics.notethis.R;
-import io.magics.notethis.ui.fragments.AdaptiveImageSizeResolver;
 import okhttp3.OkHttpClient;
 import ru.noties.markwon.SpannableConfiguration;
 import ru.noties.markwon.UrlProcessorNoOp;

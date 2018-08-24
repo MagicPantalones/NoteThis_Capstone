@@ -91,7 +91,7 @@ public class NoteListFragment extends Fragment {
 
         noteViewModel.getNoteTitles().observe(getActivity(), noteTitles -> {
                     adapter.insertAllNoteTitles(noteTitles);
-                    if (noteTitles != null && !noteTitles.isEmpty()){
+                    if (noteTitles != null && !noteTitles.isEmpty() && getContext() != null){
                         NoteWidget.updateWidget(getContext(),
                                 noteTitles.get(noteTitles.size() - 1));
                     }

@@ -36,7 +36,6 @@ public class NoteViewModel extends AndroidViewModel {
     private DatabaseReference rootRef;
     private DatabaseReference userRef;
     private DatabaseReference noteRef;
-    private FirebaseDatabase firebaseDatabase;
     private MutableLiveData<Note> note = new MutableLiveData<>();
     private MutableLiveData<Boolean> signedIn = new MutableLiveData<>();
     private ConnectionLiveData connected;

@@ -1,6 +1,7 @@
 package io.magics.notethis.utils;
 
 import android.annotation.SuppressLint;
+import android.arch.persistence.room.Room;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -23,6 +24,10 @@ public class AppDbUtils {
 
     public interface RoomCountCallback {
         void onComplete(int rows);
+    }
+
+    public interface ImageCallback {
+        void onImagesReturned(List<Image> images);
     }
 
     public static void fetchNote(AppDatabase db, int id, RoomNoteCallback<Note> callback) {
@@ -110,10 +115,19 @@ public class AppDbUtils {
     }
 
     public static void lookForImgurData(AppDatabase db, RoomCountCallback callback) {
-        Single.fromCallable(() -> db.userImageModel().checkHasData())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(callback::onComplete);
+        new AsyncTask<Void, Void, Integer>() {
+
+            @Override
+            protected Integer doInBackground(Void... voids) {
+                return db.userImageModel().checkHasData();
+            }
+
+            @Override
+            protected void onPostExecute(Integer integer) {
+                super.onPostExecute(integer);
+                callback.onComplete(integer);
+            }
+        }.execute();
     }
 
     public static void deleteImgurTable(AppDatabase db) {
@@ -123,22 +137,6 @@ public class AppDbUtils {
                 .subscribe();
     }
 
-    public static void getNoteTitlesForWidget(AppDatabase db,
-                                              RoomNoteCallback<List<NoteTitle>> callback) {
-        new AsyncTask<Void, Void, List<NoteTitle>>() {
-
-            @Override
-            protected List<NoteTitle> doInBackground(Void... voids) {
-                return db.userNoteModel().getNoteTitlesList();
-            }
-
-            @Override
-            protected void onPostExecute(List<NoteTitle> noteTitles) {
-                super.onPostExecute(noteTitles);
-                callback.onComplete(noteTitles);
-            }
-        }.execute();
-    }
 
     public static void handleDbErrors(String tag, Throwable e) {
         Log.w(tag, "handleDbErrors: ", e);

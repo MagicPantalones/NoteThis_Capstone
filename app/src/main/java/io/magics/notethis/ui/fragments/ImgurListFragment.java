@@ -75,11 +75,13 @@ public class ImgurListFragment extends Fragment {
         model = ViewModelProviders.of(getActivity()).get(ImgurViewModel.class);
         ImgurAdapter adapter = new ImgurAdapter();
 
+        model.getImages().observe(getActivity(), images -> adapter.insertImages(images));
+
+
         imgurRecycler.addItemDecoration(new ItemSpacingDecoration(
                 getResources().getDimensionPixelSize(R.dimen.margin_4dp)));
         imgurRecycler.setAdapter(adapter);
 
-        model.getImages().observe(getActivity(), adapter::insertImages);
 
         if (mainFabListener != null) mainFabListener.changeFab();
     }
@@ -171,6 +173,8 @@ public class ImgurListFragment extends Fragment {
         private void insertImages(List<Image> images) {
             this.images = images;
             notifyDataSetChanged();
+            Toast.makeText(getContext(), "Number of images in adapter: " + images.size(),
+                    Toast.LENGTH_LONG).show();
             imgurRecycler.setVisibility(View.VISIBLE);
             imgurProgress.setVisibility(View.GONE);
         }

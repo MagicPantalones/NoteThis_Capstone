@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements
         if (getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1) != -1) {
             int id = getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1);
             noteViewModel.editNote(id);
-            UiUtils.showPreviewFrag(fragManager);
+            UiUtils.showPreviewFrag(fragManager, false);
         } else if (showIntro) {
             UiUtils.showIntroFrag(this, fragManager);
         }
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements
         if (action == NoteListFragment.ACTION_EDIT) {
             UiUtils.showEditNoteFrag(fragManager);
         } else {
-            UiUtils.showPreviewFrag(fragManager);
+            UiUtils.showPreviewFrag(fragManager, true);
         }
     }
 
@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements
                 UiUtils.showHelpFrag(fragManager);
                 break;
             case R.id.edit_menu_preview:
-                UiUtils.showPreviewFrag(fragManager);
+                UiUtils.showPreviewFrag(fragManager, true);
                 break;
             default:
                 break;
@@ -387,8 +387,6 @@ public class MainActivity extends AppCompatActivity implements
     public void hideAppBar() {
         appBarLayout.setExpanded(false, true);
     }
-
-    //TODO Implement widget.
 
     //TODO Fix Imgur Bug where it does not populate list when getting Images from firebase.
 

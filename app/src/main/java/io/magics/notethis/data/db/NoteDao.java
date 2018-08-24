@@ -20,10 +20,7 @@ public interface NoteDao {
 
     @Query("SELECT Note.id, Note.title, Note.preview FROM Note")
     LiveData<List<NoteTitle>> getNoteTitles();
-
-    @Query("SELECT Note.id, Note.title, Note.preview FROM Note")
-    List<NoteTitle> getNoteTitlesList();
-
+    
     @Query("SELECT * FROM Note WHERE Note.id = :id")
     Note getNote(int id);
 

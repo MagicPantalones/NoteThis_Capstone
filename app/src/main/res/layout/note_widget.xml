@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/FragmentDarkBackground"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:layout_height="110dp">
 
     <LinearLayout
         android:id="@+id/widget_top_bar"
@@ -31,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_16dp"
             android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_8dp"
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/secondaryColor"
@@ -55,15 +56,15 @@
 
     <Button
         android:id="@+id/widget_open_app"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
         android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/button_margin_empty_list"
+        android:layout_marginTop="@dimen/margin_8dp"
         android:background="@drawable/btn_background"
         android:fontFamily="sans-serif-condensed"
         android:text="@string/appwidget_text"
         android:textColor="@color/primaryTextColor"
         android:textStyle="bold"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
 </RelativeLayout>
