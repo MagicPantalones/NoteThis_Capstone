@@ -49,7 +49,6 @@ public class ImgurViewModel extends AndroidViewModel {
             appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
             images = appDatabase.userImageModel().getImages();
             initialized.setValue(true);
-            checkDatabase();
         }
     }
 
@@ -87,18 +86,6 @@ public class ImgurViewModel extends AndroidViewModel {
                         Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    private void checkDatabase() {
-        AppDbUtils.lookForImgurData(appDatabase, rows -> {
-            if (rows <= 0) {
-                FirebaseUtils.getAllImgurLinks(imgurRef, images1 -> {
-                    if (images1 != null && !images1.isEmpty()) {
-                        AppDbUtils.insertImgurRefs(appDatabase, images1);
-                    }
-                });
-            }
-        });
     }
 
     public void prepareUpload(File image) {

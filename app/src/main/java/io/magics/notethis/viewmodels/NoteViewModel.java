@@ -158,6 +158,7 @@ public class NoteViewModel extends AndroidViewModel {
         noteRef = FirebaseUtils.getNotesPath(rootRef, uid);
         FirebaseUtils.checkForUserEmail(userRef, user.getEmail());
         checkDatabase();
+        checkImageDatabase();
     }
 
     private void checkDatabase() {
@@ -166,6 +167,18 @@ public class NoteViewModel extends AndroidViewModel {
                 FirebaseUtils.getAllNotes(noteRef, notes -> {
                     if (notes != null && !notes.isEmpty()) {
                         AppDbUtils.insertNotes(appDatabase, notes);
+                    }
+                });
+            }
+        });
+    }
+
+    private void checkImageDatabase() {
+        AppDbUtils.lookForImgurData(appDatabase, rows -> {
+            if (rows <= 0) {
+                FirebaseUtils.getAllImgurLinks(userRef.child("images"), images1 -> {
+                    if (images1 != null && !images1.isEmpty()) {
+                        AppDbUtils.insertImgurRefs(appDatabase, images1);
                     }
                 });
             }
