@@ -1,90 +1,133 @@
-<LinearLayout android:id="@+id/headers_sheet"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/headers_sheet"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/margin_24dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="@dimen/bottom_sheet_size"
+    android:padding="@dimen/margin_24dp">
 
-    <TextView
-        android:id="@+id/h1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:lines="1"
-        android:text="@string/sheet_preview_h1" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_4dp"
-        android:background="@color/secondaryColor"/>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="@dimen/bottom_sheet_size"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideHeaders"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/h2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_16dp"
-        android:lines="1"
-        android:text="@string/sheet_preview_h2" />
+        <TextView
+            android:id="@+id/h1"
+            style="@style/headerSheetStyle"
+            android:text="@string/sheet_preview_h1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@+id/h2"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_4dp"
-        android:background="@color/secondaryColor"/>
+        <View
+            android:id="@+id/outline_h1"
+            style="@style/headerOutlineStyle"
+            app:layout_constraintBottom_toBottomOf="@+id/h1"
+            app:layout_constraintEnd_toStartOf="@+id/h1"
+            app:layout_constraintTop_toTopOf="@+id/h1" />
 
-    <TextView
-        android:id="@+id/h3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_16dp"
-        android:lines="1"
-        android:text="@string/sheet_preview_h3" />
+        <TextView
+            android:id="@+id/h2"
+            style="@style/headerSheetStyle"
+            android:text="@string/sheet_preview_h2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/h1"
+            app:layout_constraintBottom_toTopOf="@+id/h3"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_4dp"
-        android:background="@color/secondaryColor"/>
+        <View
+            android:id="@+id/outline_h2"
+            style="@style/headerOutlineStyle"
+            app:layout_constraintBottom_toBottomOf="@+id/h2"
+            app:layout_constraintEnd_toStartOf="@+id/h2"
+            app:layout_constraintTop_toTopOf="@+id/h2" />
 
-    <TextView
-        android:id="@+id/h4"
+        <TextView
+            android:id="@+id/h3"
+            style="@style/headerSheetStyle"
+            android:text="@string/sheet_preview_h3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/h2" />
+
+        <View
+            android:id="@+id/outline_h3"
+            style="@style/headerOutlineStyle"
+            app:layout_constraintBottom_toBottomOf="@+id/h3"
+            app:layout_constraintEnd_toStartOf="@+id/h3"
+            app:layout_constraintTop_toTopOf="@+id/h3" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideHeaders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_16dp"
-        android:lines="1"
-        android:text="@string/sheet_preview_h4" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_4dp"
-        android:background="@color/secondaryColor"/>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="@dimen/bottom_sheet_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toEndOf="@+id/guideHeaders"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/h5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_16dp"
-        android:lines="1"
-        android:text="@string/sheet_preview_h5" />
+        <TextView
+            android:id="@+id/h4"
+            style="@style/headerSheetStyle"
+            android:text="@string/sheet_preview_h4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@+id/h5"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_4dp"
-        android:background="@color/secondaryColor"/>
+        <View
+            android:id="@+id/outline_h4"
+            style="@style/headerOutlineStyle"
+            app:layout_constraintBottom_toBottomOf="@+id/h4"
+            app:layout_constraintEnd_toStartOf="@+id/h4"
+            app:layout_constraintTop_toTopOf="@+id/h4" />
 
-    <TextView
-        android:id="@+id/h6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_16dp"
-        android:lines="1"
-        android:text="@string/sheet_preview_h6" />
+        <TextView
+            android:id="@+id/h5"
+            style="@style/headerSheetStyle"
+            android:text="@string/sheet_preview_h5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/h4"
+            app:layout_constraintBottom_toTopOf="@+id/h6"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_4dp"
-        android:background="@color/secondaryColor"/>
+        <View
+            android:id="@+id/outline_h5"
+            style="@style/headerOutlineStyle"
+            app:layout_constraintBottom_toBottomOf="@+id/h5"
+            app:layout_constraintEnd_toStartOf="@+id/h5"
+            app:layout_constraintTop_toTopOf="@+id/h5" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/h6"
+            style="@style/headerSheetStyle"
+            android:text="@string/sheet_preview_h6"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/h5" />
+
+        <View
+            android:id="@+id/outline_h6"
+            style="@style/headerOutlineStyle"
+            app:layout_constraintBottom_toBottomOf="@+id/h6"
+            app:layout_constraintEnd_toStartOf="@+id/h6"
+            app:layout_constraintTop_toTopOf="@+id/h6" />
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -3,6 +3,7 @@ package io.magics.notethis.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.IdRes;
 import android.support.design.internal.BottomNavigationItemView;
@@ -16,6 +17,8 @@ import android.transition.TransitionInflater;
 import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import java.lang.reflect.Field;
 
@@ -95,18 +98,6 @@ public class Utils {
         else return (V) v1;
     }
 
-    public static Transition getSignInTransition(Context context) {
-        return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_shared);
-    }
-
-    public static Transition getSignInEnterTransition(Context context) {
-        return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_enter);
-    }
-
-    public static Transition getIntroToSignInTransition(Context context) {
-        return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_exit);
-    }
-
     public static boolean isConnected(Context context){
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -114,6 +105,53 @@ public class Utils {
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
 
     }
+
+    public static void hideKeyboard(Activity activity) {
+        try {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+            Log.e(TAG, "hideKeyboard: ", e);
+        }
+    }
+
+    public static void hideKeyboard(Context context, View view) {
+        try {
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        } catch (Exception e) {
+            Log.e(TAG, "hideKeyboard with View: ", e);
+        }
+    }
+
+    //Modified method from this Keyboard Util class: https://gist.github.com/marteinn/11156524
+    public static void showDelayedKeyboard (final Context context, final View view) {
+        if (context == null) return;
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Log.w(TAG, "doInBackground: ", e);
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void result) {
+                InputMethodManager imm =
+                        (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+            }
+
+        }.execute();
+    }
+
+
 
     private Utils() {}
 }

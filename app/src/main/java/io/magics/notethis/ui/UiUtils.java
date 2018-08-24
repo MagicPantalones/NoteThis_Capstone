@@ -3,16 +3,14 @@ package io.magics.notethis.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.os.CountDownTimer;
-import android.support.design.internal.BottomNavigationMenu;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.transition.Slide;
 import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import java.util.List;
@@ -61,9 +59,9 @@ public class UiUtils {
                 ImageView sharedLogo = oldFragView.findViewById(R.id.img_intro_logo);
                 SignInFragment newFrag = SignInFragment.newInstance();
 
-                oldFrag.setExitTransition(Utils.getIntroToSignInTransition(context));
-                newFrag.setSharedElementEnterTransition(Utils.getSignInTransition(context));
-                newFrag.setEnterTransition(Utils.getSignInEnterTransition(context));
+                oldFrag.setExitTransition(getIntroToSignInTransition(context));
+                newFrag.setSharedElementEnterTransition(getSignInTransition(context));
+                newFrag.setEnterTransition(getSignInEnterTransition(context));
 
 
                 manager.beginTransaction()
@@ -225,4 +223,15 @@ public class UiUtils {
 
     private UiUtils() {}
 
+    public static Transition getSignInTransition(Context context) {
+        return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_shared);
+    }
+
+    public static Transition getSignInEnterTransition(Context context) {
+        return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_enter);
+    }
+
+    public static Transition getIntroToSignInTransition(Context context) {
+        return TransitionInflater.from(context).inflateTransition(R.transition.intro_sign_in_exit);
+    }
 }

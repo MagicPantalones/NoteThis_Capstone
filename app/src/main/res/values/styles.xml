@@ -63,7 +63,7 @@
     </style>
 
     <style name="text.sheetListText">
-        <item name="android:textSize">@dimen/margin_16dp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">#de000000</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/list_text_area_size</item>
@@ -78,6 +78,23 @@
     </style>
     <style name="dialogButton.ok">
         <item name="android:text">@string/confirm</item>
+    </style>
+    
+    <style name="headerSheetStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/list_text_area_size</item>
+        <item name="android:layout_marginStart">@dimen/margin_8dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:lines">1</item>
+    </style>
+
+    <style name="headerOutlineStyle">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginEnd">@dimen/margin_4dp</item>
+        <item name="android:background">@color/secondaryColor</item>
+        <item name="android:layout_marginTop">@dimen/margin_4dp</item>
+        <item name="android:layout_marginBottom">@dimen/margin_4dp</item>
     </style>
 
 </resources>

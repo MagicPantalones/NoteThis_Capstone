@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onBackPressed() {
         Fragment frag = fragManager.findFragmentById(R.id.container_main);
         Fragment dialogFrag = fragManager.findFragmentByTag(DIALOG_CLOSE);
+
         if (dialogFrag != null && dialogFrag.getActivity() == this) {
             appBarLayout.setExpanded(true, true);
             Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);

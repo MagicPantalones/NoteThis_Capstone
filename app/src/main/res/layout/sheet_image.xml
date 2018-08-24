@@ -1,8 +1,9 @@
 <android.support.constraint.ConstraintLayout android:id="@+id/images_sheet"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/bottom_sheet_size"
     android:padding="@dimen/margin_24dp"
     app:layout_constraintTop_toBottomOf="@+id/peek_container"
+    app:layout_constraintBottom_toBottomOf="parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -14,7 +15,9 @@
         android:text="@string/sheet_pick_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@+id/sheet_image_upload"/>
 
     <TextView
         android:id="@+id/sheet_image_upload"
@@ -22,7 +25,8 @@
         android:text="@string/sheet_upload_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sheet_image_pick" />
+        app:layout_constraintTop_toBottomOf="@+id/sheet_image_pick"
+        app:layout_constraintBottom_toTopOf="@+id/sheet_image_template"/>
 
     <TextView
         android:id="@+id/sheet_image_template"

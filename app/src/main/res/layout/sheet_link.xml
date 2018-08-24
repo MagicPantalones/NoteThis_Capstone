@@ -1,8 +1,7 @@
 <android.support.constraint.ConstraintLayout android:id="@+id/link_sheet"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/margin_24dp"
+    android:layout_height="@dimen/bottom_sheet_size"
+    android:paddingTop="@dimen/margin_24dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -36,7 +35,7 @@
         style="@style/dialogButton.ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_24dp"
+        android:layout_marginBottom="@dimen/margin_8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sheet_url_url" />
