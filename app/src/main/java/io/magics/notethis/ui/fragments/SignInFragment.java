@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +30,10 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.data.network.FirebaseUtils;
-import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
+
+import static io.magics.notethis.utils.FragmentHelper.getTransition;
 
 public class SignInFragment extends Fragment {
 
@@ -45,14 +47,18 @@ public class SignInFragment extends Fragment {
     private Unbinder unbinder;
     private NoteViewModel model;
 
-    FabListener fabListener;
-
     public SignInFragment() {
         // Required empty public constructor
     }
 
     public static SignInFragment newInstance() {
         return new SignInFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setExitTransition(getTransition(Gravity.START));
     }
 
     @Override
@@ -67,7 +73,6 @@ public class SignInFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (fabListener != null) fabListener.hideFab();
         signInBtn.setOnClickListener(v -> {
             if (getContext() != null) {
                 Intent signInIntent = FirebaseUtils.getGsiClient(getContext()).getSignInIntent();
@@ -92,13 +97,11 @@ public class SignInFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof FabListener) fabListener = (FabListener) context;
     }
 
     @Override
     public void onDetach() {
         Utils.dispose(unbinder);
-        fabListener = null;
         super.onDetach();
     }
 }

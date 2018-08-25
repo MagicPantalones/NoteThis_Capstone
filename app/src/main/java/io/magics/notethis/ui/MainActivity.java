@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private Uri fileUri;
     private boolean connected = true;
+    private boolean userSignedIn = false;
 
     @BindView(R.id.main_toolbar)
     Toolbar toolbar;
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements
         initViewModels();
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
         mainFab.setOnClickListener(v -> onNewNotePress());
         uploadFab.setOnClickListener(v -> onUploadImagePress());
@@ -113,26 +114,30 @@ public class MainActivity extends AppCompatActivity implements
                 Snackbar.LENGTH_INDEFINITE);
 
         drawerBuilder = DrawerUtils.initDrawer(this,
-                toolbar, DrawerUtils.ITEM_NOTE_LIST);
+                toolbar, FragmentHelper.ID_NOTE_LIST);
 
         drawerBuilder.withOnDrawerItemClickListener((view, position, drawerItem) -> {
-            if (drawerItem != null && drawerItem.getIdentifier() == DrawerUtils.ITEM_LOG_OUT) {
-                drawerItem.withSetSelected(false);
-                return DrawerUtils.signOut(this, noteViewModel, fragManager);
-            } else {
-                return DrawerUtils.setDrawerItem(fragManager, drawerItem);
+            if (drawerItem == null) return false;
+            int id = (int) drawerItem.getIdentifier();
+            if (id == FragmentHelper.ID_LOG_OUT) {
+                navDrawer.deselect();
+                noteViewModel.signOut();
             }
+
+            fragHelper.changeFragFromDrawer(fragManager, id);
+            return false;
         }).withSavedInstance(savedInstanceState);
+
 
         if (getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1) != -1) {
             int id = getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1);
             noteViewModel.editNote(id);
-            UiUtils.showPreviewFrag(fragManager, false);
+            fragHelper.changeFragment(fragManager, FragmentHelper.ID_PREVIEW, false);
         } else if (showIntro) {
-            UiUtils.showIntroFrag(this, fragManager);
+            fragHelper.startIntro(fragManager);
         }
-    }
 
+    }
 
 
     @SuppressWarnings("ConstantConditions")
@@ -153,55 +158,23 @@ public class MainActivity extends AppCompatActivity implements
             Utils.onConnectionStateChange(this, disconnectSnack, status);
         });
 
-        noteViewModel.getSignInStatus().observe(this, signedIn -> {
-            if (signedIn) {
-                if (showIntro) {
-                    showIntro = false;
-                    if (!UiUtils.isFragType(fragManager, PreviewFragment.class)){
-                        UiUtils.introToListFrag(this, fragManager);
-                    }
-                } else {
-                    if (!UiUtils.isFragType(fragManager, PreviewFragment.class)) {
-                        UiUtils.showNoteListFrag(this, fragManager);
-                    }
-                }
-            } else {
-                UiUtils.introToSignInFrag(this, fragManager);
-            }
-        });
+        noteViewModel.getSignInStatus().observe(this, signedIn -> userSignedIn = signedIn);
 
         noteViewModel.getFirebaseUser().observe(this, user -> {
             if (user == null || imgurViewModel.isInitialized()) return;
             imgurViewModel.init(user.getUid());
-            DrawerUtils.setProfileAndBuild(this, drawerBuilder,
+            navDrawer = DrawerUtils.setProfileAndBuild(this, drawerBuilder,
                     user.getEmail());
+            fragHelper.setDrawer(navDrawer, getSupportActionBar());
         });
     }
 
     @Override
     public void onBackPressed() {
-        Fragment frag = fragManager.findFragmentById(R.id.container_main);
-        Fragment dialogFrag = fragManager.findFragmentByTag(DIALOG_CLOSE);
 
-        if (navDrawer != null && navDrawer.isDrawerOpen()) {
-            navDrawer.closeDrawer();
-        }
-
-        if (dialogFrag != null && dialogFrag.getActivity() == this) {
+        if (fragHelper.handleBackPressed(fragManager)) {
             appBarLayout.setExpanded(true, true);
-            Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
-            bottomSheet.hide();
-            super.onBackPressed();
-        } else if (frag instanceof EditNoteFragment
-                && ((EditNoteFragment) frag).hasUnsavedChanges()) {
-            ((EditNoteFragment) frag).prepareSave(EditNoteFragment.ACTION_CLOSE);
         } else {
-            if (frag instanceof ImgurListFragment) {
-                uploadFab.hide();
-            }
-            bottomSheet.hide();
-            appBarLayout.setExpanded(true, true);
-            Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
             super.onBackPressed();
         }
     }
@@ -209,15 +182,21 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         Utils.dispose(unbinder);
+        fragHelper.dispose();
         super.onDestroy();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntArray(FragmentHelper.FRAG_HELPER_STATE, fragHelper.saveState());
+    }
 
     @Override
     public void onNewNotePress() {
         noteViewModel.newNote();
         Utils.setToolbarTitle(this, NoteViewModel.NEW_NOTE_TITLE, R.color.primaryTextColor);
-        UiUtils.showEditNoteFrag(fragManager);
+        fragHelper.changeFragment(fragManager, FragmentHelper.ID_EDIT_NOTE, false);
     }
 
 
@@ -235,9 +214,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onNoteItemClicked(int id, int action) {
         noteViewModel.editNote(id);
         if (action == NoteListFragment.ACTION_EDIT) {
-            UiUtils.showEditNoteFrag(fragManager);
+            fragHelper.changeFragment(fragManager, FragmentHelper.ID_EDIT_NOTE, false);
         } else {
-            UiUtils.showPreviewFrag(fragManager, true);
+            fragHelper.changeFragment(fragManager, FragmentHelper.ID_PREVIEW, true);
         }
     }
 
@@ -249,10 +228,19 @@ public class MainActivity extends AppCompatActivity implements
         if (uploadFab != null) {
             uploadFab.hide();
         }
+        if (fragHelper.getCurrentFragId() != FragmentHelper.ID_EDIT_NOTE) {
+            appBarLayout.setExpanded(true, true);
+            if (fragHelper.getCurrentFragId() != FragmentHelper.ID_PREVIEW) {
+                Utils.setToolbarTitle(this, getString(R.string.app_name),
+                        R.color.secondaryColor);
+            }
+        }
+        bottomSheet.hide();
     }
 
     @Override
     public void showFab() {
+        Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
         if (mainFab != null) {
             mainFab.show();
             bottomSheet.hide();
@@ -261,33 +249,43 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void changeFab(int fabType) {
-
-    }
-
-    @Override
-    public void onIntroDone() {
-
-    }
-
-    @Override
-    public void changeFab() {
-        if (mainFab != null) {
-            if (mainFab.getVisibility() != View.VISIBLE) {
-                uploadFab.show();
-                bottomSheet.hide();
+        Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
+        bottomSheet.hide();
+        if (mainFab == null || uploadFab == null) return;
+        if (fabType == FragmentHelper.FAB_NEW_NOTE) {
+            if (uploadFab.getVisibility() == View.VISIBLE) {
+                uploadFab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+                    @Override
+                    public void onHidden(FloatingActionButton fab) {
+                        super.onHidden(fab);
+                        mainFab.show();
+                    }
+                });
             } else {
+                mainFab.show();
+            }
+        } else {
+            if (mainFab.getVisibility() == View.VISIBLE) {
                 mainFab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
                     @Override
                     public void onHidden(FloatingActionButton fab) {
                         super.onHidden(fab);
-                        if (connected) {
-                            uploadFab.show();
-                            bottomSheet.hide();
-
-                        }
+                        uploadFab.show();
                     }
                 });
+            } else {
+                uploadFab.show();
             }
+        }
+    }
+
+    @Override
+    public void onIntroDone() {
+        if (userSignedIn) {
+            if (fragHelper.getCurrentFragId() == FragmentHelper.ID_PREVIEW) return;
+            fragHelper.introToListFrag(fragManager);
+        } else {
+            fragHelper.introToSignInFrag(fragManager);
         }
     }
 
@@ -345,10 +343,10 @@ public class MainActivity extends AppCompatActivity implements
 
         switch (item.getItemId()) {
             case R.id.edit_menu_help:
-                UiUtils.showHelpFrag(fragManager);
+                fragHelper.changeFragment(fragManager, FragmentHelper.ID_HELP, false);
                 break;
             case R.id.edit_menu_preview:
-                UiUtils.showPreviewFrag(fragManager, true);
+                fragHelper.changeFragment(fragManager, FragmentHelper.ID_PREVIEW, false);
                 break;
             default:
                 break;

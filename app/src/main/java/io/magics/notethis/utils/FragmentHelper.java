@@ -8,11 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.transition.Slide;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.mikepenz.materialdrawer.Drawer;
 
@@ -41,9 +44,7 @@ public class FragmentHelper {
     public static final int ID_PREVIEW = 441;
     public static final int ID_HELP = 551;
     public static final int ID_LOG_OUT = 4;
-
-
-    private static final int ID_INTRO_SIGN_IN = 991;
+    public static final int ID_INTRO_SIGN_IN = 991;
 
     public static final int FAB_NEW_NOTE = 7878;
     public static final int FAB_UPLOAD = 3451;
@@ -63,8 +64,8 @@ public class FragmentHelper {
 
     private final Activity activity;
     private Drawer drawer;
-
-    InterfaceListener listener;
+    private ActionBar actionBar;
+    private InterfaceListener listener;
 
     public interface InterfaceListener {
         void hideFab();
@@ -79,8 +80,8 @@ public class FragmentHelper {
         if (savedState != null) {
             int[] restored = savedState.getIntArray(FRAG_HELPER_STATE);
             if (restored != null) {
-                previousFragId = restored[0];
-                currentFragId = restored[1];
+                /*previousFragId = restored[0];
+                currentFragId = restored[1]; */
             }
         }
         init();
@@ -96,8 +97,9 @@ public class FragmentHelper {
         previewFrag = PreviewFragment.newInstance();
     }
 
-    public void setDrawer(Drawer drawer) {
+    public void setDrawer(Drawer drawer, ActionBar actionBar) {
         this.drawer = drawer;
+        this.actionBar = actionBar;
     }
 
     public void dispose() {
@@ -107,6 +109,10 @@ public class FragmentHelper {
 
     public int[] saveState() {
         return new int[] {previousFragId, currentFragId};
+    }
+
+    public int getCurrentFragId() {
+        return currentFragId;
     }
 
     public void startIntro(FragmentManager manager) {
@@ -125,10 +131,11 @@ public class FragmentHelper {
         currentFragId = ID_INTRO_SIGN_IN;
 
         manager.beginTransaction()
+                .setReorderingAllowed(true)
                 .replace(CONTAINER, introFrag)
-                .commitAllowingStateLoss();
+                .commit();
 
-        new CountDownTimer(INTRO_TIME, 0) {
+        new CountDownTimer(INTRO_TIME, 1000) {
 
             @Override
             public void onTick(long millisUntilFinished) {
@@ -177,7 +184,7 @@ public class FragmentHelper {
             default:
                 //Should not happen
         }
-        previousFragId = fromDrawer ? ID_NOTE_LIST : fragmentId;
+        previousFragId = fromDrawer ? ID_NOTE_LIST : currentFragId;
         currentFragId = fragmentId;
     }
 
@@ -189,50 +196,66 @@ public class FragmentHelper {
         }
         if (currentFragId == itemId) return;
 
+
         changeFragment(manager, itemId, true);
     }
 
     public boolean handleBackPressed(FragmentManager manager) {
+        if (drawer != null && drawer.isDrawerOpen()) drawer.closeDrawer();
         if (currentFragId == ID_NOTE_LIST) return false;
-        boolean toNoteList = (previousFragId != ID_EDIT_NOTE
-                && (currentFragId != ID_PREVIEW && currentFragId != ID_HELP));
+
+        boolean toNoteList = !(previousFragId == ID_EDIT_NOTE && currentFragId == ID_PREVIEW)
+                && !(previousFragId == ID_EDIT_NOTE && currentFragId == ID_HELP);
         if (toNoteList) {
+            if (currentFragId == ID_EDIT_NOTE && editNoteFrag.hasUnsavedChanges()) {
+                editNoteFrag.prepareSave(EditNoteFragment.ACTION_CLOSE);
+                return true;
+            }
             changeFragment(manager, ID_NOTE_LIST, false);
-            setDrawerSelection(ID_NOTE_LIST);
+            drawer.setSelectionAtPosition(ID_NOTE_LIST, false);
             return true;
         } else {
             changeFragment(manager, ID_EDIT_NOTE, false);
-            setDrawerSelection(-1);
             return true;
         }
+
     }
 
-    private void setDrawerSelection(int id) {
-        if (drawer != null) {
-            if (id != -1) {
-                drawer.deselect();
-            } else {
-                drawer.setSelection(id);
-            }
-        }
+    public void introToSignInFrag(FragmentManager manager) {
+
+        View oldFragView = introFrag.getView();
+        ImageView sharedLogo = oldFragView.findViewById(R.id.img_intro_logo);
+
+        introFrag.setExitTransition(getIntroToSignInTransition(activity));
+        signInFrag.setSharedElementEnterTransition(getSignInTransition(activity));
+        signInFrag.setEnterTransition(getSignInEnterTransition(activity));
+
+        manager.beginTransaction()
+                .setReorderingAllowed(true)
+                .addSharedElement(sharedLogo, sharedLogo.getTransitionName())
+                .replace(CONTAINER, signInFrag)
+                .commitAllowingStateLoss();
     }
 
+    public void introToListFrag(FragmentManager manager) {
+        introFrag.setExitTransition(getTransition(Gravity.START));
+        Utils.showToolbar(activity);
+        activity.getWindow().getDecorView()
+                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        changeFragment(manager, ID_NOTE_LIST, false);
+    }
     private void hideDrawerIcon() {
         if (drawer != null) {
             if (drawer.isDrawerOpen()) drawer.closeDrawer();
-            ActionBarDrawerToggle toggle = drawer.getActionBarDrawerToggle();
-            if (toggle.isDrawerIndicatorEnabled()) {
-                toggle.setDrawerIndicatorEnabled(false);
-            }
+            drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
     private void showDrawerIcon() {
         if (drawer != null) {
-            ActionBarDrawerToggle toggle = drawer.getActionBarDrawerToggle();
-            if (!toggle.isDrawerIndicatorEnabled()) {
-                toggle.setDrawerIndicatorEnabled(true);
-            }
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         }
     }
 

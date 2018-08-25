@@ -23,7 +23,6 @@ import io.magics.notethis.R;
 import io.magics.notethis.ui.NoteWidget;
 import io.magics.notethis.ui.dialogs.CloseDialog;
 import io.magics.notethis.ui.dialogs.SaveDialog;
-import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
 
@@ -39,7 +38,6 @@ public class EditNoteFragment extends Fragment {
     EditText editNoteView;
 
     Unbinder unbinder;
-    private FabListener fabListener;
     private SheetVisibility sheetVisibilityHandler;
 
     private NoteViewModel viewModel;
@@ -91,9 +89,6 @@ public class EditNoteFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (fabListener != null) {
-            fabListener.hideFab();
-        }
         bottomSheet = (TemplatesBottomSheet)
                 getFragmentManager().findFragmentById(R.id.bottom_sheet_fragment);
         if (sheetVisibilityHandler != null) sheetVisibilityHandler.showSheet();
@@ -103,16 +98,12 @@ public class EditNoteFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof FabListener) {
-            fabListener = (FabListener) context;
-        }
         if (context instanceof SheetVisibility) sheetVisibilityHandler = (SheetVisibility) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        fabListener = null;
         sheetVisibilityHandler = null;
     }
 

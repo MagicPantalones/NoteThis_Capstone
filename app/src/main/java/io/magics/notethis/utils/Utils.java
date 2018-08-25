@@ -54,7 +54,6 @@ public class Utils {
         Toolbar toolbar = ((MainActivity) context).findViewById(R.id.main_toolbar);
         if (toolbar != null) {
             int color = ResourcesCompat.getColor(context.getResources(), colorResId, null);
-
             if (title instanceof Integer) {
                 toolbar.setTitle((int) title);
             } else if (title instanceof String) {

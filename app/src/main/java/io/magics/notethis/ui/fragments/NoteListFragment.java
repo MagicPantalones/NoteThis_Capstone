@@ -32,6 +32,8 @@ import io.magics.notethis.ui.NoteWidget;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
 import io.magics.notethis.utils.models.NoteTitle;
 
+import static io.magics.notethis.utils.FragmentHelper.getTransition;
+
 
 public class NoteListFragment extends Fragment {
 
@@ -71,7 +73,8 @@ public class NoteListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setEnterTransition(new Slide(Gravity.START));
+        setEnterTransition(getTransition(Gravity.END));
+        setExitTransition(getTransition(Gravity.START));
     }
 
     @Override
@@ -174,9 +177,6 @@ public class NoteListFragment extends Fragment {
 
     public interface FabListener {
         void hideFab();
-
-        void changeFab();
-
         void showFab();
     }
 

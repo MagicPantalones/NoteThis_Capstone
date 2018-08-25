@@ -1,31 +1,15 @@
 package io.magics.notethis.utils;
 
 import android.app.Activity;
-import android.content.Context;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import io.magics.notethis.R;
-import io.magics.notethis.ui.UiUtils;
-import io.magics.notethis.ui.fragments.HelpFragment;
-import io.magics.notethis.ui.fragments.ImgurListFragment;
-import io.magics.notethis.ui.fragments.NoteListFragment;
-import io.magics.notethis.viewmodels.ImgurViewModel;
-import io.magics.notethis.viewmodels.NoteViewModel;
-
 public class DrawerUtils {
 
     public static final int ITEM_NOTE_LIST = 111;
@@ -72,7 +56,7 @@ public class DrawerUtils {
                 .withActionBarDrawerToggle(true)
                 .withActionBarDrawerToggleAnimated(true)
                 .withCloseOnClick(true)
-                .withTranslucentStatusBar(false)
+                .withTranslucentStatusBar(true)
                 .withDisplayBelowStatusBar(true)
                 .withSelectedItem(currentFrag)
                 .addDrawerItems(
@@ -83,26 +67,6 @@ public class DrawerUtils {
                 )
                 .withShowDrawerOnFirstLaunch(false);
 
-    }
-
-    public static boolean setDrawerItem(FragmentManager manager,
-                                     IDrawerItem drawerItem) {
-        if (drawerItem == null) return true;
-        long id = drawerItem.getIdentifier();
-        if (id == ITEM_NOTE_LIST) {
-            UiUtils.replaceFragment(manager, NoteListFragment.newInstance());
-        } else if (id == ITEM_IMGUR_LIST) {
-            UiUtils.replaceFragment(manager, ImgurListFragment.newInstance());
-        } else if (id == ITEM_HELP_SCREEN) {
-            UiUtils.replaceFragment(manager, HelpFragment.newInstance());
-        }
-        return false;
-    }
-
-    public static boolean signOut(Activity activity, NoteViewModel noteVm, FragmentManager manager) {
-        noteVm.signOut();
-        UiUtils.handleUserSignOut(activity, manager);
-        return false;
     }
 
     public static Drawer setProfileAndBuild(Activity activity, DrawerBuilder builder,

@@ -121,18 +121,21 @@ public class TemplatesBottomSheet extends Fragment {
     }
 
     private void setPage(int pos) {
+        if (behavior == null) return;
         if (callbacks != null) callbacks.hideAppBar();
         sheetsPager.setCurrentItem(pos, true);
         setSheetExpanded();
     }
 
     public void setSheetExpanded() {
+        if (behavior == null) return;
         if (behavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     }
 
     public void setSheetCollapsed() {
+        if (behavior == null) return;
         if (behavior.getState() != BottomSheetBehavior.STATE_COLLAPSED) {
             behavior.setHideable(false);
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);

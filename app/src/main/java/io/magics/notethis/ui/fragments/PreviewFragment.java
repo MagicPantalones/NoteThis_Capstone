@@ -1,7 +1,6 @@
 package io.magics.notethis.ui.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,8 +15,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
-import io.magics.notethis.ui.NoteWidget;
-import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
 import io.magics.notethis.utils.MarkdownUtils;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
@@ -36,7 +33,6 @@ public class PreviewFragment extends Fragment {
     Unbinder unbinder;
     NoteViewModel model;
 
-    FabListener fabListener;
 
     public PreviewFragment() {
         // Required empty public constructor
@@ -68,9 +64,6 @@ public class PreviewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (fabListener != null) {
-            fabListener.hideFab();
-        }
 
         model.getNote().observe(getActivity(), note -> {
             if (getContext() != null) {
@@ -96,13 +89,6 @@ public class PreviewFragment extends Fragment {
     @Override
     public void onDetach() {
         Utils.dispose(unbinder);
-        fabListener = null;
         super.onDetach();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof FabListener) fabListener = (FabListener) context;
     }
 }
