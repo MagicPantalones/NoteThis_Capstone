@@ -232,15 +232,18 @@ public class UiUtils {
                 .setReorderingAllowed(true);
 
         if (oldFrag != null) {
-            if (oldFrag instanceof )
             oldFrag.setExitTransition(getTransition(Gravity.START));
         }
-        newFrag.setEnterTransition(getTransition(Gravity.END));
-        manager.beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(CONTAINER, newFrag, FRAG_IMGUR_LIST)
-                .commit();
 
+        newFrag.setEnterTransition(getTransition(Gravity.END));
+
+        if (oldFrag instanceof NoteListFragment && !(newFrag instanceof NoteListFragment)) {
+            transaction.addToBackStack(FRAG_NOTE_LIST);
+        }
+
+        transaction
+                .replace(CONTAINER, newFrag)
+                .commit();
     }
 
 

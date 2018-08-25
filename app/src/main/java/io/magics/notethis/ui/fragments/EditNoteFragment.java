@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +26,8 @@ import io.magics.notethis.ui.dialogs.SaveDialog;
 import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
+
+import static io.magics.notethis.utils.FragmentHelper.getTransition;
 
 public class EditNoteFragment extends Fragment {
 
@@ -53,6 +56,13 @@ public class EditNoteFragment extends Fragment {
 
     public static EditNoteFragment newInstance() {
         return new EditNoteFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setEnterTransition(getTransition(Gravity.END));
+        setExitTransition(getTransition(Gravity.START));
     }
 
     @SuppressWarnings("ConstantConditions")

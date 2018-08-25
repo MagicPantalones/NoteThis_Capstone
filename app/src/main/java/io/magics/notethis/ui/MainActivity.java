@@ -41,6 +41,7 @@ import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
 import io.magics.notethis.ui.fragments.bottomsheet.SubSheetUpload;
 import io.magics.notethis.utils.DocUtils;
 import io.magics.notethis.utils.DrawerUtils;
+import io.magics.notethis.utils.FragmentHelper;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.ImgurViewModel;
 import io.magics.notethis.viewmodels.NoteViewModel;
@@ -53,7 +54,7 @@ import static io.magics.notethis.utils.Utils.DIALOG_UPLOAD;
 public class MainActivity extends AppCompatActivity implements
         NoteListFragment.NoteListFragListener, NoteListFragment.FabListener,
         SubSheetUpload.UploadDialogHandler, TemplatesBottomSheet.SheetCallbacks,
-        EditNoteFragment.SheetVisibility {
+        EditNoteFragment.SheetVisibility, FragmentHelper.InterfaceListener {
 
     private static final String TAG = "MainActivity";
 
@@ -86,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements
 
     TemplatesBottomSheet bottomSheet;
 
+    FragmentHelper fragHelper;
+
     Unbinder unbinder;
 
     @Override
@@ -94,12 +97,11 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
         fragManager = getSupportFragmentManager();
-
+        fragHelper = new FragmentHelper(this, this, savedInstanceState);
         initViewModels();
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-
 
         mainFab.setOnClickListener(v -> onNewNotePress());
         uploadFab.setOnClickListener(v -> onUploadImagePress());
@@ -107,14 +109,18 @@ public class MainActivity extends AppCompatActivity implements
         bottomSheet =
                 (TemplatesBottomSheet) fragManager.findFragmentById(R.id.bottom_sheet_fragment);
 
+        disconnectSnack = Snackbar.make(mainRoot, getString(R.string.disconnect_snack),
+                Snackbar.LENGTH_INDEFINITE);
+
         drawerBuilder = DrawerUtils.initDrawer(this,
                 toolbar, DrawerUtils.ITEM_NOTE_LIST);
+
         drawerBuilder.withOnDrawerItemClickListener((view, position, drawerItem) -> {
             if (drawerItem != null && drawerItem.getIdentifier() == DrawerUtils.ITEM_LOG_OUT) {
                 drawerItem.withSetSelected(false);
                 return DrawerUtils.signOut(this, noteViewModel, fragManager);
             } else {
-                return DrawerUtils.setDrawerItem(this, fragManager, drawerItem);
+                return DrawerUtils.setDrawerItem(fragManager, drawerItem);
             }
         }).withSavedInstance(savedInstanceState);
 
@@ -144,24 +150,7 @@ public class MainActivity extends AppCompatActivity implements
         noteViewModel.init();
         noteViewModel.getConnectionStatus().observe(this, status -> {
             connected = status;
-            if (!status) {
-
-                disconnectSnack = Snackbar.make(mainRoot, getString(R.string.disconnect_snack),
-                        Snackbar.LENGTH_INDEFINITE);
-                disconnectSnack.show();
-                disconnectSnack.setAction(R.string.hide_snack, v -> disconnectSnack.dismiss());
-
-                int color = ResourcesCompat.getColor(getResources(), R.color.secondaryColor,
-                        getTheme());
-
-                disconnectSnack.setActionTextColor(color);
-                disconnectSnack.show();
-
-            } else {
-                if (disconnectSnack != null && disconnectSnack.isShown()) {
-                    disconnectSnack.dismiss();
-                }
-            }
+            Utils.onConnectionStateChange(this, disconnectSnack, status);
         });
 
         noteViewModel.getSignInStatus().observe(this, signedIn -> {
@@ -193,6 +182,10 @@ public class MainActivity extends AppCompatActivity implements
     public void onBackPressed() {
         Fragment frag = fragManager.findFragmentById(R.id.container_main);
         Fragment dialogFrag = fragManager.findFragmentByTag(DIALOG_CLOSE);
+
+        if (navDrawer != null && navDrawer.isDrawerOpen()) {
+            navDrawer.closeDrawer();
+        }
 
         if (dialogFrag != null && dialogFrag.getActivity() == this) {
             appBarLayout.setExpanded(true, true);
@@ -260,10 +253,20 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void showFab() {
-        if (mainFab != null && UiUtils.isFragType(fragManager, NoteListFragment.class)) {
+        if (mainFab != null) {
             mainFab.show();
             bottomSheet.hide();
         }
+    }
+
+    @Override
+    public void changeFab(int fabType) {
+
+    }
+
+    @Override
+    public void onIntroDone() {
+
     }
 
     @Override

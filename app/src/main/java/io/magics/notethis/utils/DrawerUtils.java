@@ -28,9 +28,9 @@ import io.magics.notethis.viewmodels.NoteViewModel;
 
 public class DrawerUtils {
 
-    public static final int ITEM_NOTE_LIST = 1;
-    public static final int ITEM_IMGUR_LIST = 2;
-    public static final int ITEM_HELP_SCREEN = 3;
+    public static final int ITEM_NOTE_LIST = 111;
+    public static final int ITEM_IMGUR_LIST = 331;
+    public static final int ITEM_HELP_SCREEN = 551;
     public static final int ITEM_LOG_OUT = 4;
 
     public static DrawerBuilder initDrawer(Activity activity, Toolbar toolbar, int currentFrag) {
@@ -85,9 +85,9 @@ public class DrawerUtils {
 
     }
 
-    public static boolean setDrawerItem(Activity activity, FragmentManager manager,
+    public static boolean setDrawerItem(FragmentManager manager,
                                      IDrawerItem drawerItem) {
-        if (drawerItem == null) return false;
+        if (drawerItem == null) return true;
         long id = drawerItem.getIdentifier();
         if (id == ITEM_NOTE_LIST) {
             UiUtils.replaceFragment(manager, NoteListFragment.newInstance());
@@ -96,13 +96,13 @@ public class DrawerUtils {
         } else if (id == ITEM_HELP_SCREEN) {
             UiUtils.replaceFragment(manager, HelpFragment.newInstance());
         }
-        return true;
+        return false;
     }
 
     public static boolean signOut(Activity activity, NoteViewModel noteVm, FragmentManager manager) {
         noteVm.signOut();
         UiUtils.handleUserSignOut(activity, manager);
-        return true;
+        return false;
     }
 
     public static Drawer setProfileAndBuild(Activity activity, DrawerBuilder builder,

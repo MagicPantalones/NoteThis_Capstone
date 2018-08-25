@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/material_drawer_account_header_height"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="25dp"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/primaryColor">
 
@@ -24,7 +25,8 @@
         tools:text="Aahe"
         android:textStyle="bold"
         style="@style/text.lightTextNormal"
-        android:layout_marginBottom="@dimen/margin_8dp"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginBottom="@dimen/margin_16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nav_logo"

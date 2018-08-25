@@ -38,6 +38,8 @@ import io.magics.notethis.utils.Utils;
 import io.magics.notethis.utils.models.Image;
 import io.magics.notethis.viewmodels.ImgurViewModel;
 
+import static io.magics.notethis.utils.FragmentHelper.getTransition;
+
 public class ImgurListFragment extends Fragment {
 
     private static final String TAG_IMG_DIALOG = "image_dialog";
@@ -58,6 +60,13 @@ public class ImgurListFragment extends Fragment {
 
     public static ImgurListFragment newInstance() {
         return new ImgurListFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setEnterTransition(getTransition(Gravity.END));
+        setExitTransition(getTransition(Gravity.START));
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 import ru.noties.markwon.Markwon;
 import ru.noties.markwon.SpannableConfiguration;
 
+import static io.magics.notethis.utils.FragmentHelper.getTransition;
+
 
 public class HelpFragment extends Fragment {
 
@@ -50,6 +53,13 @@ public class HelpFragment extends Fragment {
 
     public static HelpFragment newInstance() {
         return new HelpFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setEnterTransition(getTransition(Gravity.END));
+        setExitTransition(getTransition(Gravity.START));
     }
 
     @Override

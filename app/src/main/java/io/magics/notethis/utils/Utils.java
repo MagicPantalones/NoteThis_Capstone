@@ -9,6 +9,7 @@ import android.support.annotation.IdRes;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -104,6 +105,25 @@ public class Utils {
         return cm.getActiveNetworkInfo() != null &&
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
 
+    }
+
+    public static void onConnectionStateChange(Context context, final Snackbar snackbar,
+                                               boolean status) {
+        if (!status) {
+            snackbar.show();
+            snackbar.setAction(R.string.hide_snack, v -> snackbar.dismiss());
+
+            int color = ResourcesCompat.getColor(context.getResources(), R.color.secondaryColor,
+                    null);
+
+            snackbar.setActionTextColor(color);
+            snackbar.show();
+
+        } else {
+            if (snackbar != null && snackbar.isShown()) {
+                snackbar.dismiss();
+            }
+        }
     }
 
     public static void hideKeyboard(Activity activity) {
