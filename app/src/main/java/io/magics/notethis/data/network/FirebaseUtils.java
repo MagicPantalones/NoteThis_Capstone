@@ -31,6 +31,7 @@ public class FirebaseUtils {
     private static final String PATH_USERS = "users";
     private static final String PATH_NOTES = "notes";
     private static final String PATH_EMAIL = "email";
+    private static final String PATH_IMAGES = "images";
 
     public interface FirebaseAuthCallback{
         void onSuccess(FirebaseUser user);
@@ -113,6 +114,10 @@ public class FirebaseUtils {
 
     public static DatabaseReference getNotesPath(DatabaseReference rootRef, String uid) {
         return getUserPath(rootRef, uid).child(PATH_NOTES);
+    }
+
+    public static DatabaseReference getImagePath(DatabaseReference rootRef, String uid) {
+        return getUserPath(rootRef, uid).child(PATH_IMAGES);
     }
 
     public static void insertImgurLink(DatabaseReference imgurRef, Image image) {

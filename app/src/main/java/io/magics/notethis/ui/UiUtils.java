@@ -226,6 +226,23 @@ public class UiUtils {
         return slide;
     }
 
+    public static void replaceFragment(FragmentManager manager, Fragment newFrag) {
+        Fragment oldFrag = manager.findFragmentById(CONTAINER);
+        FragmentTransaction transaction = manager.beginTransaction()
+                .setReorderingAllowed(true);
+
+        if (oldFrag != null) {
+            if (oldFrag instanceof )
+            oldFrag.setExitTransition(getTransition(Gravity.START));
+        }
+        newFrag.setEnterTransition(getTransition(Gravity.END));
+        manager.beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(CONTAINER, newFrag, FRAG_IMGUR_LIST)
+                .commit();
+
+    }
+
 
     private UiUtils() {}
 

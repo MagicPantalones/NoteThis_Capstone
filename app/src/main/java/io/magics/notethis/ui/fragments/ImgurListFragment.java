@@ -99,6 +99,14 @@ public class ImgurListFragment extends Fragment {
         super.onDetach();
     }
 
+    private void switchViews(List<Image> images) {
+        if (imgurRecycler == null || imgurProgress == null) return;
+        if (images != null && !images.isEmpty()) {
+            imgurRecycler.setVisibility(View.VISIBLE);
+            imgurProgress.setVisibility(View.GONE);
+        }
+    }
+
     private class ImgurAdapter extends RecyclerView.Adapter<ImgurViewHolder> {
 
         List<Image> images = new ArrayList<>();
@@ -173,20 +181,21 @@ public class ImgurListFragment extends Fragment {
         private void insertImages(List<Image> images) {
             this.images = images;
             notifyDataSetChanged();
-            imgurRecycler.setVisibility(View.VISIBLE);
-            imgurProgress.setVisibility(View.GONE);
+            switchViews(this.images);
         }
 
         private void handleDeleteClick(int pos) {
             images.remove(pos);
             notifyItemRemoved(pos);
             notifyItemRangeChanged(pos, images.size());
+            switchViews(images);
         }
 
         private void restore(Image image, int position) {
             model.restoreImage(image);
             images.add(position, image);
             notifyItemInserted(position);
+            switchViews(images);
         }
 
         private void handleImageClick(String url) {

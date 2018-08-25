@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -13,11 +14,14 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import io.magics.notethis.R;
 import io.magics.notethis.ui.UiUtils;
+import io.magics.notethis.ui.fragments.HelpFragment;
+import io.magics.notethis.ui.fragments.ImgurListFragment;
 import io.magics.notethis.ui.fragments.NoteListFragment;
 import io.magics.notethis.viewmodels.ImgurViewModel;
 import io.magics.notethis.viewmodels.NoteViewModel;
@@ -31,28 +35,36 @@ public class DrawerUtils {
 
     public static DrawerBuilder initDrawer(Activity activity, Toolbar toolbar, int currentFrag) {
 
+        int selectedColor = activity.getResources().getColor(R.color.secondaryColor);
 
 
         PrimaryDrawerItem drawerItemNoteList = new PrimaryDrawerItem()
                 .withIdentifier(ITEM_NOTE_LIST)
+                .withIconTintingEnabled(true)
+                .withSelectedIconColor(selectedColor)
                 .withName(R.string.menu_nav_notes)
                 .withIcon(R.drawable.outline_note_24);
 
         PrimaryDrawerItem drawerItemImgurList = new PrimaryDrawerItem()
                 .withIdentifier(ITEM_IMGUR_LIST)
+                .withIconTintingEnabled(true)
+                .withSelectedIconColor(selectedColor)
                 .withName(R.string.menu_nav_imgur)
                 .withIcon(R.drawable.outline_image_24);
 
-        SecondaryDrawerItem drawerItemHelp = new SecondaryDrawerItem()
+        PrimaryDrawerItem drawerItemHelp = new PrimaryDrawerItem()
                 .withIdentifier(ITEM_HELP_SCREEN)
+                .withIconTintingEnabled(true)
+                .withSelectedIconColor(selectedColor)
                 .withName(R.string.menu_nav_help)
                 .withIcon(R.drawable.outline_help_outline_24);
 
-        SecondaryDrawerItem drawerItemLogOut = new SecondaryDrawerItem()
+        PrimaryDrawerItem drawerItemLogOut = new PrimaryDrawerItem()
                 .withIdentifier(ITEM_LOG_OUT)
+                .withIconTintingEnabled(true)
+                .withSelectedIconColor(selectedColor)
                 .withName(R.string.menu_nav_sign_out)
-                .withIcon(R.drawable.outline_remove_circle_outline_24)
-                .withEnabled(false);
+                .withIcon(R.drawable.outline_remove_circle_outline_24);
 
         return new DrawerBuilder()
                 .withActivity(activity)
@@ -60,6 +72,8 @@ public class DrawerUtils {
                 .withActionBarDrawerToggle(true)
                 .withActionBarDrawerToggleAnimated(true)
                 .withCloseOnClick(true)
+                .withTranslucentStatusBar(false)
+                .withDisplayBelowStatusBar(true)
                 .withSelectedItem(currentFrag)
                 .addDrawerItems(
                         drawerItemNoteList,
@@ -71,37 +85,35 @@ public class DrawerUtils {
 
     }
 
-    public static void setDrawerItem(Activity activity, FragmentManager manager,
+    public static boolean setDrawerItem(Activity activity, FragmentManager manager,
                                      IDrawerItem drawerItem) {
-        if (drawerItem == null) return;
+        if (drawerItem == null) return false;
         long id = drawerItem.getIdentifier();
         if (id == ITEM_NOTE_LIST) {
-            UiUtils.showNoteListFrag(activity, manager);
+            UiUtils.replaceFragment(manager, NoteListFragment.newInstance());
         } else if (id == ITEM_IMGUR_LIST) {
-            UiUtils.showImgurList(manager);
+            UiUtils.replaceFragment(manager, ImgurListFragment.newInstance());
         } else if (id == ITEM_HELP_SCREEN) {
-            UiUtils.showHelpFrag(manager);
+            UiUtils.replaceFragment(manager, HelpFragment.newInstance());
         }
+        return true;
     }
 
-    public static void signOut(Activity activity, NoteViewModel noteVm, FragmentManager manager) {
+    public static boolean signOut(Activity activity, NoteViewModel noteVm, FragmentManager manager) {
         noteVm.signOut();
         UiUtils.handleUserSignOut(activity, manager);
+        return true;
     }
 
     public static Drawer setProfileAndBuild(Activity activity, DrawerBuilder builder,
-                                            String userEmail, String profileImage) {
-        IProfile profile = new ProfileDrawerItem().withName(userEmail)
-                .withIcon(profileImage);
+                                            String userEmail) {
 
-        AccountHeader header = new AccountHeaderBuilder()
-                .withActivity(activity)
-                .addProfiles(profile)
-                .withOnAccountHeaderListener((view, profile1, current) -> false)
-                .build();
+        View headerRoot = View.inflate(activity, R.layout.nav_header, null);
+        TextView emailField = headerRoot.findViewById(R.id.nav_user_name);
+        emailField.setText(userEmail);
 
         return builder
-                .withAccountHeader(header)
+                .withHeader(headerRoot)
                 .build();
     }
 }

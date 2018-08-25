@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,15 +43,18 @@ public class ImgurViewModel extends AndroidViewModel {
 
     public ImgurViewModel(@NonNull Application application) { super(application); }
 
-    public void init(DatabaseReference userRef) {
+    public void init(String uid) {
         if (!isInitialized) {
-            imgurRef = userRef.child("images");
+            DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+            imgurRef = FirebaseUtils.getImagePath(rootRef, uid);
             isInitialized = true;
             appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
             images = appDatabase.userImageModel().getImages();
             initialized.setValue(true);
         }
     }
+
+    public boolean isInitialized() { return isInitialized; }
 
     public LiveData<List<Image>> getImages() { return images; }
     public LiveData<Image> getUploadedImage() { return uploadedImage; }

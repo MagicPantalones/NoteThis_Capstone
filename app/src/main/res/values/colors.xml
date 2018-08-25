@@ -16,5 +16,12 @@
     <color name="backgroundColorMain">#EFEBDE</color>
     <color name="dark_transparent">#f21f001e</color>
     <color name="secondaryRipple">#42f04f55</color>
+    
+    <color name="material_drawer_background">@color/primaryColor</color>
+    <color name="material_drawer_primary_text">@color/primaryTextColor</color>
+    <color name="material_drawer_selected">@color/primaryLightColor</color>
+    <color name="material_drawer_selected_text">@color/secondaryColor</color>
+    <color name="material_drawer_primary_icon">@color/primaryTextColor</color>
+    <color name="material_drawer_divider">@color/secondaryColor</color>
 
 </resources>

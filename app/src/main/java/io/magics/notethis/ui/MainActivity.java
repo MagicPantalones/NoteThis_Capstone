@@ -24,6 +24,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseUser;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+
 import java.io.File;
 
 import butterknife.BindView;
@@ -36,6 +40,7 @@ import io.magics.notethis.ui.fragments.PreviewFragment;
 import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
 import io.magics.notethis.ui.fragments.bottomsheet.SubSheetUpload;
 import io.magics.notethis.utils.DocUtils;
+import io.magics.notethis.utils.DrawerUtils;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.ImgurViewModel;
 import io.magics.notethis.viewmodels.NoteViewModel;
@@ -60,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements
     private ImgurViewModel imgurViewModel;
 
     private Snackbar disconnectSnack;
-    private ActionBarDrawerToggle drawerToggle;
+    DrawerBuilder drawerBuilder;
+    Drawer navDrawer;
 
     private Uri fileUri;
     private boolean connected = true;
@@ -77,10 +83,6 @@ public class MainActivity extends AppCompatActivity implements
     FloatingActionButton uploadFab;
     @BindView(R.id.appbar_layout)
     AppBarLayout appBarLayout;
-    @BindView(R.id.nav_view)
-    NavigationView navDrawer;
-    @BindView(R.id.main_drawer_layout)
-    DrawerLayout drawerLayout;
 
     TemplatesBottomSheet bottomSheet;
 
@@ -98,11 +100,6 @@ public class MainActivity extends AppCompatActivity implements
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.open_drawer, R.string.close_drawer);
-        drawerLayout.addDrawerListener(drawerToggle);
-        drawerToggle.syncState();
-
 
         mainFab.setOnClickListener(v -> onNewNotePress());
         uploadFab.setOnClickListener(v -> onUploadImagePress());
@@ -110,32 +107,16 @@ public class MainActivity extends AppCompatActivity implements
         bottomSheet =
                 (TemplatesBottomSheet) fragManager.findFragmentById(R.id.bottom_sheet_fragment);
 
-        navDrawer.setNavigationItemSelectedListener(item -> {
-            drawerLayout.closeDrawers();
-            switch (item.getItemId()) {
-                case R.id.nav_drawer_notes:
-                    if (item.isChecked()) break;
-                    if (UiUtils.isFragType(fragManager, ImgurListFragment.class)) uploadFab.hide();
-                    UiUtils.showNoteListFrag(this, fragManager);
-                    break;
-                case R.id.nav_drawer_imgur:
-                    if (item.isChecked()) break;
-                    UiUtils.showImgurList(fragManager);
-                    break;
-                case R.id.nav_drawer_help:
-                    if (item.isChecked()) break;
-                    UiUtils.showHelpFrag(fragManager);
-                    break;
-                case R.id.nav_drawer_sign_out:
-                    item.setChecked(false);
-                    noteViewModel.signOut();
-                    UiUtils.handleUserSignOut(this,fragManager);
-                    break;
-                default:
-                    return true;
+        drawerBuilder = DrawerUtils.initDrawer(this,
+                toolbar, DrawerUtils.ITEM_NOTE_LIST);
+        drawerBuilder.withOnDrawerItemClickListener((view, position, drawerItem) -> {
+            if (drawerItem != null && drawerItem.getIdentifier() == DrawerUtils.ITEM_LOG_OUT) {
+                drawerItem.withSetSelected(false);
+                return DrawerUtils.signOut(this, noteViewModel, fragManager);
+            } else {
+                return DrawerUtils.setDrawerItem(this, fragManager, drawerItem);
             }
-            return true;
-        });
+        }).withSavedInstance(savedInstanceState);
 
         if (getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1) != -1) {
             int id = getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1);
@@ -195,10 +176,16 @@ public class MainActivity extends AppCompatActivity implements
                         UiUtils.showNoteListFrag(this, fragManager);
                     }
                 }
-                imgurViewModel.init(noteViewModel.getUserRef());
             } else {
                 UiUtils.introToSignInFrag(this, fragManager);
             }
+        });
+
+        noteViewModel.getFirebaseUser().observe(this, user -> {
+            if (user == null || imgurViewModel.isInitialized()) return;
+            imgurViewModel.init(user.getUid());
+            DrawerUtils.setProfileAndBuild(this, drawerBuilder,
+                    user.getEmail());
         });
     }
 
@@ -352,7 +339,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) return true;
 
         switch (item.getItemId()) {
             case R.id.edit_menu_help:

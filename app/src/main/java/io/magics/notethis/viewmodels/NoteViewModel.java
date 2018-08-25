@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,6 +39,7 @@ public class NoteViewModel extends AndroidViewModel {
     private DatabaseReference noteRef;
     private MutableLiveData<Note> note = new MutableLiveData<>();
     private MutableLiveData<Boolean> signedIn = new MutableLiveData<>();
+    private MutableLiveData<FirebaseUser> firebaseUser = new MutableLiveData<>();
     private ConnectionLiveData connected;
 
     private AppDatabase appDatabase;
@@ -48,6 +50,8 @@ public class NoteViewModel extends AndroidViewModel {
     }
 
     public DatabaseReference getUserRef() { return userRef; }
+
+    public LiveData<FirebaseUser> getFirebaseUser() { return firebaseUser; }
 
     public void init() {
         appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
@@ -158,6 +162,7 @@ public class NoteViewModel extends AndroidViewModel {
         userRef = FirebaseUtils.getUserPath(rootRef, uid);
         noteRef = FirebaseUtils.getNotesPath(rootRef, uid);
         FirebaseUtils.checkForUserEmail(userRef, user.getEmail());
+        firebaseUser.setValue(user);
         checkDatabase();
         checkImageDatabase();
     }
