@@ -83,6 +83,7 @@ dependencies {
     implementation "ru.noties:markwon-syntax:${markVer}"
     implementation "ru.noties:markwon-syntax:${markVer}"
     implementation 'me.saket:better-link-movement-method:2.2.0'
+    implementation "com.mikepenz:materialdrawer:6.0.9"
 
     //Debug & testing
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${leakVer}"

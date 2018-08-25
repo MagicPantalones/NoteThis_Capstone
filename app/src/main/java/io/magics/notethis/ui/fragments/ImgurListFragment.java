@@ -75,7 +75,7 @@ public class ImgurListFragment extends Fragment {
         model = ViewModelProviders.of(getActivity()).get(ImgurViewModel.class);
         ImgurAdapter adapter = new ImgurAdapter();
 
-        model.getImages().observe(getActivity(), images -> adapter.insertImages(images));
+        model.getImages().observe(getActivity(), adapter::insertImages);
 
 
         imgurRecycler.addItemDecoration(new ItemSpacingDecoration(
@@ -173,8 +173,6 @@ public class ImgurListFragment extends Fragment {
         private void insertImages(List<Image> images) {
             this.images = images;
             notifyDataSetChanged();
-            Toast.makeText(getContext(), "Number of images in adapter: " + images.size(),
-                    Toast.LENGTH_LONG).show();
             imgurRecycler.setVisibility(View.VISIBLE);
             imgurProgress.setVisibility(View.GONE);
         }

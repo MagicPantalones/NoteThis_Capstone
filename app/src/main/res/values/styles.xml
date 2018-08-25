@@ -96,5 +96,11 @@
         <item name="android:layout_marginTop">@dimen/margin_4dp</item>
         <item name="android:layout_marginBottom">@dimen/margin_4dp</item>
     </style>
+    
+    <style name="navDrawerStyle" parent="MaterialDrawerTheme">
+        <item name="material_drawer_background">@color/primaryLightColor</item>
+        <item name="material_drawer_primary_text">@color/primaryTextColor</item>
+        <item name="material_drawer_selected">@color/secondaryRipple</item>
+    </style>
 
 </resources>

@@ -139,6 +139,7 @@ public class NoteViewModel extends AndroidViewModel {
         auth.signOut();
         signedIn.setValue(false);
         AppDbUtils.deleteNoteTable(appDatabase);
+        AppDbUtils.deleteImgurTable(appDatabase);
     }
 
     public void onGoogleSignIn(GoogleSignInAccount account) {

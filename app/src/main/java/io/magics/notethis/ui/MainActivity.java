@@ -129,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.nav_drawer_sign_out:
                     item.setChecked(false);
                     noteViewModel.signOut();
-                    imgurViewModel.signOut();
                     UiUtils.handleUserSignOut(this,fragManager);
                     break;
                 default:
@@ -387,8 +386,6 @@ public class MainActivity extends AppCompatActivity implements
     public void hideAppBar() {
         appBarLayout.setExpanded(false, true);
     }
-
-    //TODO Fix Imgur Bug where it does not populate list when getting Images from firebase.
 
     //TODO Add support for RTL & D-PAD
 
