@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -15,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,9 +24,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.bumptech.glide.util.Util;
 import com.google.firebase.auth.FirebaseUser;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -108,8 +112,6 @@ public class MainActivity extends AppCompatActivity implements
 
         bottomSheet =
                 (TemplatesBottomSheet) fragManager.findFragmentById(R.id.bottom_sheet_fragment);
-
-
         disconnectSnack = Snackbar.make(mainRoot, getString(R.string.disconnect_snack),
                 Snackbar.LENGTH_INDEFINITE);
 
@@ -393,7 +395,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void hideAppBar() {
         appBarLayout.setExpanded(false, true);
+        Utils.hideKeyboard(this);
     }
+
+
 
     //TODO Add support for RTL & D-PAD
 

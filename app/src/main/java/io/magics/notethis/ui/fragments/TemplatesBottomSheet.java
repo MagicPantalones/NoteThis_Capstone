@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +59,7 @@ public class TemplatesBottomSheet extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.templates_bottom_sheet, container, false);
         ButterKnife.bind(this, root);
+        setRetainInstance(false);
         return root;
     }
 
@@ -93,6 +96,7 @@ public class TemplatesBottomSheet extends Fragment {
         sheets.add(imageSheet);
 
         SheetsAdapter adapter = new SheetsAdapter(getChildFragmentManager(), sheets);
+        sheetsPager.setOffscreenPageLimit(4);
         sheetsPager.setAdapter(adapter);
         connectedObs.getConnectionStatus().observe(this,
                 connected -> imageSheet.connectionState(connected));
@@ -119,7 +123,7 @@ public class TemplatesBottomSheet extends Fragment {
     }
 
     private void setPage(int pos) {
-        if (behavior == null) return;
+        if (behavior == null || behavior.getState() == BottomSheetBehavior.STATE_HIDDEN) return;
         if (callbacks != null) callbacks.hideAppBar();
         sheetsPager.setCurrentItem(pos, true);
         setSheetExpanded();
@@ -136,6 +140,7 @@ public class TemplatesBottomSheet extends Fragment {
         if (behavior == null) return;
         if (behavior.getState() != BottomSheetBehavior.STATE_COLLAPSED) {
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            setFocusable(true);
         }
     }
 
@@ -144,6 +149,13 @@ public class TemplatesBottomSheet extends Fragment {
         if (behavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
             behavior.setHideable(true);
             behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            setFocusable(false);
+        }
+    }
+
+    private void setFocusable(boolean focusable) {
+        if (getView() != null) {
+            getView().setFocusable(focusable);
         }
     }
 

@@ -29,6 +29,7 @@ import io.magics.notethis.ui.fragments.IntroFragment;
 import io.magics.notethis.ui.fragments.NoteListFragment;
 import io.magics.notethis.ui.fragments.PreviewFragment;
 import io.magics.notethis.ui.fragments.SignInFragment;
+import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
 
 public class FragmentHelper {
 
@@ -112,14 +113,7 @@ public class FragmentHelper {
     }
 
     public void startIntro(FragmentManager manager) {
-        List<Fragment> fragList = manager.getFragments();
-        if (fragList != null && !fragList.isEmpty()) {
-            for (Fragment frag : fragList) {
-                manager.beginTransaction().remove(frag).commit();
-            }
-            previousFragId = -1;
-            currentFragId = -1;
-        }
+        previousFragId = -1;
 
         activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         Utils.hideToolbar(activity);
@@ -207,7 +201,9 @@ public class FragmentHelper {
             return true;
         }
 
-        if (currentFragId == ID_NOTE_LIST) return false;
+        if (currentFragId == ID_SIGN_IN || currentFragId == ID_INTRO
+                || currentFragId == ID_NOTE_LIST) return false;
+
 
         boolean toNoteList = !(previousFragId == ID_EDIT_NOTE && currentFragId == ID_PREVIEW)
                 && !(previousFragId == ID_EDIT_NOTE && currentFragId == ID_HELP);

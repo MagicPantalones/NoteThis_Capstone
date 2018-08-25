@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
+import io.magics.notethis.ui.MainActivity;
 import io.magics.notethis.ui.NoteWidget;
 import io.magics.notethis.ui.dialogs.CloseDialog;
 import io.magics.notethis.ui.dialogs.SaveDialog;
@@ -111,6 +112,8 @@ public class EditNoteFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     public boolean hasUnsavedChanges() {
         return viewModel.hasUnsavedChanges(editNoteView.getText().toString());
