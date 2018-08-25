@@ -63,8 +63,8 @@ public class FragmentHelper {
     private PreviewFragment previewFrag;
 
     private final Activity activity;
-    private Drawer drawer;
-    private ActionBar actionBar;
+    private final Drawer drawer;
+    private final ActionBar actionBar;
     private InterfaceListener listener;
 
     public interface InterfaceListener {
@@ -74,9 +74,12 @@ public class FragmentHelper {
         void onIntroDone();
     }
 
-    public FragmentHelper(Activity activity, InterfaceListener listener, Bundle savedState) {
+    public FragmentHelper(Activity activity, Drawer drawer, ActionBar actionBar, Bundle savedState,
+                          InterfaceListener listener) {
         this.activity = activity;
         this.listener = listener;
+        this.drawer = drawer;
+        this.actionBar = actionBar;
         if (savedState != null) {
             int[] restored = savedState.getIntArray(FRAG_HELPER_STATE);
             if (restored != null) {
@@ -95,16 +98,6 @@ public class FragmentHelper {
         imgurListFrag = ImgurListFragment.newInstance();
         helpFrag = HelpFragment.newInstance();
         previewFrag = PreviewFragment.newInstance();
-    }
-
-    public void setDrawer(Drawer drawer, ActionBar actionBar) {
-        this.drawer = drawer;
-        this.actionBar = actionBar;
-    }
-
-    public void dispose() {
-        drawer = null;
-        listener = null;
     }
 
     public int[] saveState() {
@@ -191,7 +184,7 @@ public class FragmentHelper {
     public void changeFragFromDrawer(FragmentManager manager, int itemId) {
         if (itemId == ID_LOG_OUT) {
             startIntro(manager);
-            drawer.setSelectionAtPosition(ID_NOTE_LIST, false);
+            drawer.setSelection(ID_NOTE_LIST, false);
             return;
         }
         if (currentFragId == itemId) return;
@@ -201,7 +194,11 @@ public class FragmentHelper {
     }
 
     public boolean handleBackPressed(FragmentManager manager) {
-        if (drawer != null && drawer.isDrawerOpen()) drawer.closeDrawer();
+        if (drawer.isDrawerOpen()) {
+            drawer.closeDrawer();
+            return true;
+        }
+
         if (currentFragId == ID_NOTE_LIST) return false;
 
         boolean toNoteList = !(previousFragId == ID_EDIT_NOTE && currentFragId == ID_PREVIEW)
@@ -212,7 +209,7 @@ public class FragmentHelper {
                 return true;
             }
             changeFragment(manager, ID_NOTE_LIST, false);
-            drawer.setSelectionAtPosition(ID_NOTE_LIST, false);
+            drawer.setSelection(ID_NOTE_LIST, false);
             return true;
         } else {
             changeFragment(manager, ID_EDIT_NOTE, false);
@@ -238,7 +235,7 @@ public class FragmentHelper {
     }
 
     public void introToListFrag(FragmentManager manager) {
-        introFrag.setExitTransition(getTransition(Gravity.START));
+        introFrag.setExitTransition(getTransition(Gravity.END));
         Utils.showToolbar(activity);
         activity.getWindow().getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);

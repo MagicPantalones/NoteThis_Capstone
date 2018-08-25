@@ -13,6 +13,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.transition.Slide;
+import android.transition.Transition;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,7 +75,6 @@ public class NoteListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setEnterTransition(getTransition(Gravity.END));
-        setExitTransition(getTransition(Gravity.START));
     }
 
     @Override

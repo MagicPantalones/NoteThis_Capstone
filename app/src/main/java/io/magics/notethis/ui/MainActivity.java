@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements
     private ImgurViewModel imgurViewModel;
 
     private Snackbar disconnectSnack;
-    DrawerBuilder drawerBuilder;
     Drawer navDrawer;
 
     private Uri fileUri;
@@ -98,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
         fragManager = getSupportFragmentManager();
-        fragHelper = new FragmentHelper(this, this, savedInstanceState);
         initViewModels();
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -113,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements
         disconnectSnack = Snackbar.make(mainRoot, getString(R.string.disconnect_snack),
                 Snackbar.LENGTH_INDEFINITE);
 
-        drawerBuilder = DrawerUtils.initDrawer(this,
+        DrawerBuilder drawerBuilder = DrawerUtils.initDrawer(this,
                 toolbar, FragmentHelper.ID_NOTE_LIST);
 
         drawerBuilder.withOnDrawerItemClickListener((view, position, drawerItem) -> {
@@ -128,6 +126,10 @@ public class MainActivity extends AppCompatActivity implements
             return false;
         }).withSavedInstance(savedInstanceState);
 
+        navDrawer = drawerBuilder.build();
+
+        fragHelper = new FragmentHelper(this, navDrawer, actionBar,
+                savedInstanceState, this);
 
         if (getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1) != -1) {
             int id = getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1);
@@ -163,9 +165,8 @@ public class MainActivity extends AppCompatActivity implements
         noteViewModel.getFirebaseUser().observe(this, user -> {
             if (user == null || imgurViewModel.isInitialized()) return;
             imgurViewModel.init(user.getUid());
-            navDrawer = DrawerUtils.setProfileAndBuild(this, drawerBuilder,
+            DrawerUtils.setEmail(navDrawer,
                     user.getEmail());
-            fragHelper.setDrawer(navDrawer, getSupportActionBar());
         });
     }
 
@@ -182,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         Utils.dispose(unbinder);
-        fragHelper.dispose();
         super.onDestroy();
     }
 

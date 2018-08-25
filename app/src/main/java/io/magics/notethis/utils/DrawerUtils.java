@@ -50,14 +50,14 @@ public class DrawerUtils {
                 .withName(R.string.menu_nav_sign_out)
                 .withIcon(R.drawable.outline_remove_circle_outline_24);
 
+        View headerRoot = View.inflate(activity, R.layout.nav_header, null);
+
         return new DrawerBuilder()
                 .withActivity(activity)
                 .withToolbar(toolbar)
                 .withActionBarDrawerToggle(true)
                 .withActionBarDrawerToggleAnimated(true)
                 .withCloseOnClick(true)
-                .withTranslucentStatusBar(true)
-                .withDisplayBelowStatusBar(true)
                 .withSelectedItem(currentFrag)
                 .addDrawerItems(
                         drawerItemNoteList,
@@ -65,19 +65,13 @@ public class DrawerUtils {
                         drawerItemHelp,
                         drawerItemLogOut
                 )
-                .withShowDrawerOnFirstLaunch(false);
+                .withHeader(headerRoot);
 
     }
 
-    public static Drawer setProfileAndBuild(Activity activity, DrawerBuilder builder,
-                                            String userEmail) {
-
-        View headerRoot = View.inflate(activity, R.layout.nav_header, null);
-        TextView emailField = headerRoot.findViewById(R.id.nav_user_name);
+    public static void setEmail(Drawer drawer, String userEmail) {
+        View header = drawer.getHeader();
+        TextView emailField = header.findViewById(R.id.nav_user_name);
         emailField.setText(userEmail);
-
-        return builder
-                .withHeader(headerRoot)
-                .build();
     }
 }
