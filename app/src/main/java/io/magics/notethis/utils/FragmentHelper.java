@@ -44,7 +44,8 @@ public class FragmentHelper {
     public static final int ID_PREVIEW = 441;
     public static final int ID_HELP = 551;
     public static final int ID_LOG_OUT = 4;
-    public static final int ID_INTRO_SIGN_IN = 991;
+    public static final int ID_INTRO = 991;
+    public static final int ID_SIGN_IN = 881;
 
     public static final int FAB_NEW_NOTE = 7878;
     public static final int FAB_UPLOAD = 3451;
@@ -121,7 +122,7 @@ public class FragmentHelper {
         activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         Utils.hideToolbar(activity);
 
-        currentFragId = ID_INTRO_SIGN_IN;
+        currentFragId = ID_INTRO;
 
         manager.beginTransaction()
                 .setReorderingAllowed(true)
@@ -149,7 +150,7 @@ public class FragmentHelper {
 
         switch (fragmentId) {
             case ID_NOTE_LIST:
-                transaction.replace(CONTAINER, noteListFrag).commitAllowingStateLoss();
+                transaction.replace(CONTAINER, noteListFrag).commit();
                 if (currentFragId == ID_IMGUR_LIST) changeFab(FAB_NEW_NOTE);
                 else showFab();
                 showDrawerIcon();
@@ -221,6 +222,7 @@ public class FragmentHelper {
     public void introToSignInFrag(FragmentManager manager) {
 
         View oldFragView = introFrag.getView();
+        if (oldFragView == null) return;
         ImageView sharedLogo = oldFragView.findViewById(R.id.img_intro_logo);
 
         introFrag.setExitTransition(getIntroToSignInTransition(activity));
@@ -232,14 +234,22 @@ public class FragmentHelper {
                 .addSharedElement(sharedLogo, sharedLogo.getTransitionName())
                 .replace(CONTAINER, signInFrag)
                 .commitAllowingStateLoss();
+
+        previousFragId = currentFragId;
+        currentFragId = ID_SIGN_IN;
     }
 
     public void introToListFrag(FragmentManager manager) {
-        introFrag.setExitTransition(getTransition(Gravity.END));
+        noteListFrag.postponeEnterTransition();
+
+        manager.beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(CONTAINER, noteListFrag)
+                .commitAllowingStateLoss();
+
         Utils.showToolbar(activity);
         activity.getWindow().getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-        changeFragment(manager, ID_NOTE_LIST, false);
     }
     private void hideDrawerIcon() {
         if (drawer != null) {

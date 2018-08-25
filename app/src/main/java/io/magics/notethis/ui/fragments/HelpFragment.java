@@ -59,6 +59,7 @@ public class HelpFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setEnterTransition(getTransition(Gravity.END));
+        setExitTransition(getTransition(Gravity.START));
     }
 
     @Override

@@ -160,7 +160,12 @@ public class MainActivity extends AppCompatActivity implements
             Utils.onConnectionStateChange(this, disconnectSnack, status);
         });
 
-        noteViewModel.getSignInStatus().observe(this, signedIn -> userSignedIn = signedIn);
+        noteViewModel.getSignInStatus().observe(this, signedIn -> {
+            userSignedIn = signedIn;
+            if (signedIn && fragHelper.getCurrentFragId() == FragmentHelper.ID_SIGN_IN) {
+                fragHelper.introToListFrag(fragManager);
+            }
+        });
 
         noteViewModel.getFirebaseUser().observe(this, user -> {
             if (user == null || imgurViewModel.isInitialized()) return;
