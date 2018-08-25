@@ -73,6 +73,8 @@ public class FragmentHelper {
         void showFab();
         void changeFab(int fabType);
         void onIntroDone();
+        void hideSheet();
+        void showSheet();
     }
 
     public FragmentHelper(Activity activity, Drawer drawer, ActionBar actionBar, Bundle savedState,
@@ -123,7 +125,7 @@ public class FragmentHelper {
         Utils.hideToolbar(activity);
 
         currentFragId = ID_INTRO;
-
+        hideSheet();
         manager.beginTransaction()
                 .setReorderingAllowed(true)
                 .replace(CONTAINER, introFrag)
@@ -154,25 +156,30 @@ public class FragmentHelper {
                 if (currentFragId == ID_IMGUR_LIST) changeFab(FAB_NEW_NOTE);
                 else showFab();
                 showDrawerIcon();
+                hideSheet();
                 break;
             case ID_EDIT_NOTE:
                 transaction.replace(CONTAINER, editNoteFrag).commit();
                 hideFab();
                 hideDrawerIcon();
+                showSheet();
                 break;
             case ID_PREVIEW:
                 transaction.replace(CONTAINER, previewFrag).commit();
                 hideFab();
                 if (!fromDrawer) hideDrawerIcon();
+                hideSheet();
                 break;
             case ID_HELP:
                 transaction.replace(CONTAINER, helpFrag).commit();
                 hideFab();
+                hideSheet();
                 if (!fromDrawer) hideDrawerIcon();
                 break;
             case ID_IMGUR_LIST:
                 transaction.replace(CONTAINER, imgurListFrag).commit();
                 changeFab(FAB_UPLOAD);
+                hideSheet();
                 showDrawerIcon();
                 break;
             default:
@@ -276,6 +283,14 @@ public class FragmentHelper {
 
     private void changeFab(int fabType){
         if (listener != null) listener.changeFab(fabType);
+    }
+
+    private void hideSheet(){
+        if (listener != null) listener.hideSheet();
+    }
+
+    private void showSheet() {
+        if (listener != null) listener.showSheet();
     }
 
     public static Transition getTransition(int gravity) {

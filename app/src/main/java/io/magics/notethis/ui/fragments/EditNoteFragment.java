@@ -38,15 +38,11 @@ public class EditNoteFragment extends Fragment {
     EditText editNoteView;
 
     Unbinder unbinder;
-    private SheetVisibility sheetVisibilityHandler;
 
     private NoteViewModel viewModel;
 
     TemplatesBottomSheet bottomSheet;
 
-    public interface SheetVisibility {
-        void showSheet();
-    }
 
     public EditNoteFragment() {
         // Required empty public constructor
@@ -91,21 +87,8 @@ public class EditNoteFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         bottomSheet = (TemplatesBottomSheet)
                 getFragmentManager().findFragmentById(R.id.bottom_sheet_fragment);
-        if (sheetVisibilityHandler != null) sheetVisibilityHandler.showSheet();
     }
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof SheetVisibility) sheetVisibilityHandler = (SheetVisibility) context;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        sheetVisibilityHandler = null;
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

@@ -64,8 +64,8 @@ public class TemplatesBottomSheet extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         behavior = BottomSheetBehavior.from(getActivity().findViewById(R.id.bottom_sheet_fragment));
-        hide();
         setup();
+        hide();
     }
 
     @Override
@@ -81,7 +81,6 @@ public class TemplatesBottomSheet extends Fragment {
     }
 
     private void setup() {
-        behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         NoteViewModel connectedObs = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
         List<Fragment> sheets = new ArrayList<>();
         ListSheet listSheet = ListSheet.newInstance();
@@ -95,7 +94,6 @@ public class TemplatesBottomSheet extends Fragment {
 
         SheetsAdapter adapter = new SheetsAdapter(getChildFragmentManager(), sheets);
         sheetsPager.setAdapter(adapter);
-        sheetsPager.setOffscreenPageLimit(0);
         connectedObs.getConnectionStatus().observe(this,
                 connected -> imageSheet.connectionState(connected));
 
@@ -137,7 +135,6 @@ public class TemplatesBottomSheet extends Fragment {
     public void setSheetCollapsed() {
         if (behavior == null) return;
         if (behavior.getState() != BottomSheetBehavior.STATE_COLLAPSED) {
-            behavior.setHideable(false);
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
     }

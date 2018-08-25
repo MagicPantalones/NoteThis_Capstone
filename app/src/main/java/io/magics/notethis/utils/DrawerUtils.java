@@ -58,6 +58,8 @@ public class DrawerUtils {
                 .withActionBarDrawerToggle(true)
                 .withActionBarDrawerToggleAnimated(true)
                 .withCloseOnClick(true)
+                .withTranslucentStatusBar(true)
+                .withDisplayBelowStatusBar(true)
                 .withSelectedItem(currentFrag)
                 .addDrawerItems(
                         drawerItemNoteList,

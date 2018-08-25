@@ -90,8 +90,8 @@
     <string name="template_headers_4">  \n#### </string>
     <string name="template_headers_5">  \n##### </string>
     <string name="template_headers_6">  \n###### </string>
-    <string name="template_link">[link-text](URL)</string>
-    <string name="template_image">![alt-text](IMG-URL)</string>
+    <string name="template_link">  \n[link-text](URL)</string>
+    <string name="template_image">  \n![alt-text](IMG-URL)</string>
 
     <string name="sheet_preview_ordered_list">**Ordered List:**  \n  \n1. First line  \n2. Second line  \n3. \u2026</string>
     <string name="sheet_preview_unordered_list">**Unordered List:**  \n  \n* One line  \n* Another line  \n* \u2026</string>

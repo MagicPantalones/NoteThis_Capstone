@@ -54,7 +54,7 @@ import static io.magics.notethis.utils.Utils.DIALOG_UPLOAD;
 public class MainActivity extends AppCompatActivity implements
         NoteListFragment.NoteListFragListener, NoteListFragment.FabListener,
         SubSheetUpload.UploadDialogHandler, TemplatesBottomSheet.SheetCallbacks,
-        EditNoteFragment.SheetVisibility, FragmentHelper.InterfaceListener {
+        FragmentHelper.InterfaceListener {
 
     private static final String TAG = "MainActivity";
 
@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements
         bottomSheet =
                 (TemplatesBottomSheet) fragManager.findFragmentById(R.id.bottom_sheet_fragment);
 
+
         disconnectSnack = Snackbar.make(mainRoot, getString(R.string.disconnect_snack),
                 Snackbar.LENGTH_INDEFINITE);
 
@@ -124,9 +125,15 @@ public class MainActivity extends AppCompatActivity implements
 
             fragHelper.changeFragFromDrawer(fragManager, id);
             return false;
-        }).withSavedInstance(savedInstanceState);
+        });
 
-        navDrawer = drawerBuilder.build();
+        navDrawer = drawerBuilder
+                .withOnDrawerNavigationListener(clickedView -> {
+                    onBackPressed();
+                    return true;
+                })
+                .withSavedInstance(savedInstanceState)
+                .build();
 
         fragHelper = new FragmentHelper(this, navDrawer, actionBar,
                 savedInstanceState, this);
@@ -240,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements
                         R.color.secondaryColor);
             }
         }
-        bottomSheet.hide();
     }
 
     @Override
@@ -248,14 +254,12 @@ public class MainActivity extends AppCompatActivity implements
         Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
         if (mainFab != null) {
             mainFab.show();
-            bottomSheet.hide();
         }
     }
 
     @Override
     public void changeFab(int fabType) {
         Utils.setToolbarTitle(this, R.string.app_name, R.color.secondaryColor);
-        bottomSheet.hide();
         if (mainFab == null || uploadFab == null) return;
         if (fabType == FragmentHelper.FAB_NEW_NOTE) {
             if (uploadFab.getVisibility() == View.VISIBLE) {
@@ -292,6 +296,11 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             fragHelper.introToSignInFrag(fragManager);
         }
+    }
+
+    @Override
+    public void hideSheet() {
+        if (bottomSheet != null) bottomSheet.hide();
     }
 
     private void onUploadImagePress() {
@@ -349,10 +358,16 @@ public class MainActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.edit_menu_help:
                 fragHelper.changeFragment(fragManager, FragmentHelper.ID_HELP, false);
-                break;
+                return true;
             case R.id.edit_menu_preview:
                 fragHelper.changeFragment(fragManager, FragmentHelper.ID_PREVIEW, false);
-                break;
+                return true;
+            case android.R.id.home:
+                if (navDrawer != null
+                        && !navDrawer.getActionBarDrawerToggle().isDrawerIndicatorEnabled()) {
+                    onBackPressed();
+                }
+                return true;
             default:
                 break;
         }

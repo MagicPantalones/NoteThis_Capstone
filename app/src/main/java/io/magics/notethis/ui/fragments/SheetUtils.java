@@ -85,6 +85,7 @@ public class SheetUtils {
         CoordinatorLayout.Behavior behavior = lp.getBehavior();
         if(behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(behaviorCb);
+            ((BottomSheetBehavior) behavior).setSkipCollapsed(true);
             dialog.setOnShowListener(dialog1 -> {
                 ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
             });
