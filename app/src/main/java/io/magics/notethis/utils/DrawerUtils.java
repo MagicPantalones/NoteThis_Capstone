@@ -59,6 +59,7 @@ public class DrawerUtils {
                 .withActionBarDrawerToggleAnimated(true)
                 .withCloseOnClick(true)
                 .withTranslucentStatusBar(true)
+                .withFullscreen(true)
                 .withDisplayBelowStatusBar(true)
                 .withSelectedItem(currentFrag)
                 .addDrawerItems(
