@@ -28,6 +28,7 @@ import io.magics.notethis.ui.fragments.bottomsheet.HeadersSheet;
 import io.magics.notethis.ui.fragments.bottomsheet.ImageSheet;
 import io.magics.notethis.ui.fragments.bottomsheet.LinkSheet;
 import io.magics.notethis.ui.fragments.bottomsheet.ListSheet;
+import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
 
 public class TemplatesBottomSheet extends Fragment {

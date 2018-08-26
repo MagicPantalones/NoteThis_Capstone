@@ -19,6 +19,7 @@
     <string name="edit_menu_save_a11y">Save note</string>
     <string name="edit_menu_preview">Preview</string>
     <string name="edit_menu_help">Help</string>
+    <string name="edit_menu_save_as">Edit title</string>
 
     <string name="imgur_menu_copy">Copy link</string>
 

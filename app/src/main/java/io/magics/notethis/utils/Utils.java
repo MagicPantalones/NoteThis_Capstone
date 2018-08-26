@@ -5,7 +5,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.annotation.IdRes;
+import android.support.annotation.Nullable;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
@@ -38,6 +41,9 @@ public class Utils {
 
     public static final int SDK_V = Build.VERSION.SDK_INT;
 
+    public interface OnKeyboardHiddenListener {
+        void onHidden();
+    }
 
     public static void dispose(Object... objects) {
         for (Object object : objects) {
@@ -125,24 +131,45 @@ public class Utils {
         }
     }
 
-    public static void hideKeyboard(Activity activity) {
+    public static void hideKeyboard(Activity activity, @Nullable OnKeyboardHiddenListener listener) {
         try {
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+            InputMethodManager imm = (InputMethodManager)
+                    activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            View view = activity.getCurrentFocus();
+            if (view == null) {
+                view = new View(activity);
+            }
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (listener != null) {
+                new Handler().postDelayed(listener::onHidden, 50);
+            }
         } catch (Exception e) {
             Log.e(TAG, "hideKeyboard: ", e);
         }
     }
 
-    public static void hideKeyboard(Context context, View view) {
+    public static void hideKeyboard(Activity activity) {
+        hideKeyboard(activity, (OnKeyboardHiddenListener) null);
+    }
+
+
+    public static void hideKeyboard(Context context, View view,
+                                    @Nullable OnKeyboardHiddenListener listener) {
         try {
             InputMethodManager imm = (InputMethodManager) context.getSystemService(
                     Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            view.clearFocus();
+            if (listener != null) {
+                new Handler().postDelayed(listener::onHidden, 50);
+            }
         } catch (Exception e) {
             Log.e(TAG, "hideKeyboard with View: ", e);
         }
+    }
+
+    public static void hideKeyboard(Context context, View view) {
+        hideKeyboard(context, view, null);
     }
 
     //Modified method from this Keyboard Util class: https://gist.github.com/marteinn/11156524

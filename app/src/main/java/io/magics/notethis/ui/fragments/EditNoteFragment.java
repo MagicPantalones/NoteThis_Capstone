@@ -125,6 +125,8 @@ public class EditNoteFragment extends Fragment {
             case R.id.edit_menu_close:
                 prepareClose();
                 break;
+            case R.id.edit_menu_save_as:
+                displaySaveDialog();
             default:
                 //MainActivity handles the other menu actions.
         }
@@ -150,8 +152,7 @@ public class EditNoteFragment extends Fragment {
         if (action == ACTION_SAVE && hasUnsavedChanges()) {
             String title = Utils.getToolbarTitle(getContext());
             if (title.equals(NoteViewModel.NEW_NOTE_TITLE)) {
-                SaveDialog.newInstance(ACTION_SAVE).show(getFragmentManager(), Utils.DIALOG_SAVE);
-                editNoteView.clearFocus();
+                displaySaveDialog();
             } else {
                 viewModel.saveChanges(title, title);
             }
@@ -169,6 +170,13 @@ public class EditNoteFragment extends Fragment {
         } else {
             Utils.backPressed(getContext());
         }
+    }
+
+    private void displaySaveDialog() {
+        if (getFragmentManager() == null) return;
+        SaveDialog.newInstance(ACTION_SAVE).show(getFragmentManager(), Utils.DIALOG_SAVE);
+        editNoteView.clearFocus();
+        Utils.hideKeyboard(getContext(), editNoteView);
     }
 
 }
