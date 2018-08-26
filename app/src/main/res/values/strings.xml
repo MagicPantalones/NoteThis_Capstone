@@ -3,7 +3,6 @@
     <string name="app_name">NoteThis</string>
 
     <string name="logo_a11y">Logo for NoteThis</string>
-    <string name="nav_drawer_a11y">Navigation Drawer</string>
     <string name="view_note_a11y">View Note</string>
     <string name="imgur_menu_a11y">Imgur Menu</string>
     <string name="dialog_photo_a11y">Image to be uploaded</string>
@@ -13,7 +12,6 @@
     <string name="sheet_image_a11y">Image insert options</string>
 
     <string name="new_note_btn">Create A New Note!</string>
-    <string name="new_note_title">New Note</string>
     <string name="new_img_upload">Upload A New Image!</string>
 
     <string name="edit_menu_save">Save</string>
@@ -22,16 +20,11 @@
     <string name="edit_menu_help">Help</string>
     <string name="edit_menu_save_as">Edit title</string>
 
-    <string name="imgur_menu_copy">Copy link</string>
-
     <string name="menu_delete">DELETE</string>
-    <string name="menu_search">Search</string>
-    <string name="menu_search_a11y">Search for text in note</string>
     <string name="menu_close">Close</string>
 
     <string name="unsaved_close_text">Do you want to save changes?</string>
     <string name="unsaved_close_title">Unsaved Changes!</string>
-    <string name="dialog_save_note_title">Save note?</string>
     <string name="dialog_note_title_heading">Note title</string>
 
     <string name="save">Save</string>
@@ -46,39 +39,14 @@
 
     <string name="menu_popup_delete">Delete</string>
     <string name="menu_popup_copy">Copy link</string>
-    <string name="menu_popup_insert">Insert Image</string>
-
-    <string name="menu_templates_list_num">Numbered</string>
-    <string name="menu_templates_list_bullet">Bulleted</string>
-    <string name="menu_templates_headers">Headers</string>
-    <string name="menu_templates_link">Link</string>
-    <string name="menu_templates_image">Image</string>
-
-    <string name="sub_menu_temp_header1">Largest</string>
-    <string name="sub_menu_temp_header2">Large</string>
-    <string name="sub_menu_temp_header3">Medium</string>
-    <string name="sub_menu_temp_header4">Small</string>
-    <string name="sub_menu_temp_header5">Smallest</string>
-    <string name="sub_menu_temp_header6">Smallest grey</string>
-
-    <string name="sub_menu_temp_pick_img">Pick image</string>
-    <string name="sub_menu_temp_paste_img_link">Paste link</string>
 
     <string name="logo_transition_name">note_this_logo</string>
     <string name="title_transition_name">note_this_title</string>
 
-    <string name="open_drawer">open_drawer</string>
-    <string name="close_drawer">close_drawer</string>
-
-    <string name="imgur_snack">No network connection! Please try again later</string>
     <string name="disconnect_snack">Disconnected. Notes will be uploaded when network connection is restored.</string>
     <string name="hide_snack">HIDE</string>
 
     <string name="dialog_upload">Upload</string>
-    <string name="dialog_et_hint">Title</string>
-
-    <string name="dialog_url_text_hint">Link title</string>
-    <string name="dialog_url_hint">Url</string>
 
     <string name="sheet_pick_image">Chose an uploaded image</string>
     <string name="sheet_upload_image">Upload an image</string>
@@ -103,14 +71,11 @@
     <string name="sheet_preview_h4">#### Headline</string>
     <string name="sheet_preview_h5">##### Headline</string>
     <string name="sheet_preview_h6">###### Headline</string>
-    <string name="sheet_preview_url_title_hint">Url text</string>
-    <string name="sheet_preview_url_hint">Url</string>
     <string name="sheet_preview_img_title">Image Title</string>
     <string name="sheet_preview_img_alt">Alt-text</string>
     <string name="sheet_preview_img_url">Image Url</string>
 
     <string name="appwidget_text">Open App</string>
-    <string name="add_widget">Add widget</string>
 
     <string name="upload_disclaimer">DISCLAIMER: Images are uploaded anonymously to Imgur. This means the picture is public, can be seen by anyone, and cannot be deleted. Do not upload any personal data or other sensitive information.</string>
 </resources>

@@ -1,16 +1,11 @@
 package io.magics.notethis.ui.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.transition.Fade;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +15,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
@@ -36,8 +29,6 @@ import io.magics.notethis.viewmodels.NoteViewModel;
 import static io.magics.notethis.utils.FragmentHelper.getTransition;
 
 public class SignInFragment extends Fragment {
-
-    private static final String TAG = "SignInFragment";
 
     private static final int RC_SIGN_IN = 557;
 
@@ -62,7 +53,7 @@ public class SignInFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_sign_in, container, false);
         unbinder = ButterKnife.bind(this, root);
@@ -92,11 +83,6 @@ public class SignInFragment extends Fragment {
                 Toast.makeText(getContext(), "Sign in failed!", Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
     }
 
     @Override

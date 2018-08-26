@@ -1,17 +1,9 @@
 package io.magics.notethis.ui.fragments.bottomsheet;
 
 import android.app.Dialog;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -46,9 +38,9 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
     @BindView(R.id.sub_upload_progress)
     ProgressBar uploadProgress;
 
-    ImgurViewModel model;
+    private ImgurViewModel model;
 
-    SheetCallbacks callbacks;
+    private SheetCallbacks callbacks;
 
     public SubSheetUpload() {
         //Required

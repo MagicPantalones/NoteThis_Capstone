@@ -22,7 +22,6 @@ import java.util.Map;
 import io.magics.notethis.R;
 import io.magics.notethis.utils.models.Image;
 import io.magics.notethis.utils.models.Note;
-import io.magics.notethis.utils.models.NoteTitle;
 
 public class FirebaseUtils {
 
@@ -35,7 +34,7 @@ public class FirebaseUtils {
 
     public interface FirebaseAuthCallback{
         void onSuccess(FirebaseUser user);
-        void onFailed(Throwable e);
+        void onFailed();
     }
 
     public interface FirebaseNoteCallback {
@@ -48,7 +47,7 @@ public class FirebaseUtils {
 
     public static void getUserFromAuth(FirebaseAuth auth, FirebaseAuthCallback callback) {
         if (auth.getCurrentUser() == null) {
-            callback.onFailed(null);
+            callback.onFailed();
         } else {
             callback.onSuccess(auth.getCurrentUser());
         }

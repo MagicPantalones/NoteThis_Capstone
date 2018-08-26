@@ -20,9 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,9 +47,9 @@ public class ImgurListFragment extends Fragment {
     @BindView(R.id.no_images_layout)
     ConstraintLayout noImgLayout;
 
-    ImgurViewModel model;
+    private ImgurViewModel model;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     public ImgurListFragment() {
         // Required empty public constructor
@@ -69,7 +67,7 @@ public class ImgurListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_imgur_list, container, false);
         unbinder = ButterKnife.bind(this, root);
@@ -205,9 +203,9 @@ public class ImgurListFragment extends Fragment {
 
     class ImgurViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView imgurView;
-        TextView titleView;
-        ImageView menuButton;
+        final ImageView imgurView;
+        final TextView titleView;
+        final ImageView menuButton;
 
         ImgurViewHolder(View itemView) {
             super(itemView);
@@ -221,7 +219,7 @@ public class ImgurListFragment extends Fragment {
     //https://stackoverflow.com/questions/28531996/android-recyclerview-gridlayoutmanager-column-spacing
     private class ItemSpacingDecoration extends RecyclerView.ItemDecoration {
 
-        private int spacing;
+        private final int spacing;
 
         ItemSpacingDecoration(int spacing) {
             this.spacing = spacing;

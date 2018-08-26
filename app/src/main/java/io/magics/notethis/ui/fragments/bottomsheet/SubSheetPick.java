@@ -4,15 +4,11 @@ import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
@@ -29,14 +25,13 @@ import io.magics.notethis.utils.models.Image;
 import io.magics.notethis.viewmodels.ImgurViewModel;
 
 import static io.magics.notethis.ui.fragments.SheetUtils.getImgTemplate;
-import static io.magics.notethis.ui.fragments.SheetUtils.getUrlTemplate;
 
 public class SubSheetPick extends BottomSheetDialogFragment {
 
     @BindView(R.id.sub_pick_recycler)
     RecyclerView recyclerView;
 
-    SheetCallbacks callbacks;
+    private SheetCallbacks callbacks;
 
     public SubSheetPick() {
         //Required
@@ -127,7 +122,7 @@ public class SubSheetPick extends BottomSheetDialogFragment {
         @BindView(R.id.image_picker_image)
         ImageView image;
 
-        public ImagePickerViewHolder(View itemView) {
+        ImagePickerViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

@@ -1,10 +1,12 @@
 package io.magics.notethis.data.network;
 
+@SuppressWarnings("unused")
 public class ImageResponse {
     public boolean success;
     public int status;
     public UploadedImage data;
 
+    @SuppressWarnings("unused")
     public static class UploadedImage {
         public String id;
         public String title;

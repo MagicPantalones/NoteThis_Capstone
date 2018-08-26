@@ -1,8 +1,6 @@
 package io.magics.notethis.utils.models;
 
 import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
 
 public class NoteTitle {
 
@@ -15,12 +13,8 @@ public class NoteTitle {
     @ColumnInfo(name = "preview")
     private String preview;
 
-    public NoteTitle() {}
-
-    @Ignore
-    public NoteTitle(String title, String preview) {
-        this.title = title;
-        this.preview = preview;
+    public NoteTitle() {
+        //Required public constructor
     }
 
     public int getId() { return id; }

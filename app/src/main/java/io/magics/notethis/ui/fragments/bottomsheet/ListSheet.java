@@ -15,7 +15,6 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.magics.notethis.R;
-import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
 import io.magics.notethis.ui.fragments.TemplatesBottomSheet.SheetCallbacks;
 import ru.noties.markwon.Markwon;
 
@@ -27,7 +26,7 @@ public class ListSheet extends Fragment {
     @BindView(R.id.sheet_list_unordered)
     TextView unorderedListView;
 
-    SheetCallbacks callbacks;
+    private SheetCallbacks callbacks;
 
     public ListSheet() {
         // Required empty public constructor
@@ -38,7 +37,7 @@ public class ListSheet extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.sheet_list, container, false);
         ButterKnife.bind(this, root);

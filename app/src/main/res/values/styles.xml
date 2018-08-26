@@ -13,10 +13,6 @@
         <item name="android:background">@color/primaryColor</item>
     </style>
 
-    <style name="FragmentMainBackground">
-        <item name="android:background">@color/backgroundColorMain</item>
-    </style>
-    
     <style name="logoText">
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:text">@string/app_name</item>
@@ -50,16 +46,6 @@
     <style name="text.darkTextNormal">
         <item name="android:textColor">@color/secondaryTextColor</item>
         <item name="android:textSize">@dimen/text_size_body</item>
-    </style>
-    
-    <style name="text.lightTextHeader">
-        <item name="android:textColor">@color/primaryTextColor</item>
-        <item name="android:textSize">@dimen/text_size_header</item>
-    </style>
-    
-    <style name="text.darkTextHeader">
-        <item name="android:textColor">@color/secondaryTextColor</item>
-        <item name="android:textSize">@dimen/text_size_header</item>
     </style>
 
     <style name="text.sheetListText">

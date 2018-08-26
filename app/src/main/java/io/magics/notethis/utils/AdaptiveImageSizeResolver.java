@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import ru.noties.markwon.renderer.ImageSize;
 import ru.noties.markwon.renderer.ImageSizeResolverDef;
 
-public class AdaptiveImageSizeResolver extends ImageSizeResolverDef {
+class AdaptiveImageSizeResolver extends ImageSizeResolverDef {
 
     public AdaptiveImageSizeResolver() {
         super();

@@ -14,10 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 import io.magics.notethis.R;
-import io.magics.notethis.ui.fragments.SheetUtils;
 import io.magics.notethis.ui.fragments.TemplatesBottomSheet.SheetCallbacks;
 
 import static io.magics.notethis.ui.fragments.SheetUtils.getUrlTemplate;
@@ -36,7 +34,7 @@ public class LinkSheet extends Fragment {
     @BindView(R.id.sheet_url_cxl_btn)
     Button cxlBtn;
 
-    SheetCallbacks callbacks;
+    private SheetCallbacks callbacks;
 
     public LinkSheet() {
         // Required empty public constructor
@@ -48,7 +46,7 @@ public class LinkSheet extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.sheet_link, container, false);
         ButterKnife.bind(this, root);

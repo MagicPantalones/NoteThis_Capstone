@@ -17,7 +17,7 @@ public abstract class AppDatabase extends RoomDatabase{
 
     private static AppDatabase instance;
 
-    public static final String DB_NAME = "note_this";
+    private static final String DB_NAME = "note_this";
 
     public abstract NoteDao userNoteModel();
     public abstract ImageDao userImageModel();
@@ -32,10 +32,6 @@ public abstract class AppDatabase extends RoomDatabase{
         }
 
         return instance;
-    }
-
-    public static void disposeInstance(){
-        instance = null;
     }
 
     private static final Migration MIGRATION_1_2 = new Migration(1, 2) {

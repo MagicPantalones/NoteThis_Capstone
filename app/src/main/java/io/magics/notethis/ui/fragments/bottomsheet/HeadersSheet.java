@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.util.List;
@@ -18,7 +17,6 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.fragments.SheetUtils;
-import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
 import io.magics.notethis.ui.fragments.TemplatesBottomSheet.SheetCallbacks;
 import ru.noties.markwon.Markwon;
 
@@ -30,7 +28,7 @@ public class HeadersSheet extends Fragment {
     @BindViews({R.id.h1, R.id.h2, R.id.h3, R.id.h4, R.id.h5, R.id.h6})
     List<TextView> headers;
 
-    SheetCallbacks callbacks;
+    private SheetCallbacks callbacks;
 
     public HeadersSheet() {
         // Required empty public constructor
@@ -42,7 +40,7 @@ public class HeadersSheet extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.sheet_headers, container, false);
         ButterKnife.bind(this, root);

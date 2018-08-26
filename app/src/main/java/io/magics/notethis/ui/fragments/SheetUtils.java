@@ -5,12 +5,9 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 
@@ -84,9 +81,8 @@ public class SheetUtils {
         if(behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(behaviorCb);
             ((BottomSheetBehavior) behavior).setSkipCollapsed(true);
-            dialog.setOnShowListener(dialog1 -> {
-                ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
-            });
+            dialog.setOnShowListener(dialog1 ->
+                    ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED));
         }
 
     }

@@ -1,7 +1,6 @@
 package io.magics.notethis.ui.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,8 +19,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
-import io.magics.notethis.ui.MainActivity;
-import io.magics.notethis.ui.NoteWidget;
 import io.magics.notethis.ui.dialogs.CloseDialog;
 import io.magics.notethis.ui.dialogs.SaveDialog;
 import io.magics.notethis.utils.Utils;
@@ -34,20 +31,15 @@ public class EditNoteFragment extends Fragment {
 
     public static final int ACTION_SAVE = 765;
     public static final int ACTION_CLOSE = 592;
-    public static final String TAG_BOT_SHEET = "bottom_sheet";
-
-    private static final String STATE_TEXT = "state_text";
-    private static final String STATE_TITLE = "state_title";
-    private static final String STATE_SELECTION = "state_selection";
 
     @BindView(R.id.edit_note_view)
     EditText editNoteView;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     private NoteViewModel viewModel;
 
-    TemplatesBottomSheet bottomSheet;
+    private TemplatesBottomSheet bottomSheet;
 
 
     public EditNoteFragment() {
@@ -100,14 +92,9 @@ public class EditNoteFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        hasUnsavedChanges();
-        outState.putString(STATE_TEXT, editNoteView.getText().toString());
-        outState.putString(STATE_TITLE, editNoteView.getText().toString());
-        if (editNoteView.hasSelection()) {
-            outState.putInt(STATE_SELECTION, editNoteView.getSelectionEnd());
-        }
+    public void onDetach() {
+        super.onDetach();
+        Utils.dispose(unbinder);
     }
 
     @Override

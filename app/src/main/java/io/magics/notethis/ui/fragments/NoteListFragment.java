@@ -12,13 +12,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.transition.Slide;
-import android.transition.Transition;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,6 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.NoteWidget;
+import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
 import io.magics.notethis.utils.models.NoteTitle;
 
@@ -38,7 +36,6 @@ import static io.magics.notethis.utils.FragmentHelper.getTransition;
 
 public class NoteListFragment extends Fragment {
 
-    private static final String TAG = "NoteListFragment";
 
     public static final int SCROLL_UP = 145;
     public static final int SCROLL_DOWN = 261;
@@ -51,7 +48,7 @@ public class NoteListFragment extends Fragment {
     @BindView(R.id.note_list_recycler)
     RecyclerView noteListRecycler;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     private NoteListFragListener listener;
 
@@ -148,10 +145,11 @@ public class NoteListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        Utils.dispose(unbinder);
         listener = null;
     }
 
-    void switchLayouts(List<NoteTitle> noteTitles) {
+    private void switchLayouts(List<NoteTitle> noteTitles) {
         startPostponedEnterTransition();
         noteListRecycler.setVisibility(noteTitles.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         noNotesLayout.setVisibility(noteTitles.isEmpty() ? View.VISIBLE : View.INVISIBLE);
@@ -166,7 +164,7 @@ public class NoteListFragment extends Fragment {
         void onNoteItemClicked(int id, int type);
     }
 
-    public interface NoteItemTouchListener {
+    interface NoteItemTouchListener {
         void onSwiped(NoteTitleViewHolder holder, int direction, int pos);
     }
 
@@ -254,6 +252,7 @@ public class NoteListFragment extends Fragment {
     class NoteListItemTouchHelper extends ItemTouchHelper.SimpleCallback {
         private NoteItemTouchListener listener;
 
+        @SuppressWarnings("SameParameterValue")
         NoteListItemTouchHelper(int dragDirs, int swipeDirs,
                                 NoteItemTouchListener listener) {
             super(dragDirs, swipeDirs);

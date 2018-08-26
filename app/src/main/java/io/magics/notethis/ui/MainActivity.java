@@ -48,8 +48,6 @@ public class MainActivity extends AppCompatActivity implements
         NoteListFragment.NoteListFragListener, TemplatesBottomSheet.SheetCallbacks,
         FragmentHelper.InterfaceListener {
 
-    private static final String TAG = "MainActivity";
-
     private static final int READ_WRITE_PERMISSION = 7682;
 
     private static final String SHOW_INTRO_STATE = "show_intro";
@@ -60,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements
     private ImgurViewModel imgurViewModel;
 
     private Snackbar disconnectSnack;
-    Drawer navDrawer;
+    private Drawer navDrawer;
 
     private Uri fileUri;
     private boolean connected = true;
@@ -79,11 +77,11 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.appbar_layout)
     AppBarLayout appBarLayout;
 
-    TemplatesBottomSheet bottomSheet;
+    private TemplatesBottomSheet bottomSheet;
 
-    FragmentHelper fragHelper;
+    private FragmentHelper fragHelper;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

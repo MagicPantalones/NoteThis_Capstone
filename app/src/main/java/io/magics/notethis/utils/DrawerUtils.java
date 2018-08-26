@@ -12,10 +12,10 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import io.magics.notethis.R;
 public class DrawerUtils {
 
-    public static final int ITEM_NOTE_LIST = 111;
-    public static final int ITEM_IMGUR_LIST = 331;
-    public static final int ITEM_HELP_SCREEN = 551;
-    public static final int ITEM_LOG_OUT = 4;
+    private static final int ITEM_NOTE_LIST = 111;
+    private static final int ITEM_IMGUR_LIST = 331;
+    private static final int ITEM_HELP_SCREEN = 551;
+    private static final int ITEM_LOG_OUT = 4;
 
     public static DrawerBuilder initDrawer(Activity activity, Toolbar toolbar, int currentFrag) {
 
@@ -77,4 +77,5 @@ public class DrawerUtils {
         TextView emailField = header.findViewById(R.id.nav_user_name);
         emailField.setText(userEmail);
     }
+    private DrawerUtils() {}
 }

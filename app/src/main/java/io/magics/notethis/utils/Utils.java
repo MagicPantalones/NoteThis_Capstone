@@ -3,28 +3,17 @@ package io.magics.notethis.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
-import android.os.ResultReceiver;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.internal.BottomNavigationMenuView;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
-import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-
-import java.lang.reflect.Field;
 
 import butterknife.Unbinder;
 import io.magics.notethis.R;
@@ -41,7 +30,7 @@ public class Utils {
 
     public static final int SDK_V = Build.VERSION.SDK_INT;
 
-    public interface OnKeyboardHiddenListener {
+    interface OnKeyboardHiddenListener {
         void onHidden();
     }
 
@@ -170,31 +159,6 @@ public class Utils {
 
     public static void hideKeyboard(Context context, View view) {
         hideKeyboard(context, view, null);
-    }
-
-    //Modified method from this Keyboard Util class: https://gist.github.com/marteinn/11156524
-    public static void showDelayedKeyboard (final Context context, final View view) {
-        if (context == null) return;
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Log.w(TAG, "doInBackground: ", e);
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-                InputMethodManager imm =
-                        (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-            }
-
-        }.execute();
     }
 
 

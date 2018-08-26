@@ -3,7 +3,6 @@ package io.magics.notethis.ui;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,18 +11,15 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import io.magics.notethis.R;
-import io.magics.notethis.utils.MarkdownUtils;
-import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.utils.models.NoteTitle;
-import ru.noties.markwon.Markwon;
 
 /**
  * Implementation of App Widget functionality.
  */
 public class NoteWidget extends AppWidgetProvider {
     public static final String EXTRA_NOTE_ID = "note_id";
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId, NoteTitle noteTitle) {
+    private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                        int appWidgetId, NoteTitle noteTitle) {
         Intent appIntent = new Intent(context, MainActivity.class);
         Intent noteIntent = new Intent(context, MainActivity.class);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.note_widget);

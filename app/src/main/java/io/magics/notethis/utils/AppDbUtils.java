@@ -1,7 +1,6 @@
 package io.magics.notethis.utils;
 
 import android.annotation.SuppressLint;
-import android.arch.persistence.room.Room;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -24,10 +23,6 @@ public class AppDbUtils {
 
     public interface RoomCountCallback {
         void onComplete(int rows);
-    }
-
-    public interface ImageCallback {
-        void onImagesReturned(List<Image> images);
     }
 
     public static void fetchNote(AppDatabase db, int id, RoomNoteCallback<Note> callback) {
@@ -144,12 +139,9 @@ public class AppDbUtils {
 
     private AppDbUtils() {}
 
-    public static class RoomInsertException extends RuntimeException {
+    static class RoomInsertException extends RuntimeException {
 
-        public RoomInsertException() {
-            super();
-        }
-
+        @SuppressWarnings("SameParameterValue")
         RoomInsertException(String message) {
             super(message);
         }

@@ -1,6 +1,5 @@
 package io.magics.notethis.ui.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.bumptech.glide.util.Util;
 
 import java.util.List;
 
@@ -63,7 +60,7 @@ public class HelpFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_help, container, false);
         unbinder = ButterKnife.bind(this, root);
@@ -98,7 +95,7 @@ public class HelpFragment extends Fragment {
 
     class HelpFragmentAdapter extends RecyclerView.Adapter<HelpViewHolder> {
 
-        private List<String> paraGraphs;
+        private final List<String> paraGraphs;
         private final SpannableConfiguration configuration;
 
         HelpFragmentAdapter(List<String> mdParagraphs) {

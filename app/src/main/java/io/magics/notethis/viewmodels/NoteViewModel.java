@@ -146,7 +146,7 @@ public class NoteViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onFailed(Throwable e) {
+            public void onFailed() {
                 signedIn.setValue(false);
             }
         });

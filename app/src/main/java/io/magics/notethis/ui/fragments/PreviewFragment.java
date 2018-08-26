@@ -30,8 +30,8 @@ public class PreviewFragment extends Fragment {
     @BindView(R.id.markdown_text)
     TextView markdownTextView;
 
-    Unbinder unbinder;
-    NoteViewModel model;
+    private Unbinder unbinder;
+    private NoteViewModel model;
 
 
     public PreviewFragment() {
@@ -50,7 +50,7 @@ public class PreviewFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_preview, container, false);
@@ -66,7 +66,7 @@ public class PreviewFragment extends Fragment {
 
 
         model.getNote().observe(getActivity(), note -> {
-            if (getContext() != null) {
+            if (getContext() != null && note != null) {
                 Utils.setToolbarTitle(getContext(), note.getTitle(), R.color.primaryTextColor);
 
                 final SpannableConfiguration config = MarkdownUtils.getMarkdownConfig(getContext());

@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +26,6 @@ import io.magics.notethis.ui.fragments.bottomsheet.HeadersSheet;
 import io.magics.notethis.ui.fragments.bottomsheet.ImageSheet;
 import io.magics.notethis.ui.fragments.bottomsheet.LinkSheet;
 import io.magics.notethis.ui.fragments.bottomsheet.ListSheet;
-import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.NoteViewModel;
 
 public class TemplatesBottomSheet extends Fragment {
@@ -130,7 +127,7 @@ public class TemplatesBottomSheet extends Fragment {
         setSheetExpanded();
     }
 
-    public void setSheetExpanded() {
+    private void setSheetExpanded() {
         if (behavior == null) return;
         if (behavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -173,9 +170,9 @@ public class TemplatesBottomSheet extends Fragment {
 
     private class SheetsAdapter extends FragmentPagerAdapter {
 
-        List<Fragment> sheets;
+        final List<Fragment> sheets;
 
-        public SheetsAdapter(FragmentManager fm, List<Fragment> sheets) {
+        SheetsAdapter(FragmentManager fm, List<Fragment> sheets) {
             super(fm);
             this.sheets = sheets;
         }

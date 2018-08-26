@@ -9,20 +9,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.transition.Slide;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.mikepenz.materialdrawer.Drawer;
 
-import java.util.List;
-
 import io.magics.notethis.R;
-import io.magics.notethis.ui.MainActivity;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.HelpFragment;
 import io.magics.notethis.ui.fragments.ImgurListFragment;
@@ -30,7 +25,6 @@ import io.magics.notethis.ui.fragments.IntroFragment;
 import io.magics.notethis.ui.fragments.NoteListFragment;
 import io.magics.notethis.ui.fragments.PreviewFragment;
 import io.magics.notethis.ui.fragments.SignInFragment;
-import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
 
 public class FragmentHelper {
 
@@ -68,7 +62,7 @@ public class FragmentHelper {
     private final Activity activity;
     private final Drawer drawer;
     private final ActionBar actionBar;
-    private InterfaceListener listener;
+    private final InterfaceListener listener;
     private boolean widgetMode;
 
     public interface InterfaceListener {

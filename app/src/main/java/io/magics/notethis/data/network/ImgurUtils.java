@@ -2,20 +2,14 @@ package io.magics.notethis.data.network;
 
 import android.annotation.SuppressLint;
 
-import com.google.firebase.database.collection.ImmutableSortedMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.haha.guava.collect.Collections2;
-import com.squareup.haha.guava.collect.Maps;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import io.magics.notethis.BuildConfig;
-import io.magics.notethis.utils.Utils;
 import io.magics.notethis.utils.models.Image;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -25,7 +19,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;

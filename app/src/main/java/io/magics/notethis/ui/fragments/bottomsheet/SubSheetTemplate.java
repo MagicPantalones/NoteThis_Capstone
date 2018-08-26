@@ -1,14 +1,8 @@
 package io.magics.notethis.ui.fragments.bottomsheet;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -31,7 +25,7 @@ public class SubSheetTemplate extends BottomSheetDialogFragment {
     @BindView(R.id.sub_template_cxl_btn)
     Button cxlBtn;
 
-    SheetCallbacks callbacks;
+    private SheetCallbacks callbacks;
 
     public SubSheetTemplate() {
         //Required

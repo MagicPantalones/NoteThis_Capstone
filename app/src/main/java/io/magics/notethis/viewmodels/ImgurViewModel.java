@@ -11,16 +11,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.magics.notethis.data.db.AppDatabase;
 import io.magics.notethis.data.network.FirebaseUtils;
 import io.magics.notethis.data.network.ImgurUtils;
 import io.magics.notethis.utils.AppDbUtils;
-import io.magics.notethis.utils.RoomNoteCallback;
 import io.magics.notethis.utils.models.Image;
-import io.magics.notethis.utils.models.NoteTitle;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

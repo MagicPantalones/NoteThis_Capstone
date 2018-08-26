@@ -13,7 +13,7 @@ import android.os.Build;
 import io.magics.notethis.utils.Utils;
 
 // Based on: https://android.jlelse.eu/connectivitylivedata-6861b9591bcc
-public class ConnectionLiveData extends LiveData<Boolean> {
+class ConnectionLiveData extends LiveData<Boolean> {
 
     private ConnectivityManager connectivityManager;
 

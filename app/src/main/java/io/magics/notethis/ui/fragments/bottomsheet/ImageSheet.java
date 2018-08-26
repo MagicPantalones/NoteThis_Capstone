@@ -19,7 +19,6 @@ import android.widget.TextView;
 import java.io.File;
 
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
@@ -56,7 +55,7 @@ public class ImageSheet extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.sheet_image, container, false);
         ButterKnife.bind(this, root);

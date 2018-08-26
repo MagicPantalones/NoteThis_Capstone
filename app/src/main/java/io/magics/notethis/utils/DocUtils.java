@@ -22,6 +22,7 @@ public class DocUtils {
     public static final int RC_FRAG_PICK_IMG = 8567;
 
 
+    @SuppressWarnings("IfCanBeSwitch")
     public static String getPath(Context context, Uri uri) {
         if (DocumentsContract.isDocumentUri(context, uri)) {
 
@@ -62,8 +63,8 @@ public class DocUtils {
         return null;
     }
 
-    public static String getDataColumn(Context context, Uri contentUri, String selection,
-                                       String[] selectionArgs) {
+    private static String getDataColumn(Context context, Uri contentUri, String selection,
+                                        String[] selectionArgs) {
         String[] projection = {"_data"};
         Cursor cursor = null;
 

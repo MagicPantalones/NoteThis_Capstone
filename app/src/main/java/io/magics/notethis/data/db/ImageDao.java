@@ -10,7 +10,6 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 import io.magics.notethis.utils.models.Image;
-import io.reactivex.Flowable;
 
 @Dao
 public interface ImageDao {

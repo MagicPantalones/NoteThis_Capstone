@@ -1,5 +1,4 @@
-<android.support.constraint.ConstraintLayout android:id="@+id/link_sheet"
-    android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout android:layout_width="match_parent"
     android:layout_height="@dimen/bottom_sheet_size"
     android:paddingTop="@dimen/margin_24dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
