@@ -23,4 +23,5 @@
     <dimen name="bottom_sheet_size">216dp</dimen>
     <dimen name="sheet_header_height">40dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
+    <dimen name="empty_list_bottom_margin_hack">80dp</dimen>
 </resources>
