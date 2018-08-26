@@ -49,6 +49,7 @@ import io.magics.notethis.utils.DocUtils;
 import io.magics.notethis.utils.DrawerUtils;
 import io.magics.notethis.utils.FragmentHelper;
 import io.magics.notethis.utils.Utils;
+import io.magics.notethis.utils.models.NoteTitle;
 import io.magics.notethis.viewmodels.ImgurViewModel;
 import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = "MainActivity";
 
     private static final int READ_WRITE_PERMISSION = 7682;
+
+    private static final String SHOW_INTRO_STATE = "show_intro";
 
     private boolean showIntro = true;
     private FragmentManager fragManager;
@@ -124,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements
             if (id == FragmentHelper.ID_LOG_OUT) {
                 navDrawer.deselect();
                 noteViewModel.signOut();
+                NoteWidget.updateWidget(this, new NoteTitle());
             }
 
             fragHelper.changeFragFromDrawer(fragManager, id);
@@ -143,11 +147,15 @@ public class MainActivity extends AppCompatActivity implements
         fragHelper = new FragmentHelper(this, navDrawer, actionBar,
                 savedInstanceState, this);
 
+        if (savedInstanceState != null) {
+            showIntro = savedInstanceState.getBoolean(SHOW_INTRO_STATE);
+        }
+
         if (getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1) != -1) {
             int id = getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1);
             noteViewModel.editNote(id);
             fragHelper.changeFragment(fragManager, FragmentHelper.ID_PREVIEW, false);
-        } else if (showIntro) {
+        } if (showIntro) {
             fragHelper.startIntro(fragManager);
         }
 
@@ -206,7 +214,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState = navDrawer.saveInstanceState(outState);
         outState.putIntArray(FragmentHelper.FRAG_HELPER_STATE, fragHelper.saveState());
+        outState.putBoolean(SHOW_INTRO_STATE, showIntro);
     }
 
     @Override

@@ -7,11 +7,6 @@
     android:layout_height="wrap_content"
     android:background="@color/backgroundColorMain"
     app:layout_behavior="@string/bottom_sheet_behavior">
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,11 +18,9 @@
                 android:layout_height="@dimen/sheet_preview_sizes"
                 android:layout_marginStart="@dimen/margin_16dp"
                 android:layout_marginTop="@dimen/margin_24dp"
-                android:layout_marginBottom="@dimen/margin_24dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/dialog_photo_a11y"
                 android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/place_cage" />
@@ -51,8 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/margin_16dp"
+                android:layout_marginTop="@dimen/margin_8dp"
                 android:text="@string/dialog_upload"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sub_upload_img_title" />
 
@@ -65,14 +58,33 @@
                 app:layout_constraintBottom_toTopOf="@+id/sub_upload_ok_btn"
                 app:layout_constraintEnd_toStartOf="@+id/sub_upload_ok_btn"
                 app:layout_constraintTop_toBottomOf="@+id/sub_upload_ok_btn" />
-        </android.support.constraint.ConstraintLayout>
-    </ScrollView>
 
-    <ProgressBar
-        android:id="@+id/sub_upload_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+            <ProgressBar
+                android:id="@+id/sub_upload_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_8dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/sub_upload_preview"
+                app:layout_constraintTop_toBottomOf="@+id/sub_upload_img_title"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/sub_upload_disclaimer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="@dimen/margin_16dp"
+                android:paddingStart="@dimen/margin_16dp"
+                android:paddingEnd="@dimen/margin_16dp"
+                android:text="@string/upload_disclaimer"
+                android:textStyle="bold"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sub_upload_preview" />
+        </android.support.constraint.ConstraintLayout>
 
 </android.support.design.widget.CoordinatorLayout>

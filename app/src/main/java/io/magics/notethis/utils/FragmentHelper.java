@@ -87,8 +87,8 @@ public class FragmentHelper {
         if (savedState != null) {
             int[] restored = savedState.getIntArray(FRAG_HELPER_STATE);
             if (restored != null) {
-                /*previousFragId = restored[0];
-                currentFragId = restored[1]; */
+                previousFragId = restored[0];
+                currentFragId = restored[1];
             }
         }
         init();
