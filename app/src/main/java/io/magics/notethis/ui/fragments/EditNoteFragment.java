@@ -25,6 +25,7 @@ import io.magics.notethis.ui.NoteWidget;
 import io.magics.notethis.ui.dialogs.CloseDialog;
 import io.magics.notethis.ui.dialogs.SaveDialog;
 import io.magics.notethis.utils.Utils;
+import io.magics.notethis.utils.models.Note;
 import io.magics.notethis.viewmodels.NoteViewModel;
 
 import static io.magics.notethis.utils.FragmentHelper.getTransition;
@@ -34,6 +35,10 @@ public class EditNoteFragment extends Fragment {
     public static final int ACTION_SAVE = 765;
     public static final int ACTION_CLOSE = 592;
     public static final String TAG_BOT_SHEET = "bottom_sheet";
+
+    private static final String STATE_TEXT = "state_text";
+    private static final String STATE_TITLE = "state_title";
+    private static final String STATE_SELECTION = "state_selection";
 
     @BindView(R.id.edit_note_view)
     EditText editNoteView;
@@ -68,17 +73,6 @@ public class EditNoteFragment extends Fragment {
         unbinder = ButterKnife.bind(this, root);
         setHasOptionsMenu(true);
         viewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
-        getActivity().getWindow()
-                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-        viewModel.getNote().observe(this, note -> {
-            if (getContext() != null) {
-                Utils.setToolbarTitle(getContext(), note.getTitle(), R.color.primaryTextColor);
-                editNoteView.setText(note.getBody());
-                editNoteView.setSelection(editNoteView.getText().length());
-            }
-        });
-
 
         return root;
     }
@@ -88,8 +82,33 @@ public class EditNoteFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         bottomSheet = (TemplatesBottomSheet)
                 getFragmentManager().findFragmentById(R.id.bottom_sheet_fragment);
+
+        getActivity().getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        viewModel.getNote().observe(this, note -> {
+            if (getContext() != null && note != null) {
+                Utils.setToolbarTitle(getContext(), note.getTitle(), R.color.primaryTextColor);
+                editNoteView.setText(note.getBody());
+                editNoteView.setSelection(editNoteView.getText().length());
+                Note old = new Note(note.getTitle(), note.getBody(), note.getPreview());
+                old.setId(note.getId());
+                viewModel.setOldData(old);
+            }
+        });
+
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        hasUnsavedChanges();
+        outState.putString(STATE_TEXT, editNoteView.getText().toString());
+        outState.putString(STATE_TITLE, editNoteView.getText().toString());
+        if (editNoteView.hasSelection()) {
+            outState.putInt(STATE_SELECTION, editNoteView.getSelectionEnd());
+        }
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -112,7 +131,6 @@ public class EditNoteFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     public boolean hasUnsavedChanges() {

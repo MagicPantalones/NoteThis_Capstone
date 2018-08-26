@@ -7,30 +7,19 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 
-import com.bumptech.glide.util.Util;
-import com.google.firebase.auth.FirebaseUser;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
@@ -41,8 +30,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
-import io.magics.notethis.ui.fragments.ImgurListFragment;
-import io.magics.notethis.ui.fragments.PreviewFragment;
 import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
 import io.magics.notethis.ui.fragments.bottomsheet.SubSheetUpload;
 import io.magics.notethis.utils.DocUtils;
@@ -55,7 +42,6 @@ import io.magics.notethis.viewmodels.NoteViewModel;
 import io.magics.notethis.viewmodels.NoteTitleViewModel;
 import io.magics.notethis.ui.fragments.NoteListFragment;
 
-import static io.magics.notethis.utils.Utils.DIALOG_CLOSE;
 import static io.magics.notethis.utils.Utils.DIALOG_UPLOAD;
 
 public class MainActivity extends AppCompatActivity implements
@@ -145,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         fragHelper = new FragmentHelper(this, navDrawer, actionBar,
-                savedInstanceState, this);
+                savedInstanceState, fragManager, this);
 
         if (savedInstanceState != null) {
             showIntro = savedInstanceState.getBoolean(SHOW_INTRO_STATE);
@@ -153,9 +139,12 @@ public class MainActivity extends AppCompatActivity implements
 
         if (getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1) != -1) {
             int id = getIntent().getIntExtra(NoteWidget.EXTRA_NOTE_ID, -1);
-            noteViewModel.editNote(id);
+            noteViewModel.fetchNote(id);
             fragHelper.changeFragment(fragManager, FragmentHelper.ID_PREVIEW, false);
-        } if (showIntro) {
+            fragHelper.widgetMode(true);
+        }
+
+        if (showIntro) {
             fragHelper.startIntro(fragManager);
         }
 
@@ -200,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (fragHelper.handleBackPressed(fragManager)) {
             appBarLayout.setExpanded(true, true);
+
         } else {
             super.onBackPressed();
         }
@@ -239,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onNoteItemClicked(int id, int action) {
-        noteViewModel.editNote(id);
+        noteViewModel.fetchNote(id);
         if (action == NoteListFragment.ACTION_EDIT) {
             fragHelper.changeFragment(fragManager, FragmentHelper.ID_EDIT_NOTE, false);
         } else {
@@ -305,6 +295,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onIntroDone() {
+        showIntro = false;
         if (userSignedIn) {
             if (fragHelper.getCurrentFragId() == FragmentHelper.ID_PREVIEW) return;
             fragHelper.introToListFrag(fragManager);

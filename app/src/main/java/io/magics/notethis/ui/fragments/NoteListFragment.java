@@ -205,7 +205,9 @@ public class NoteListFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull NoteTitleViewHolder holder, int position) {
             NoteTitle noteTitle = noteTitles.get(position);
+            holder.noteTitle.setSingleLine(true);
             holder.noteTitle.setText(noteTitle.getTitle());
+            holder.noteSubtitle.setSingleLine(true);
             holder.noteSubtitle.setText(noteTitle.getPreview());
             holder.titleWrapper.setOnClickListener(v ->
                     listener.onNoteItemClicked(noteTitle.getId(), ACTION_EDIT));

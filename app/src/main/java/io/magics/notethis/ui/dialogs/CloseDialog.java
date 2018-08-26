@@ -48,6 +48,7 @@ public class CloseDialog extends DialogFragment{
         });
         dialogBuilder.setNegativeButton(R.string.exit, (dialog, which) -> {
             if (dialog != null) {
+                model.clearNote();
                 dialog.dismiss();
                 Utils.backPressed(getContext());
             }

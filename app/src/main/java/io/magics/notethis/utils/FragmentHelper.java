@@ -22,6 +22,7 @@ import com.mikepenz.materialdrawer.Drawer;
 import java.util.List;
 
 import io.magics.notethis.R;
+import io.magics.notethis.ui.MainActivity;
 import io.magics.notethis.ui.fragments.EditNoteFragment;
 import io.magics.notethis.ui.fragments.HelpFragment;
 import io.magics.notethis.ui.fragments.ImgurListFragment;
@@ -68,48 +69,82 @@ public class FragmentHelper {
     private final Drawer drawer;
     private final ActionBar actionBar;
     private InterfaceListener listener;
+    private boolean widgetMode;
 
     public interface InterfaceListener {
         void hideFab();
+
         void showFab();
+
         void changeFab(int fabType);
+
         void onIntroDone();
+
         void hideSheet();
+
         void showSheet();
     }
 
     public FragmentHelper(Activity activity, Drawer drawer, ActionBar actionBar, Bundle savedState,
-                          InterfaceListener listener) {
+                          FragmentManager manager, InterfaceListener listener) {
         this.activity = activity;
         this.listener = listener;
         this.drawer = drawer;
         this.actionBar = actionBar;
+        widgetMode = false;
         if (savedState != null) {
-            int[] restored = savedState.getIntArray(FRAG_HELPER_STATE);
-            if (restored != null) {
-                previousFragId = restored[0];
-                currentFragId = restored[1];
-            }
+            initFromSavedState(manager, savedState);
+        } else {
+            init();
+        }
+    }
+
+    private void init() {
+        introFrag = introFrag != null ? introFrag : IntroFragment.newInstance();
+        signInFrag = signInFrag != null ? signInFrag : SignInFragment.newInstance();
+        noteListFrag = noteListFrag != null ? noteListFrag : NoteListFragment.newInstance();
+        editNoteFrag = editNoteFrag != null ? editNoteFrag : EditNoteFragment.newInstance();
+        imgurListFrag = imgurListFrag != null ? imgurListFrag : ImgurListFragment.newInstance();
+        helpFrag = helpFrag != null ? helpFrag : HelpFragment.newInstance();
+        previewFrag = previewFrag != null ? previewFrag : PreviewFragment.newInstance();
+    }
+
+    private void initFromSavedState(FragmentManager manager, Bundle savedState) {
+        int[] restored = savedState.getIntArray(FRAG_HELPER_STATE);
+        if (restored != null) {
+            previousFragId = restored[0];
+            currentFragId = restored[1];
+        }
+        Fragment frag = manager.findFragmentById(CONTAINER);
+
+        if (frag instanceof IntroFragment) {
+            introFrag = (IntroFragment) frag;
+        } else if (frag instanceof SignInFragment) {
+            signInFrag = (SignInFragment) frag;
+        } else if (frag instanceof NoteListFragment) {
+            noteListFrag = (NoteListFragment) frag;
+        } else if (frag instanceof EditNoteFragment) {
+            editNoteFrag = (EditNoteFragment) frag;
+        } else if (frag instanceof ImgurListFragment) {
+            imgurListFrag = (ImgurListFragment) frag;
+        } else if (frag instanceof HelpFragment) {
+            helpFrag = (HelpFragment) frag;
+        } else if (frag instanceof PreviewFragment) {
+            previewFrag = (PreviewFragment) frag;
         }
         init();
     }
 
-    private void init() {
-        introFrag = IntroFragment.newInstance();
-        signInFrag = SignInFragment.newInstance();
-        noteListFrag = NoteListFragment.newInstance();
-        editNoteFrag = EditNoteFragment.newInstance();
-        imgurListFrag = ImgurListFragment.newInstance();
-        helpFrag = HelpFragment.newInstance();
-        previewFrag = PreviewFragment.newInstance();
-    }
-
     public int[] saveState() {
-        return new int[] {previousFragId, currentFragId};
+        return new int[]{previousFragId, currentFragId};
     }
 
     public int getCurrentFragId() {
         return currentFragId;
+    }
+
+    public void widgetMode(boolean widgetMode) {
+        this.widgetMode = widgetMode;
     }
 
     public void startIntro(FragmentManager manager) {
@@ -161,6 +196,7 @@ public class FragmentHelper {
             case ID_PREVIEW:
                 transaction.replace(CONTAINER, previewFrag).commit();
                 hideFab();
+                if (currentFragId == ID_EDIT_NOTE) editNoteFrag.hasUnsavedChanges();
                 if (!fromDrawer) hideDrawerIcon();
                 hideSheet();
                 break;
@@ -168,6 +204,7 @@ public class FragmentHelper {
                 transaction.replace(CONTAINER, helpFrag).commit();
                 hideFab();
                 hideSheet();
+                if (currentFragId == ID_EDIT_NOTE) editNoteFrag.hasUnsavedChanges();
                 if (!fromDrawer) hideDrawerIcon();
                 break;
             case ID_IMGUR_LIST:
@@ -202,8 +239,7 @@ public class FragmentHelper {
         }
 
         if (currentFragId == ID_SIGN_IN || currentFragId == ID_INTRO
-                || currentFragId == ID_NOTE_LIST) return false;
-
+                || currentFragId == ID_NOTE_LIST || widgetMode) return false;
 
         boolean toNoteList = !(previousFragId == ID_EDIT_NOTE && currentFragId == ID_PREVIEW)
                 && !(previousFragId == ID_EDIT_NOTE && currentFragId == ID_HELP);
@@ -219,7 +255,6 @@ public class FragmentHelper {
             changeFragment(manager, ID_EDIT_NOTE, false);
             return true;
         }
-
     }
 
     public void introToSignInFrag(FragmentManager manager) {
@@ -254,6 +289,7 @@ public class FragmentHelper {
         activity.getWindow().getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
+
     private void hideDrawerIcon() {
         if (drawer != null) {
             if (drawer.isDrawerOpen()) drawer.closeDrawer();
@@ -277,11 +313,11 @@ public class FragmentHelper {
         if (listener != null) listener.hideFab();
     }
 
-    private void changeFab(int fabType){
+    private void changeFab(int fabType) {
         if (listener != null) listener.changeFab(fabType);
     }
 
-    private void hideSheet(){
+    private void hideSheet() {
         if (listener != null) listener.hideSheet();
     }
 

@@ -63,6 +63,7 @@ public class SaveDialog extends DialogFragment{
                 viewModel.saveChanges(titleText.getText().toString(), oldTitle);
                 dialog.dismiss();
                 if (action == EditNoteFragment.ACTION_CLOSE) {
+                    viewModel.clearNote();
                     Utils.backPressed(getContext());
                 } else {
                     Utils.setToolbarTitle(getContext(), titleText.getText().toString(),

@@ -8,25 +8,18 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Logger;
-
-import java.util.List;
 
 import io.magics.notethis.data.db.AppDatabase;
 import io.magics.notethis.data.network.FirebaseUtils;
 import io.magics.notethis.utils.AppDbUtils;
 import io.magics.notethis.utils.RoomNoteCallback;
-import io.magics.notethis.utils.models.Image;
 import io.magics.notethis.utils.models.Note;
-import io.magics.notethis.utils.models.NoteTitle;
 
 public class NoteViewModel extends AndroidViewModel {
 
@@ -41,6 +34,7 @@ public class NoteViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> signedIn = new MutableLiveData<>();
     private MutableLiveData<FirebaseUser> firebaseUser = new MutableLiveData<>();
     private ConnectionLiveData connected;
+    private Note oldNote;
 
     private AppDatabase appDatabase;
 
@@ -49,13 +43,11 @@ public class NoteViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public DatabaseReference getUserRef() { return userRef; }
 
     public LiveData<FirebaseUser> getFirebaseUser() { return firebaseUser; }
 
     public void init() {
         appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
-        note.setValue(new Note(NEW_NOTE_TITLE, "", ""));
         connected = new ConnectionLiveData(getApplication());
         auth = FirebaseAuth.getInstance();
         rootRef = FirebaseDatabase.getInstance().getReference();
@@ -71,11 +63,15 @@ public class NoteViewModel extends AndroidViewModel {
     public LiveData<Boolean> getConnectionStatus() { return connected; }
     public void deleteNote(Note note) { FirebaseUtils.deleteNote(noteRef, note); }
 
-    public void editNote(int id) {
+    public void fetchNote(int id) {
         AppDbUtils.fetchNote(appDatabase, id, new RoomNoteCallback<Note>() {
             @Override
             public void onComplete(Note data) {
-                note.setValue(data);
+                if (note.getValue() == null || note.getValue().getId() != id) {
+                    note.setValue(data);
+                } else {
+                    note.setValue(note.getValue());
+                }
             }
 
             @Override
@@ -97,6 +93,9 @@ public class NoteViewModel extends AndroidViewModel {
                 public void onComplete(Note data) {
                     note.setValue(data);
                     FirebaseUtils.insertNote(noteRef, data);
+                    Note newOldNote = new Note(title, saveNote.getBody(), saveNote.getPreview());
+                    newOldNote.setId(saveNote.getId());
+                    oldNote = newOldNote;
                 }
 
                 @Override
@@ -105,24 +104,38 @@ public class NoteViewModel extends AndroidViewModel {
                 }
             });
         } else {
+            Note newOldNote = new Note(title, saveNote.getBody(), saveNote.getPreview());
+            newOldNote.setId(saveNote.getId());
+            oldNote = newOldNote;
             AppDbUtils.updateNote(appDatabase, saveNote);
             FirebaseUtils.insertNote(noteRef, saveNote);
         }
     }
 
     public boolean hasUnsavedChanges(String text) {
-        if (TextUtils.isEmpty(text)) return false;
-
-        boolean hasChanged = !text.equals(note.getValue().getBody());
+        if (TextUtils.isEmpty(text) || note.getValue() == null) return false;
+        boolean hasChanged = !text.equals(oldNote != null ? oldNote.getBody()
+                : note.getValue().getBody());
 
         if (hasChanged) {
-            Note tempNote = note.getValue();
-            tempNote.setBody(text);
-            tempNote.setBodyPreview();
-            note.setValue(tempNote);
+            Note newNote = note.getValue();
+            newNote.setBody(text);
+            newNote.setBodyPreview();
+            note.setValue(newNote);
         }
 
         return hasChanged;
+    }
+
+    public void setOldData(Note note) {
+        if (oldNote == null || oldNote.getId() != note.getId()) {
+            oldNote = note;
+        }
+    }
+
+    public void clearNote() {
+        note.setValue(null);
+        oldNote = null;
     }
 
     private void signIn(){
