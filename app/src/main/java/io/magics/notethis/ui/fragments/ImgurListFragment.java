@@ -33,9 +33,6 @@ import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.MainActivity;
 import io.magics.notethis.ui.dialogs.ImageSheetDialog;
-import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
-import io.magics.notethis.utils.FragmentHelper;
-import io.magics.notethis.utils.FragmentHelper.InterfaceListener;
 import io.magics.notethis.utils.GlideApp;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.utils.models.Image;
@@ -53,8 +50,6 @@ public class ImgurListFragment extends Fragment {
     ConstraintLayout noImgLayout;
 
     ImgurViewModel model;
-
-    InterfaceListener fabListener;
 
     Unbinder unbinder;
 
@@ -98,15 +93,8 @@ public class ImgurListFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof InterfaceListener) fabListener = (InterfaceListener) context;
-    }
-
-    @Override
     public void onDetach() {
         Utils.dispose(unbinder);
-        fabListener = null;
         super.onDetach();
     }
 
@@ -212,10 +200,6 @@ public class ImgurListFragment extends Fragment {
             imgurRecycler.setVisibility(images.isEmpty() ? View.INVISIBLE : View.VISIBLE);
             noImgLayout.setVisibility(images.isEmpty() ? View.VISIBLE : View.INVISIBLE);
 
-            if (fabListener != null) {
-                if (imgurRecycler.getVisibility() == View.VISIBLE) fabListener.showFab();
-                else fabListener.hideFab();
-            }
         }
     }
 

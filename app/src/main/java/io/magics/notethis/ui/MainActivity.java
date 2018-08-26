@@ -45,8 +45,8 @@ import io.magics.notethis.ui.fragments.NoteListFragment;
 import static io.magics.notethis.utils.Utils.DIALOG_UPLOAD;
 
 public class MainActivity extends AppCompatActivity implements
-        NoteListFragment.NoteListFragListener, NoteListFragment.FabListener,
-        TemplatesBottomSheet.SheetCallbacks, FragmentHelper.InterfaceListener {
+        NoteListFragment.NoteListFragListener, TemplatesBottomSheet.SheetCallbacks,
+        FragmentHelper.InterfaceListener {
 
     private static final String TAG = "MainActivity";
 

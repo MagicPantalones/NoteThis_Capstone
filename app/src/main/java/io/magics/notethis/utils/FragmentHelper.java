@@ -291,6 +291,7 @@ public class FragmentHelper {
         Utils.showToolbar(activity);
         activity.getWindow().getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        showFab();
     }
 
     private void hideDrawerIcon() {

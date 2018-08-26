@@ -19,33 +19,31 @@
 
         <ImageView
             android:id="@+id/no_images_logo"
-            android:layout_width="@dimen/img_logo_size_big"
-            android:layout_height="@dimen/img_logo_size_big"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/logo_a11y"
             android:scaleType="fitCenter"
-            android:src="@drawable/owl_24dp_color_nobg"
-            app:layout_constraintBottom_toTopOf="@+id/upload_image_button"
+            android:src="@drawable/no_img_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/upload_image_button"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="@dimen/button_margin_empty_list"
-            android:background="@drawable/btn_background"
-            android:elevation="2dp"
-            android:fontFamily="sans-serif-condensed"
-            android:text="@string/new_img_upload"
-            android:textColor="@color/primaryTextColor"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <TextView
+            android:id="@+id/no_images_text"
+            style="@style/logoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/sheet_upload_image"
+            app:layout_constraintBottom_toBottomOf="@+id/no_images_logo"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/no_images_logo" />
+            app:layout_constraintTop_toTopOf="@+id/no_images_logo"
+            app:layout_constraintVertical_bias="0.603" />
+
     </android.support.constraint.ConstraintLayout>
 
 

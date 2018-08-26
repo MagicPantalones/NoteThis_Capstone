@@ -50,13 +50,10 @@ public class NoteListFragment extends Fragment {
     ConstraintLayout noNotesLayout;
     @BindView(R.id.note_list_recycler)
     RecyclerView noteListRecycler;
-    @BindView(R.id.new_note_button)
-    Button newNoteButton;
 
     Unbinder unbinder;
 
     private NoteListFragListener listener;
-    private FabListener fabListener;
 
     private NoteTitleViewModel noteViewModel;
 
@@ -139,7 +136,6 @@ public class NoteListFragment extends Fragment {
 
         new ItemTouchHelper(touchHelper).attachToRecyclerView(noteListRecycler);
 
-        newNoteButton.setOnClickListener(v -> listener.onNewNotePress());
         switchLayouts(adapter.noteTitles);
     }
 
@@ -147,14 +143,12 @@ public class NoteListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof NoteListFragListener) listener = (NoteListFragListener) context;
-        if (context instanceof FabListener) fabListener = (FabListener) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         listener = null;
-        fabListener = null;
     }
 
     void switchLayouts(List<NoteTitle> noteTitles) {
@@ -162,10 +156,6 @@ public class NoteListFragment extends Fragment {
         noteListRecycler.setVisibility(noteTitles.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         noNotesLayout.setVisibility(noteTitles.isEmpty() ? View.VISIBLE : View.INVISIBLE);
 
-        if (fabListener != null) {
-            if (noteListRecycler.getVisibility() == View.VISIBLE) fabListener.showFab();
-            else fabListener.hideFab();
-        }
     }
 
     public interface NoteListFragListener {
@@ -174,11 +164,6 @@ public class NoteListFragment extends Fragment {
         void onNoteListScroll(int state);
 
         void onNoteItemClicked(int id, int type);
-    }
-
-    public interface FabListener {
-        void hideFab();
-        void showFab();
     }
 
     public interface NoteItemTouchListener {
