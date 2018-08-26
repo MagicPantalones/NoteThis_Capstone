@@ -46,3 +46,4 @@ app/libs/
 /.idea/vcs.xml
 /app/src/main/java/io/magics/notethis/utils/TodoList.java
 /.idea/sonarlint-state.xml
+/keystore.properties

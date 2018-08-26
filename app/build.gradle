@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias ''
+            keyPassword ''
+            storeFile file('')
+            storePassword ''
+        }
+    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "io.magics.notethis"
@@ -24,7 +32,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
 }
 
 def supportVer = "27.1.1"
@@ -37,7 +44,7 @@ def fireUiVer = "4.1.0"
 
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     //Android Libs
     implementation "com.android.support:appcompat-v7:${supportVer}"
@@ -45,13 +52,11 @@ dependencies {
     implementation "com.android.support:design:${supportVer}"
     implementation "com.android.support:support-media-compat:${supportVer}"
     implementation "com.android.support:recyclerview-v7:${supportVer}"
-
     implementation "android.arch.persistence.room:runtime:${archVer}"
     implementation "android.arch.lifecycle:extensions:${archVer}"
     implementation "android.arch.persistence.room:rxjava2:${archVer}"
     annotationProcessor "android.arch.lifecycle:compiler:${archVer}"
     annotationProcessor "android.arch.persistence.room:compiler:${archVer}"
-
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
     //Firebase libs
@@ -59,14 +64,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.google.firebase:firebase-auth:16.0.3'
     implementation 'com.google.android.gms:play-services-auth:16.0.0'
-
     implementation "com.firebaseui:firebase-ui-auth:${fireUiVer}"
     implementation "com.firebaseui:firebase-ui-database:${fireUiVer}"
 
     //Network & Threading
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-
     implementation 'io.reactivex.rxjava2:rxjava:2.2.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
@@ -83,14 +86,13 @@ dependencies {
     implementation "ru.noties:markwon-syntax:${markVer}"
     implementation "ru.noties:markwon-syntax:${markVer}"
     implementation 'me.saket:better-link-movement-method:2.2.0'
-    implementation "com.mikepenz:materialdrawer:6.0.9"
+    implementation 'com.mikepenz:materialdrawer:6.0.9'
 
     //Debug & testing
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${leakVer}"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${leakVer}"
     debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:${leakVer}"
     implementation 'com.facebook.stetho:stetho:1.5.0'
-
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
