@@ -154,6 +154,12 @@ public class TemplatesBottomSheet extends Fragment {
         }
     }
 
+    public boolean isExpanded() {
+        return behavior != null
+                && behavior.getState() != BottomSheetBehavior.STATE_HIDDEN
+                && behavior.getState() != BottomSheetBehavior.STATE_COLLAPSED;
+    }
+
     private void setFocusable(boolean focusable) {
         if (getView() != null) {
             getView().setFocusable(focusable);

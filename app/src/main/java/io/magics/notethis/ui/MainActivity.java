@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements
         bottomSheet =
                 (TemplatesBottomSheet) fragManager.findFragmentById(R.id.bottom_sheet_fragment);
         disconnectSnack = Snackbar.make(mainRoot, getString(R.string.disconnect_snack),
-                Snackbar.LENGTH_INDEFINITE);
+                Snackbar.LENGTH_LONG);
 
         DrawerBuilder drawerBuilder = DrawerUtils.initDrawer(this,
                 toolbar, FragmentHelper.ID_NOTE_LIST);
@@ -186,6 +186,11 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
+
+        if (bottomSheet != null && bottomSheet.isExpanded()) {
+            bottomSheet.setSheetCollapsed();
+            return;
+        }
 
         if (fragHelper.handleBackPressed(fragManager)) {
             appBarLayout.setExpanded(true, true);

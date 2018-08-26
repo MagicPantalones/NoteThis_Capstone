@@ -14,6 +14,7 @@
 
     <string name="new_note_btn">New Note!</string>
     <string name="new_note_title">New Note</string>
+    <string name="new_img_upload">New Upload!</string>
 
     <string name="edit_menu_save">Save</string>
     <string name="edit_menu_save_a11y">Save note</string>

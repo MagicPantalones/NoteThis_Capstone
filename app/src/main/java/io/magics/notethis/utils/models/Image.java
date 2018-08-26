@@ -55,6 +55,7 @@ public class Image {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("title", title);
+        result.put("serverId", serverId);
         result.put("link", link);
         return result;
     }

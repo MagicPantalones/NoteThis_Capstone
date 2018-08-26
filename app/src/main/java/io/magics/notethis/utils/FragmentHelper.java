@@ -216,6 +216,9 @@ public class FragmentHelper {
             default:
                 //Should not happen
         }
+
+        if (fragmentId != ID_NOTE_LIST) Utils.hideKeyboard(activity);
+
         previousFragId = fromDrawer ? ID_NOTE_LIST : currentFragId;
         currentFragId = fragmentId;
     }

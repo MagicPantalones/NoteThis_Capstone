@@ -104,6 +104,12 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
 
     }
 
+    @Override
+    public void onPause() {
+        if (getDialog().isShowing()) dismiss();
+        super.onPause();
+    }
+
     private void setLoading(){
         uploadProgress.setVisibility(View.VISIBLE);
         okBtn.setVisibility(View.GONE);

@@ -12,14 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <ImageView
             android:id="@+id/note_list_logo"
             android:layout_width="@dimen/img_logo_size_big"
             android:layout_height="@dimen/img_logo_size_big"
             android:contentDescription="@string/logo_a11y"
-            android:src="@drawable/owl_24dp_color_nobg"
+            android:src="@drawable/owl_svg"
             app:layout_constraintBottom_toTopOf="@+id/new_note_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

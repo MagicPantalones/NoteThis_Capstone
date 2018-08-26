@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
@@ -32,6 +33,9 @@ import butterknife.Unbinder;
 import io.magics.notethis.R;
 import io.magics.notethis.ui.MainActivity;
 import io.magics.notethis.ui.dialogs.ImageSheetDialog;
+import io.magics.notethis.ui.fragments.NoteListFragment.FabListener;
+import io.magics.notethis.utils.FragmentHelper;
+import io.magics.notethis.utils.FragmentHelper.InterfaceListener;
 import io.magics.notethis.utils.GlideApp;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.utils.models.Image;
@@ -45,9 +49,12 @@ public class ImgurListFragment extends Fragment {
 
     @BindView(R.id.imgur_recycler)
     RecyclerView imgurRecycler;
-    @BindView(R.id.imgur_list_progress)
-    ProgressBar imgurProgress;
+    @BindView(R.id.no_images_layout)
+    ConstraintLayout noImgLayout;
+
     ImgurViewModel model;
+
+    InterfaceListener fabListener;
 
     Unbinder unbinder;
 
@@ -91,18 +98,18 @@ public class ImgurListFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof InterfaceListener) fabListener = (InterfaceListener) context;
+    }
+
+    @Override
     public void onDetach() {
         Utils.dispose(unbinder);
+        fabListener = null;
         super.onDetach();
     }
 
-    private void switchViews(List<Image> images) {
-        if (imgurRecycler == null || imgurProgress == null) return;
-        if (images != null && !images.isEmpty()) {
-            imgurRecycler.setVisibility(View.VISIBLE);
-            imgurProgress.setVisibility(View.GONE);
-        }
-    }
 
     private class ImgurAdapter extends RecyclerView.Adapter<ImgurViewHolder> {
 
@@ -198,6 +205,17 @@ public class ImgurListFragment extends Fragment {
         private void handleImageClick(String url) {
             ImageSheetDialog dialog = ImageSheetDialog.newInstance(url);
             dialog.show(getFragmentManager(), TAG_IMG_DIALOG);
+        }
+
+
+        private void switchViews(List<Image> images) {
+            imgurRecycler.setVisibility(images.isEmpty() ? View.INVISIBLE : View.VISIBLE);
+            noImgLayout.setVisibility(images.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+
+            if (fabListener != null) {
+                if (imgurRecycler.getVisibility() == View.VISIBLE) fabListener.showFab();
+                else fabListener.hideFab();
+            }
         }
     }
 

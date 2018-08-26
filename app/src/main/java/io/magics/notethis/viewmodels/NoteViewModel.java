@@ -173,7 +173,9 @@ public class NoteViewModel extends AndroidViewModel {
         signedIn.setValue(true);
         String uid = user.getUid();
         userRef = FirebaseUtils.getUserPath(rootRef, uid);
+        userRef.keepSynced(true);
         noteRef = FirebaseUtils.getNotesPath(rootRef, uid);
+        noteRef.keepSynced(true);
         FirebaseUtils.checkForUserEmail(userRef, user.getEmail());
         firebaseUser.setValue(user);
         checkDatabase();

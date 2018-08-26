@@ -47,6 +47,7 @@ public class ImgurViewModel extends AndroidViewModel {
         if (!isInitialized) {
             DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
             imgurRef = FirebaseUtils.getImagePath(rootRef, uid);
+            imgurRef.keepSynced(true);
             isInitialized = true;
             appDatabase = AppDatabase.getInMemoryDatabase(getApplication());
             images = appDatabase.userImageModel().getImages();
