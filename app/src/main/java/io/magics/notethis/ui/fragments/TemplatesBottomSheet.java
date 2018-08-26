@@ -156,6 +156,7 @@ public class TemplatesBottomSheet extends Fragment {
     private void setFocusable(boolean focusable) {
         if (getView() != null) {
             getView().setFocusable(focusable);
+            getView().setFocusableInTouchMode(focusable);
         }
     }
 

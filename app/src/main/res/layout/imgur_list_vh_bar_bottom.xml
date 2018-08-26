@@ -33,6 +33,7 @@
             android:id="@+id/relativeLayout"
             android:layout_width="0dp"
             android:layout_height="48dp"
+            android:foreground="@drawable/icon_focused_light"
             android:background="@color/primaryColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,6 +45,7 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/outline_more_vert_24"
                 android:contentDescription="@string/imgur_menu_a11y"
+                android:foreground="@drawable/icon_focused_light"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/margin_8dp"/>
             

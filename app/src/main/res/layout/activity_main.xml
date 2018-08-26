@@ -22,6 +22,9 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:title="@string/app_name"
+            android:focusable="true"
+            android:nextFocusLeft="@android:id/home"
+            android:nextFocusDown="@+id/container_main"
             app:titleTextAppearance="@style/toolbarText" />
 
     </android.support.design.widget.AppBarLayout>

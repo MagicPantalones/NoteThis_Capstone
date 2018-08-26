@@ -47,7 +47,8 @@ public class SubSheetTemplate extends BottomSheetDialogFragment {
         View view = View.inflate(getContext(), R.layout.sub_sheet_template, null);
         ButterKnife.bind(this, view);
         dialog.setContentView(view);
-
+        getActivity().getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         SheetUtils.setBehaviour(view, getDialog());
         okBtn.setOnClickListener(v -> {
             if (callbacks != null) {

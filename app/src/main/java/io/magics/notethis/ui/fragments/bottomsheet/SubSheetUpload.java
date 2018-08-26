@@ -34,10 +34,6 @@ import io.magics.notethis.viewmodels.ImgurViewModel;
 public class SubSheetUpload extends BottomSheetDialogFragment {
 
     private static final String ARG_IMG = "img";
-    private static final String ARG_INSTANCE = "instance";
-
-    public static final int LIST_INS = 111;
-    public static final int EDIT_INS = 222;
 
     @BindView(R.id.sub_upload_preview)
     ImageView previewView;
@@ -53,17 +49,15 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
     ImgurViewModel model;
 
     SheetCallbacks callbacks;
-    UploadDialogHandler handler;
 
     public SubSheetUpload() {
         //Required
     }
 
-    public static SubSheetUpload newInstance(File imgFile, int instance) {
+    public static SubSheetUpload newInstance(File imgFile) {
         SubSheetUpload frag = new SubSheetUpload();
         Bundle args = new Bundle();
         args.putSerializable(ARG_IMG, imgFile);
-        args.putInt(ARG_INSTANCE, instance);
         frag.setArguments(args);
         return frag;
     }
@@ -76,9 +70,9 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
         dialog.setContentView(view);
         model = ViewModelProviders.of(getActivity()).get(ImgurViewModel.class);
         SheetUtils.setBehaviour(view, dialog);
-
-        File img = (File) getArguments().getSerializable(ARG_IMG);
-        int instance = getArguments().getInt(ARG_INSTANCE);
+        getActivity().getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        final File img = (File) getArguments().getSerializable(ARG_IMG);
 
         GlideApp.with(this)
                 .load(img)
@@ -91,19 +85,18 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
                 return;
             }
             setLoading();
-            String title = TextUtils.isEmpty(imgTitleView.getText()) ? "Uploaded Image" :
+            final String title = TextUtils.isEmpty(imgTitleView.getText()) ? "Uploaded Image" :
                     imgTitleView.getText().toString();
             model.upload(title);
             model.getUploadedImage().observe(this, image -> {
                 model.getUploadedImage().removeObservers(this);
                 if (image == null)return;
-                if (callbacks != null && instance == EDIT_INS) {
-                    callbacks.onReturnTemplate(SheetUtils.getUrlTemplate(getResources(),
+                if (callbacks != null) {
+                    callbacks.onReturnTemplate(SheetUtils.getImgTemplate(getResources(),
                             image.getTitle(), image.getLink()));
-                    dismiss();
-                } else if (handler != null && instance == LIST_INS) {
-                    handler.onUpload(image.getTitle());
+                    callbacks = null;
                 }
+                dismiss();
             });
         });
 
@@ -118,23 +111,17 @@ public class SubSheetUpload extends BottomSheetDialogFragment {
         imgTitleView.setEnabled(false);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof SheetCallbacks) callbacks = (SheetCallbacks) context;
-        if (context instanceof UploadDialogHandler) handler = (UploadDialogHandler) context;
+    public void setCallback(SheetCallbacks callback) {
+        this.callbacks = callback;
     }
+
 
     @Override
     public void onDetach() {
         callbacks = null;
-        handler = null;
         super.onDetach();
     }
 
 
-    public interface UploadDialogHandler {
-        void onUpload(String title);
-    }
 }
 

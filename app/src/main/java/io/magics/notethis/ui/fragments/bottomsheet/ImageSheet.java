@@ -22,6 +22,7 @@ import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import io.magics.notethis.R;
+import io.magics.notethis.ui.fragments.TemplatesBottomSheet;
 import io.magics.notethis.utils.DocUtils;
 import io.magics.notethis.utils.Utils;
 import io.magics.notethis.viewmodels.ImgurViewModel;
@@ -90,8 +91,11 @@ public class ImageSheet extends Fragment {
 
         ImgurViewModel model = ViewModelProviders.of(getActivity()).get(ImgurViewModel.class);
         model.prepareUpload(img);
-        SubSheetUpload subSheetUpload = SubSheetUpload.newInstance(img, SubSheetUpload.EDIT_INS);
-        subSheetUpload.show(getFragmentManager(), TAG_UPLOAD);
+        SubSheetUpload subSheetUpload = SubSheetUpload.newInstance(img);
+        if (getContext() instanceof TemplatesBottomSheet.SheetCallbacks){
+            subSheetUpload.setCallback((TemplatesBottomSheet.SheetCallbacks) getContext());
+            subSheetUpload.show(getFragmentManager(), TAG_UPLOAD);
+        }
     }
 
     @Override

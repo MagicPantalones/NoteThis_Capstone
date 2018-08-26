@@ -71,8 +71,6 @@ public class SheetUtils {
             }
         };
 
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
         View coordinator;
         if (view.getParent() == null){
             coordinator = view;

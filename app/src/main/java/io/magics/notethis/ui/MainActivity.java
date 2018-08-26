@@ -27,6 +27,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 
 import com.bumptech.glide.util.Util;
 import com.google.firebase.auth.FirebaseUser;
@@ -58,8 +59,7 @@ import static io.magics.notethis.utils.Utils.DIALOG_UPLOAD;
 
 public class MainActivity extends AppCompatActivity implements
         NoteListFragment.NoteListFragListener, NoteListFragment.FabListener,
-        SubSheetUpload.UploadDialogHandler, TemplatesBottomSheet.SheetCallbacks,
-        FragmentHelper.InterfaceListener {
+        TemplatesBottomSheet.SheetCallbacks, FragmentHelper.InterfaceListener {
 
     private static final String TAG = "MainActivity";
 
@@ -137,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements
                 })
                 .withSavedInstance(savedInstanceState)
                 .build();
+
+
 
         fragHelper = new FragmentHelper(this, navDrawer, actionBar,
                 savedInstanceState, this);
@@ -346,12 +348,7 @@ public class MainActivity extends AppCompatActivity implements
         if (filePath == null || filePath.isEmpty()) return;
         File img = new File(filePath);
         imgurViewModel.prepareUpload(img);
-        SubSheetUpload.newInstance(img, SubSheetUpload.LIST_INS).show(fragManager, DIALOG_UPLOAD);
-    }
-
-    @Override
-    public void onUpload(String title) {
-        if (connected) imgurViewModel.upload(title);
+        SubSheetUpload.newInstance(img).show(fragManager, DIALOG_UPLOAD);
     }
 
 
@@ -398,9 +395,6 @@ public class MainActivity extends AppCompatActivity implements
         Utils.hideKeyboard(this);
     }
 
-
-
-    //TODO Add support for RTL & D-PAD
 
     //TODO Handle lifecycles.
 
